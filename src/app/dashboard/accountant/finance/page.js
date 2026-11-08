@@ -1,0 +1,1454 @@
+"use client";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import {
+  Printer,
+  Calendar,
+  RefreshCw,
+  CheckCircle,
+  AlertCircle,
+  Loader2,
+  Eye,
+  Phone,
+  Globe,
+  Mail,
+} from "lucide-react";
+import dynamic from "next/dynamic";
+
+import { BsWhatsapp, BsYoutube } from "react-icons/bs";
+import { FaFacebook } from "react-icons/fa";
+import Overview from "@/components/dashboard/finance/Overview";
+import IncomeEntry from "@/components/dashboard/finance/IncomeEntry";
+import ExpenseEntry from "@/components/dashboard/finance/ExpenseEntry";
+import MonthlyReport from "@/components/dashboard/finance/MonthlyReport";
+import IncomeVoucherHtmlLayout from "@/components/dashboard/finance/IncomeVoucherHtmlLayout";
+import ExpenseVoucherHtmlLayout from "@/components/dashboard/finance/ExpenseVoucherHtmlLayout";
+import ExpenseVoucherPdfActions from "@/components/dashboard/finance/ExpenseVoucherPdfActions";
+
+const IncomeVoucherPdfActions = dynamic(
+  () => import("@/components/dashboard/finance/IncomeVoucherPdfActions"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center gap-2">
+        <button
+          disabled
+          className="px-4 py-2 bg-emerald-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 opacity-60 cursor-not-allowed shadow-xs"
+        >
+          <Printer className="w-4 h-4 animate-spin" /> ভাউচার লোড হচ্ছে...
+        </button>
+      </div>
+    ),
+  },
+);
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_SERVER_API ||
+  process.env.NEXT_PUBLIC_SERVER_URL ||
+  "http://localhost:5000";
+
+const FUND_ACCOUNTS = [
+  {
+    accountNumber: "19071310000015",
+    name: "As-Salam Ideal Madrasah",
+    nameBn: "জেনারেল ব্যাংক হিসাব-১৫",
+    openingBalance: 25069.02,
+  },
+  {
+    accountNumber: "19071213000673",
+    name: "As-Salam Ideal Madrasah(Future Fund)",
+    nameBn: "ফিউচার ফান্ড ব্যাংক হিসাব-৬৭৩",
+    openingBalance: 38220.52,
+  },
+  {
+    accountNumber: "19071210000674",
+    name: "As-Salam Ideal Madrasah(Donation Fund)",
+    nameBn: "ডোনেশন ফান্ড ব্যাংক হিসাব-৬৭৪",
+    openingBalance: 202892.51,
+  },
+  {
+    accountNumber: "19071210000675",
+    name: "As-Salam Ideal Madrasah(Zakath Fund)",
+    nameBn: "যাকাত ফান্ড ব্যাংক হিসাব-৬৭৫",
+    openingBalance: 9371.1,
+  },
+  {
+    accountNumber: "19071210000804",
+    name: "As-Salam Ideal Madrasah(Yeatim Fund)",
+    nameBn: "এয়াতিম ফান্ড ব্যাংক হিসাব-৮০৪",
+    openingBalance: 169479.47,
+  },
+];
+
+const INCOME_HEADS = [
+  "জেনারেল ব্যাংক হিসাব-১৫",
+  "ফিউচার ফান্ড ব্যাংক হিসাব-৬৭৩",
+  "এয়াতিম ফান্ড ব্যাংক হিসাব-৮০৪",
+  "ডোনেশন ফান্ড ব্যাংক হিসাব-৬৭৪",
+  "যাকাত ফান্ড ব্যাংক হিসাব-৬৭৫",
+  "ব্যাংকে প্রফিট",
+  "নগদ হাতে উদ্বৃত্ত",
+  "করযে হাসানাহ",
+  "ভর্তি ফরম ফি",
+  "সেশন ভর্তি ফি",
+  "সংস্থাপন ফি",
+  "লাইব্রেরি ফি",
+  "লকার চার্জ",
+  "সফটওয়্যার চার্জ",
+  "সেমিনার/আঞ্জুমান ফি",
+  "উন্নয়ন ফি",
+  "বোর্ডিং ফি (থাকা+খাওয়া)",
+  "মাসিক টিউশন",
+  "ডে-কেয়ার",
+  "কোর্স/কোচিং",
+  "পরীক্ষা ফি",
+  "জরিমানা",
+  "স্লিপিং বেড/ড্রেস",
+  "খাতা/ডায়েরী/কিতাব/বেইজ/আইডি কার্ড",
+  "শিক্ষা সফর",
+  "ইনভেস্ট",
+  "ভূমি/বিল্ডিং/পরিবহন",
+  "সাদাকাহ",
+  "ইয়াতিম অনুদান",
+  "যাকাত/ইফতার",
+  "অন্যান্য",
+];
+
+const EXPENSE_HEADS = [
+  "বিজ্ঞাপন",
+  "বোর্ডিং এর বাজার",
+  "টিফিন",
+  "বাড়ি ভাড়া",
+  "আপ্যায়ন",
+  "যাতায়াত",
+  "শিক্ষক-স্টাফ বেতন",
+  "ক্লিনিং সরঞ্জাম",
+  "কম্পিউটার সরঞ্জাম",
+  "বৈদ্যুতিক সরঞ্জাম",
+  "ইউটিলিটি (বিদ্যুৎ, ইন্টারনেট, ইত্যাদি)",
+  "অরফান",
+  "আঞ্জুমান (সেমিনার)",
+  "স্টেশনারীজ",
+  "প্রিন্টিং এন্ড ফটোকপি",
+  "পরিবহন",
+  "ফার্নিচার/ডেকোরেশন",
+  "ক্রোকারিজ",
+  "সেনিটারি",
+  "নির্মাণ",
+  "চিকিৎসা",
+  "যোগাযোগ",
+  "লাইব্রেরি",
+  "খেলাধুলা",
+  "শিক্ষা সফর",
+  "করযে হাসানাহ পরিশোধ",
+  "অন্যান্য",
+];
+
+const BANGAL_MONTHS = [
+  { value: "all", label: "সব মাস (সর্বমোট)" },
+  { value: "01", label: "জানুয়ারি" },
+  { value: "02", label: "ফেব্রুয়ারি" },
+  { value: "03", label: "মার্চ" },
+  { value: "04", label: "এপ্রিল" },
+  { value: "05", label: "মে" },
+  { value: "06", label: "জুন" },
+  { value: "07", label: "জুলাই" },
+  { value: "08", label: "আগস্ট" },
+  { value: "09", label: "সেপ্টেম্বর" },
+  { value: "10", label: "অক্টোবর" },
+  { value: "11", label: "নভেম্বর" },
+  { value: "12", label: "ডিসেম্বর" },
+];
+
+// Parser helper for splitting combined payerName format: "donorName / studentId"
+const parsePayerName = (payerName = "") => {
+  if (!payerName) return { donorName: "N/A", studentId: "" };
+  if (payerName.includes(" / ")) {
+    const parts = payerName.split(" / ");
+    return {
+      donorName: parts[0] || "N/A",
+      studentId: parts[1] || "",
+    };
+  }
+  return {
+    donorName: payerName,
+    studentId: "",
+  };
+};
+
+export default function FinanceDashboard() {
+  const [activeTab, setActiveTab] = useState("overview"); // overview, income, expense, report
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+
+  // Date states
+  const today = new Date();
+  const currentYear = today.getFullYear().toString();
+  const currentMonthNum = String(today.getMonth() + 1).padStart(2, "0");
+
+  // Filter States for Overview & Reports (Default to current month/year for active rolling balance view)
+  const [reportYear, setReportYear] = useState(currentYear);
+  const [reportMonth, setReportMonth] = useState(currentMonthNum);
+  const [reportAccount, setReportAccount] = useState("all");
+  const [summaryData, setSummaryData] = useState({
+    totalIncome: 0,
+    totalExpense: 0,
+    netBalance: 0,
+    openingBalance: 0,
+    totalUsableFund: 0,
+    overallOpeningBalance: 0,
+    overallIncome: 0,
+    overallExpense: 0,
+    overallBalance: 0,
+    activeMonths: [],
+    funds: FUND_ACCOUNTS,
+    fundBreakdown: [],
+    incomeBreakdown: [],
+    expenseBreakdown: [],
+  });
+
+  // Overview transactions states
+  const [transactions, setTransactions] = useState([]);
+  const [txPage, setTxPage] = useState(1);
+  const [txTotalPages, setTxTotalPages] = useState(1);
+  const [txFilterType, setTxFilterType] = useState("all");
+  const [txSearch, setTxSearch] = useState("");
+  const [txStartDate, setTxStartDate] = useState("");
+  const [txEndDate, setTxEndDate] = useState("");
+
+  // Pending transactions states
+  const [pendingTransactions, setPendingTransactions] = useState([]);
+  const [pendingLoading, setPendingLoading] = useState(false);
+
+  // Edit states
+  const [editingId, setEditingId] = useState(null);
+  const [editingType, setEditingType] = useState(null);
+
+  // Income Form States (Updated to separate fields + fund accountNumber)
+  const [incomeForm, setIncomeForm] = useState({
+    receiptNo: "",
+    accountNumber: "19071310000015",
+    payerType: "donor",
+    donorName: "",
+    studentId: "",
+    studentName: "",
+    className: "",
+    discount: "",
+    date: today.toISOString().split("T")[0],
+    month: `${currentYear}-${currentMonthNum}`,
+    paymentMethod: "Cash",
+    description: "",
+    items: [{ head: INCOME_HEADS[0], amount: "" }],
+  });
+
+  // Expense Form States (Renamed Recipient placeholder to Spender + fund accountNumber)
+  const [expenseForm, setExpenseForm] = useState({
+    voucherNo: "",
+    accountNumber: "19071310000015",
+    receiverName: "", // Maps to Spender Name
+    advanceAmount: "",
+    chequeNo: "",
+    date: today.toISOString().split("T")[0],
+    month: `${currentYear}-${currentMonthNum}`,
+    description: "",
+    items: [{ head: EXPENSE_HEADS[0], amount: "" }],
+  });
+
+  // Print Preview / Media Print State
+  const [printData, setPrintData] = useState(null);
+  const expenseVoucherRef = useRef(null);
+
+  // Alert Handler Helper
+  const triggerNotification = useCallback((type, msg) => {
+    if (type === "success") {
+      setSuccessMsg(msg);
+      setErrorMsg("");
+      setTimeout(() => setSuccessMsg(""), 5000);
+    } else {
+      setErrorMsg(msg);
+      setSuccessMsg("");
+      setTimeout(() => setErrorMsg(""), 5000);
+    }
+  }, []);
+
+  const fetchSummary = useCallback(async () => {
+    await Promise.resolve(); // yield to microtask to prevent sync setState in useEffect
+    try {
+      setLoading(true);
+      const queryParams = [];
+      if (reportMonth && reportMonth !== "all")
+        queryParams.push(`month=${reportMonth}`);
+      if (reportYear && reportYear !== "all")
+        queryParams.push(`year=${reportYear}`);
+      if (reportAccount && reportAccount !== "all")
+        queryParams.push(`accountNumber=${reportAccount}`);
+      const queryString =
+        queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
+
+      const res = await fetch(
+        `${API_BASE_URL}/api/finance/summary${queryString}`,
+      );
+      const data = await res.json();
+      if (data.success) {
+        setSummaryData(data.data);
+      } else {
+        triggerNotification(
+          "error",
+          data.message || "সারসংক্ষেপ লোড করতে ব্যর্থ হয়েছে।",
+        );
+      }
+    } catch (err) {
+      console.error(err);
+      triggerNotification(
+        "error",
+        "সার্ভারের সাথে সংযোগ স্থাপন করা যাচ্ছে না।",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    reportMonth,
+    reportYear,
+    reportAccount,
+    triggerNotification,
+    setLoading,
+    setSummaryData,
+  ]);
+
+  const fetchTransactions = useCallback(async () => {
+    await Promise.resolve(); // yield to microtask to prevent sync setState in useEffect
+    try {
+      setLoading(true);
+      let url = `${API_BASE_URL}/api/finance/transactions?page=${txPage}&limit=10&type=${txFilterType}`;
+      if (reportAccount && reportAccount !== "all")
+        url += `&accountNumber=${encodeURIComponent(reportAccount)}`;
+      if (txSearch) url += `&search=${encodeURIComponent(txSearch)}`;
+      if (txStartDate) url += `&startDate=${txStartDate}`;
+      if (txEndDate) url += `&endDate=${txEndDate}`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.success) {
+        setTransactions(data.data);
+        setTxTotalPages(data.totalPages || 1);
+      } else {
+        triggerNotification(
+          "error",
+          data.message || "লেনদেনের তালিকা লোড করতে ব্যর্থ হয়েছে।",
+        );
+      }
+    } catch (err) {
+      console.error(err);
+      triggerNotification("error", "লেনদেনের তালিকা লোড করতে সমস্যা হয়েছে।");
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    txPage,
+    txFilterType,
+    reportAccount,
+    txStartDate,
+    txEndDate,
+    txSearch,
+    triggerNotification,
+    setLoading,
+    setTransactions,
+    setTxTotalPages,
+  ]);
+
+  const fetchPendingTransactions = useCallback(async () => {
+    try {
+      setPendingLoading(true);
+      const res = await fetch(
+        API_BASE_URL + "/api/finance/transactions?limit=1000&status=pending",
+      );
+      const data = await res.json();
+      if (data.success) {
+        setPendingTransactions(data.data || []);
+      }
+    } catch (err) {
+      console.error("Error fetching pending transactions:", err);
+    } finally {
+      setPendingLoading(false);
+    }
+  }, [setPendingLoading, setPendingTransactions]);
+
+  const handleApprove = async (txId, type) => {
+    if (!window.confirm("আপনি কি নিশ্চিত যে এই লেনদেনটি অনুমোদন করতে চান?"))
+      return;
+    try {
+      setLoading(true);
+      const res = await fetch(API_BASE_URL + "/api/finance/approve", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: txId, type }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        triggerNotification("success", "লেনদেনটি সফলভাবে অনুমোদন করা হয়েছে!");
+        fetchSummary();
+        fetchTransactions();
+        fetchPendingTransactions();
+      } else {
+        triggerNotification("error", data.message || "অনুমোদন করা যায়নি।");
+      }
+    } catch (err) {
+      console.error(err);
+      triggerNotification("error", "সার্ভারে রিকোয়েস্ট পাঠাতে সমস্যা হয়েছে।");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (txId, type) => {
+    if (!window.confirm("আপনি কি নিশ্চিত যে এই লেনদেনটি মুছে ফেলতে চান?"))
+      return;
+    try {
+      setLoading(true);
+      const res = await fetch(API_BASE_URL + "/api/finance/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: txId, type }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        triggerNotification("success", "লেনদেনটি সফলভাবে মুছে ফেলা হয়েছে!");
+        fetchSummary();
+        fetchTransactions();
+        fetchPendingTransactions();
+      } else {
+        triggerNotification("error", data.message || "মুছে ফেলা যায়নি।");
+      }
+    } catch (err) {
+      console.error(err);
+      triggerNotification("error", "সার্ভারে রিকোয়েস্ট পাঠাতে সমস্যা হয়েছে।");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = (tx) => {
+    setEditingId(tx._id);
+    setEditingType(tx.type);
+    if (tx.type === "income") {
+      const parsed = parsePayerName(tx.payerName);
+      setIncomeForm({
+        receiptNo: tx.receiptNo || "",
+        accountNumber: tx.accountNumber || "19071310000015",
+        payerType: tx.payerType || (parsed.studentId ? "student" : "donor"),
+        donorName: tx.donorName || parsed.donorName || "",
+        studentId: tx.studentId || parsed.studentId || "",
+        studentName:
+          tx.studentName || (parsed.studentId ? parsed.donorName : ""),
+        className: tx.className || "",
+        discount: tx.discount !== undefined ? tx.discount.toString() : "",
+        date: tx.date || today.toISOString().split("T")[0],
+        month: tx.month || currentYear + "-" + currentMonthNum,
+        paymentMethod: tx.paymentMethod || "Cash",
+        description: tx.description || "",
+        items:
+          tx.items && tx.items.length > 0
+            ? tx.items.map((it) => ({
+                head: it.head,
+                amount: it.amount.toString(),
+              }))
+            : [{ head: INCOME_HEADS[0], amount: "" }],
+      });
+      setActiveTab("income");
+    } else {
+      setExpenseForm({
+        voucherNo: tx.voucherNo || "",
+        accountNumber: tx.accountNumber || "19071310000015",
+        receiverName: tx.receiverName || "",
+        advanceAmount:
+          tx.advanceAmount !== undefined ? tx.advanceAmount.toString() : "",
+        chequeNo: tx.chequeNo || "",
+        date: tx.date || today.toISOString().split("T")[0],
+        month: tx.month || currentYear + "-" + currentMonthNum,
+        description: tx.description || "",
+        items:
+          tx.items && tx.items.length > 0
+            ? tx.items.map((it) => ({
+                head: it.head,
+                amount: it.amount.toString(),
+                institutionName: it.institutionName || "",
+                shopVoucher: it.shopVoucher || "",
+              }))
+            : [
+                {
+                  head: EXPENSE_HEADS[0],
+                  amount: "",
+                  institutionName: "",
+                  shopVoucher: "",
+                },
+              ],
+        reimbursement: tx.reimbursement || {
+          method: "Cash",
+          date: today.toISOString().split("T")[0],
+          status: "unpaid",
+        },
+      });
+      setActiveTab("expense");
+    }
+  };
+
+  // Fetch Summary and Transactions on load or filter change
+  useEffect(() => {
+    Promise.resolve().then(() => {
+      fetchSummary();
+    });
+  }, [fetchSummary]);
+
+  useEffect(() => {
+    Promise.resolve().then(() => {
+      fetchTransactions();
+      fetchPendingTransactions();
+    });
+  }, [fetchTransactions, fetchPendingTransactions]);
+
+  // Submit Handlers
+  const handleIncomeSubmit = async (e) => {
+    e.preventDefault();
+    if (incomeForm.payerType === "donor" && !incomeForm.donorName) {
+      triggerNotification("error", "দাতার নাম পূরণ করা আবশ্যক।");
+      return;
+    }
+    if (
+      incomeForm.payerType === "student" &&
+      (!incomeForm.studentId ||
+        !incomeForm.studentName ||
+        !incomeForm.className)
+    ) {
+      triggerNotification(
+        "error",
+        "শিক্ষার্থীর আইডি, নাম এবং ক্লাসের নাম পূরণ করা আবশ্যক।",
+      );
+      return;
+    }
+    const validItems = incomeForm.items.filter(
+      (item) => item.amount !== "" && parseFloat(item.amount) > 0,
+    );
+    if (validItems.length === 0) {
+      triggerNotification(
+        "error",
+        "কমপক্ষে একটি খাতে সঠিক টাকার পরিমাণ দিতে হবে।",
+      );
+      return;
+    }
+
+    // Combine separate fields into single payerName for backend schema compatibility
+    const payerNamePayload =
+      incomeForm.payerType === "student"
+        ? incomeForm.studentName + " / " + incomeForm.studentId
+        : incomeForm.donorName;
+
+    try {
+      setLoading(true);
+      const url =
+        editingId && editingType === "income"
+          ? API_BASE_URL + "/api/finance/income/" + editingId
+          : API_BASE_URL + "/api/finance/income";
+      const method = editingId && editingType === "income" ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          receiptNo: incomeForm.receiptNo,
+          accountNumber: incomeForm.accountNumber || "19071310000015",
+          payerName: payerNamePayload,
+          payerType: incomeForm.payerType,
+          donorName: incomeForm.donorName,
+          studentId: incomeForm.studentId,
+          studentName: incomeForm.studentName,
+          className: incomeForm.className,
+          discount: incomeForm.discount,
+          date: incomeForm.date,
+          month: incomeForm.month,
+          paymentMethod: incomeForm.paymentMethod,
+          description: incomeForm.description,
+          items: validItems,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        const savedReceiptNo = data.data?.receiptNo || incomeForm.receiptNo;
+        triggerNotification(
+          "success",
+          editingId
+            ? "আয়ের তথ্য সফলভাবে আপডেট করা হয়েছে!"
+            : `আয়ের তথ্য সফলভাবে সংরক্ষণ করা হয়েছে! (রসিদ নং: ${savedReceiptNo})`,
+        );
+        // Reset form
+        setIncomeForm({
+          receiptNo: "",
+          accountNumber: "19071310000015",
+          payerType: "donor",
+          donorName: "",
+          studentId: "",
+          studentName: "",
+          className: "",
+          discount: "",
+          date: today.toISOString().split("T")[0],
+          month: currentYear + "-" + currentMonthNum,
+          paymentMethod: "Cash",
+          description: "",
+          items: [{ head: INCOME_HEADS[0], amount: "" }],
+        });
+        setEditingId(null);
+        setEditingType(null);
+        fetchSummary();
+        fetchTransactions();
+        fetchPendingTransactions();
+        setActiveTab("overview");
+      } else {
+        triggerNotification("error", data.message || "ডাটা সেভ করা যায়নি।");
+      }
+    } catch (err) {
+      console.error(err);
+      triggerNotification("error", "সার্ভারে রিকোয়েস্ট পাঠাতে সমস্যা হয়েছে।");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReimbursementStatusUpdate = async (nextReimbursement) => {
+    // If editing an existing expense voucher in the database, persist the status update via API
+    if (editingId && editingType === "expense") {
+      const validItems = expenseForm.items.filter(
+        (item) => item.amount !== "" && parseFloat(item.amount) > 0,
+      );
+      try {
+        const res = await fetch(
+          `${API_BASE_URL}/api/finance/expense/${editingId}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...expenseForm,
+              accountNumber: expenseForm.accountNumber || "19071310000015",
+              items: validItems,
+              reimbursement: nextReimbursement,
+            }),
+          },
+        );
+        const data = await res.json();
+        if (!data.success) {
+          triggerNotification(
+            "error",
+            data.message || "পরিশোধের অবস্থা আপডেট করা যায়নি।",
+          );
+          return false;
+        }
+        setExpenseForm((prev) => ({
+          ...prev,
+          reimbursement: nextReimbursement,
+        }));
+        triggerNotification(
+          "success",
+          "পরিশোধের অবস্থা সফলভাবে আপডেট করা হয়েছে!",
+        );
+        fetchSummary();
+        fetchTransactions();
+        fetchPendingTransactions();
+        return true;
+      } catch (err) {
+        console.error(err);
+        triggerNotification("error", "সার্ভারে রিকোয়েস্ট পাঠাতে সমস্যা হয়েছে।");
+        return false;
+      }
+    }
+
+    // For a draft/new voucher entry, update form state after confirmation
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    setExpenseForm((prev) => ({
+      ...prev,
+      reimbursement: nextReimbursement,
+    }));
+    triggerNotification(
+      "success",
+      nextReimbursement.status === "paid"
+        ? "পরিশোধের অবস্থা 'পরিশোধিত (Paid)' হিসেবে নিশ্চিত করা হয়েছে!"
+        : "পরিশোধের অবস্থা 'অপরিশোধিত (Unpaid)' হিসেবে নিশ্চিত করা হয়েছে!",
+    );
+    return true;
+  };
+
+  const handleExpenseSubmit = async (e) => {
+    e.preventDefault();
+    const validItems = expenseForm.items.filter(
+      (item) => item.amount !== "" && parseFloat(item.amount) > 0,
+    );
+    if (validItems.length === 0) {
+      triggerNotification(
+        "error",
+        "কমপক্ষে একটি খাতে সঠিক ব্যয়ের পরিমাণ দিতে হবে।",
+      );
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const url =
+        editingId && editingType === "expense"
+          ? API_BASE_URL + "/api/finance/expense/" + editingId
+          : API_BASE_URL + "/api/finance/expense";
+      const method = editingId && editingType === "expense" ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...expenseForm,
+          accountNumber: expenseForm.accountNumber || "19071310000015",
+          items: validItems,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        const savedVoucherNo = data.data?.voucherNo || expenseForm.voucherNo;
+        triggerNotification(
+          "success",
+          editingId
+            ? "ব্যয় ভাউচার সফলভাবে আপডেট করা হয়েছে!"
+            : `ব্যয় ভাউচার সফলভাবে সংরক্ষণ করা হয়েছে! (ভাউচার নং: ${savedVoucherNo})`,
+        );
+        // Reset form
+        setExpenseForm({
+          voucherNo: "",
+          accountNumber: "19071310000015",
+          receiverName: "",
+          advanceAmount: "",
+          chequeNo: "",
+          date: today.toISOString().split("T")[0],
+          month: currentYear + "-" + currentMonthNum,
+          description: "",
+          items: [
+            {
+              head: EXPENSE_HEADS[0],
+              amount: "",
+              institutionName: "",
+              shopVoucher: "",
+            },
+          ],
+          reimbursement: {
+            method: "Cash",
+            date: today.toISOString().split("T")[0],
+            status: "unpaid",
+          },
+        });
+        setEditingId(null);
+        setEditingType(null);
+        fetchSummary();
+        fetchTransactions();
+        fetchPendingTransactions();
+        setActiveTab("overview");
+      } else {
+        triggerNotification("error", data.message || "ভাউচার সেভ করা যায়নি।");
+      }
+    } catch (err) {
+      console.error(err);
+      triggerNotification("error", "সার্ভারে রিকোয়েস্ট পাঠাতে সমস্যা হয়েছে।");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Helper translations for dates & formats
+  const formatBanglaNumber = (num) => {
+    const englishToBangla = {
+      0: "০",
+      1: "১",
+      2: "২",
+      3: "৩",
+      4: "৪",
+      5: "৫",
+      6: "৬",
+      7: "৭",
+      8: "৮",
+      9: "৯",
+    };
+    return String(num)
+      .split("")
+      .map((char) => englishToBangla[char] || char)
+      .join("");
+  };
+
+  const getMonthLabel = (monthVal) => {
+    const match = BANGAL_MONTHS.find((m) => m.value === monthVal);
+    return match ? match.label : monthVal;
+  };
+
+  return (
+    <>
+      <style>{`
+        @media print {
+          @page {
+            size: ${printData?.type === "income" ? "A4 landscape" : "A4 portrait"};
+            margin: ${printData?.type === "income" ? "5mm" : "10mm"};
+          }
+          body {
+            background-color: white !important;
+            color: black !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+        }
+      `}</style>
+
+      {/* 1. Main Dashboard Area (Hidden when printing) */}
+      <div className="space-y-6 w-full max-w-full overflow-x-hidden print:hidden bg-transparent">
+        {/* Messages Alerts */}
+        {successMsg && (
+          <div className="fixed top-4 right-4 z-50 flex items-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-xl shadow-lg border border-emerald-400 animate-slide-in max-w-[calc(100vw-2rem)]">
+            <CheckCircle className="w-5 h-5 shrink-0" />
+            <span className="text-sm font-semibold truncate">{successMsg}</span>
+          </div>
+        )}
+        {errorMsg && (
+          <div className="fixed top-4 right-4 z-50 flex items-center gap-2 bg-red-500 text-white px-4 py-3 rounded-xl shadow-lg border border-red-400 animate-slide-in max-w-[calc(100vw-2rem)]">
+            <AlertCircle className="w-5 h-5 shrink-0" />
+            <span className="text-sm font-semibold truncate">{errorMsg}</span>
+          </div>
+        )}
+
+        {/* Top Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-900/10 pb-5">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-black text-emerald-950 flex items-center gap-2 flex-wrap">
+              <span>🕌</span> <span>আর্থিক ব্যবস্থাপনা মডিউল</span>
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
+              মাদরাসার দৈনন্দিন আয় এবং ব্যয় ভাউচার এন্ট্রি, ট্র্যাকিং ও হিসাব
+              নিকাশ
+            </p>
+          </div>
+
+          {/* Month/Year & Fund Selection for Overview */}
+          {activeTab === "overview" && (
+            <div className="flex flex-wrap items-center justify-between sm:justify-start gap-2 bg-white p-2 rounded-xl border border-emerald-900/10 shadow-xs shrink-0 w-full sm:w-auto">
+              <div className="flex flex-wrap items-center gap-2 min-w-0">
+                <Calendar className="w-4 h-4 text-emerald-800 shrink-0" />
+                <select
+                  value={reportAccount}
+                  onChange={(e) => {
+                    setReportAccount(e.target.value);
+                    setTxPage(1);
+                  }}
+                  className="text-xs font-bold text-emerald-900 bg-emerald-50/70 px-2 py-1 rounded-lg border border-emerald-200 focus:outline-none cursor-pointer"
+                >
+                  <option value="all">সকল ফান্ড (সমন্বিত)</option>
+                  {FUND_ACCOUNTS.map((f) => (
+                    <option key={f.accountNumber} value={f.accountNumber}>
+                      {f.nameBn} ({f.accountNumber.slice(-4)})
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={reportMonth}
+                  onChange={(e) => setReportMonth(e.target.value)}
+                  className="text-xs font-bold text-slate-700 bg-transparent border-none focus:outline-none cursor-pointer"
+                >
+                  {BANGAL_MONTHS.map((m) => (
+                    <option key={m.value} value={m.value}>
+                      {m.label}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={reportYear}
+                  onChange={(e) => setReportYear(e.target.value)}
+                  className="text-xs font-bold text-slate-700 bg-transparent border-none focus:outline-none cursor-pointer"
+                >
+                  <option value="all">সকল বছর</option>
+                  {["২০২৫", "২০২৬", "২০২৭", "২০২৮"].map((yr) => {
+                    const engYear = yr.replace(/[০-৯]/g, (d) =>
+                      "০১২৩৪৫৬৭৮৯".indexOf(d),
+                    );
+                    return (
+                      <option key={engYear} value={engYear}>
+                        {yr}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              <button
+                onClick={fetchSummary}
+                className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors shrink-0"
+                title="রিফ্রেশ"
+              >
+                <RefreshCw
+                  className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`}
+                />
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Modern Tabs Navigation */}
+        <div className="flex border-b border-slate-200 overflow-x-auto gap-1 sm:gap-2 pb-px scrollbar-none max-w-full">
+          {[
+            { id: "overview", label: "📊 সকল রসিদ" },
+            { id: "income", label: "📥 আয় এন্ট্রি" },
+            { id: "expense", label: "📤 ব্যয় এন্ট্রি" },
+            { id: "report", label: "📋 আর্থিক বিবরণী" },
+            { id: "pending", label: "⏳ পেন্ডিং রসিদ" },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`py-2.5 sm:py-3 px-3 sm:px-5 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all duration-200 rounded-t-lg shrink-0 ${
+                activeTab === tab.id
+                  ? "border-emerald-750 text-emerald-950 bg-emerald-50/50"
+                  : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab contents */}
+        {activeTab === "overview" && (
+          <Overview
+            summaryData={summaryData}
+            reportMonth={reportMonth}
+            setReportMonth={setReportMonth}
+            reportYear={reportYear}
+            reportAccount={reportAccount}
+            setReportAccount={setReportAccount}
+            FUND_ACCOUNTS={FUND_ACCOUNTS}
+            getMonthLabel={getMonthLabel}
+            formatBanglaNumber={formatBanglaNumber}
+            loading={loading}
+            fetchSummary={fetchSummary}
+            transactions={transactions}
+            txPage={txPage}
+            txTotalPages={txTotalPages}
+            setTxPage={setTxPage}
+            txFilterType={txFilterType}
+            setTxFilterType={setTxFilterType}
+            txSearch={txSearch}
+            setTxSearch={setTxSearch}
+            txStartDate={txStartDate}
+            setTxStartDate={setTxStartDate}
+            txEndDate={txEndDate}
+            setTxEndDate={setTxEndDate}
+            onPrint={(tx) => setPrintData(tx)}
+            onEdit={handleEdit}
+          />
+        )}
+
+        {activeTab === "income" && (
+          <IncomeEntry
+            incomeForm={incomeForm}
+            setIncomeForm={setIncomeForm}
+            INCOME_HEADS={INCOME_HEADS}
+            FUND_ACCOUNTS={FUND_ACCOUNTS}
+            loading={loading}
+            onSubmit={handleIncomeSubmit}
+            setActiveTab={setActiveTab}
+            formatBanglaNumber={formatBanglaNumber}
+            isEditing={Boolean(editingId && editingType === "income")}
+          />
+        )}
+
+        {activeTab === "expense" && (
+          <ExpenseEntry
+            expenseForm={expenseForm}
+            setExpenseForm={setExpenseForm}
+            EXPENSE_HEADS={EXPENSE_HEADS}
+            FUND_ACCOUNTS={FUND_ACCOUNTS}
+            loading={loading}
+            onSubmit={handleExpenseSubmit}
+            onReimbursementStatusUpdate={handleReimbursementStatusUpdate}
+            setActiveTab={setActiveTab}
+            formatBanglaNumber={formatBanglaNumber}
+            isEditing={Boolean(editingId && editingType === "expense")}
+          />
+        )}
+
+        {activeTab === "report" && (
+          <MonthlyReport
+            reportYear={reportYear}
+            setReportYear={setReportYear}
+            reportMonth={reportMonth}
+            setReportMonth={setReportMonth}
+            reportAccount={reportAccount}
+            setReportAccount={setReportAccount}
+            FUND_ACCOUNTS={FUND_ACCOUNTS}
+            summaryData={summaryData}
+            BANGAL_MONTHS={BANGAL_MONTHS}
+            getMonthLabel={getMonthLabel}
+            formatBanglaNumber={formatBanglaNumber}
+            loading={loading}
+            fetchSummary={fetchSummary}
+            onPrintReport={(reportJob) => setPrintData(reportJob)}
+          />
+        )}
+
+        {activeTab === "pending" && (
+          <div className="bg-white rounded-2xl border border-emerald-900/10 shadow-xs p-4 sm:p-6 space-y-4 font-sans">
+            <div>
+              <h3 className="text-base sm:text-lg font-bold text-emerald-955">
+                পেন্ডিং ভাউচার/রসিদ তালিকা
+              </h3>
+              <p className="text-xs text-slate-400 font-medium">
+                অনুমোদনের জন্য অপেক্ষারত আয় ও ব্যয়ের সাম্প্রতিক এন্ট্রিসমূহ
+              </p>
+            </div>
+
+            {pendingLoading ? (
+              <div className="flex flex-col items-center py-12 gap-2">
+                <Loader2 className="w-8 h-8 text-emerald-800 animate-spin" />
+                <span className="text-xs text-slate-500 font-bold">
+                  লোড হচ্ছে...
+                </span>
+              </div>
+            ) : pendingTransactions.length === 0 ? (
+              <div className="text-center py-12 text-xs text-slate-400 font-medium">
+                কোনো পেন্ডিং লেনদেন পাওয়া যায়নি।
+              </div>
+            ) : (
+              <div className="overflow-x-auto rounded-xl border border-slate-100">
+                <table className="min-w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-100 text-slate-650 font-bold">
+                      <th className="p-3 text-center w-12">প্রকার</th>
+                      <th className="p-3">তারিখ</th>
+                      <th className="p-3">রসিদ/ভাউচার নং</th>
+                      <th className="p-3">নাম (দাতা/গ্রহীতা)</th>
+                      <th className="p-3">খাত ও বিবরণ</th>
+                      <th className="p-3 text-right">টাকার পরিমাণ</th>
+                      <th className="p-3 text-center w-48">অ্যাকশন</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-semibold text-slate-700">
+                    {pendingTransactions.map((tx) => (
+                      <tr
+                        key={tx._id}
+                        className="hover:bg-slate-50/50 transition-colors"
+                      >
+                        <td className="p-3 text-center font-bold">
+                          {tx.type === "income" ? (
+                            <span className="px-2.5 py-1 bg-emerald-50 text-emerald-850 border border-emerald-100 rounded-full font-bold inline-block">
+                              আয়
+                            </span>
+                          ) : (
+                            <span className="px-2.5 py-1 bg-rose-50 text-rose-850 border border-rose-100 rounded-full font-bold inline-block">
+                              ব্যয়
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-3">{formatBanglaNumber(tx.date)}</td>
+                        <td className="p-3 font-mono font-bold text-emerald-955">
+                          {tx.type === "income" ? tx.receiptNo : tx.voucherNo}
+                        </td>
+                        <td className="p-3 font-semibold text-slate-800">
+                          {tx.type === "income"
+                            ? tx.payerName
+                            : tx.receiverName}
+                        </td>
+                        <td className="p-3">
+                          <div className="text-slate-800 font-bold">
+                            {tx.items.map((it) => it.head).join(", ")}
+                          </div>
+                          {tx.accountNumber && (
+                            <span className="inline-block text-[10px] font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 mt-1">
+                              🏦{" "}
+                              {tx.fundNameBn || tx.fundName || tx.accountNumber}{" "}
+                              ({tx.accountNumber.slice(-4)})
+                            </span>
+                          )}
+                          {tx.description && (
+                            <span className="text-[10px] text-slate-400 block font-normal mt-0.5">
+                              {tx.description}
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-3 text-right font-black text-slate-900">
+                          ৳{" "}
+                          {formatBanglaNumber(
+                            (
+                              tx.totalIncome ||
+                              tx.totalExpense ||
+                              0
+                            ).toLocaleString("bn-BD"),
+                          )}
+                        </td>
+                        <td className="p-3 text-center flex justify-center gap-1.5">
+                          <button
+                            onClick={() => setPrintData(tx)}
+                            className="px-2.5 py-1.5 bg-slate-700 hover:bg-slate-900 text-white rounded-lg text-[10px] font-black transition-colors flex items-center gap-1"
+                            title="ভাউচার দেখুন"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>দেখুন</span>
+                          </button>
+                          <button
+                            onClick={() => handleApprove(tx._id, tx.type)}
+                            className="px-2.5 py-1.5 bg-emerald-800 hover:bg-emerald-950 text-white rounded-lg text-[10px] font-black transition-colors"
+                          >
+                            এপ্রুভ
+                          </button>
+                          <button
+                            onClick={() => handleEdit(tx)}
+                            className="px-2.5 py-1.5 bg-blue-800 hover:bg-blue-950 text-white rounded-lg text-[10px] font-black transition-colors"
+                          >
+                            ইডিট
+                          </button>
+                          <button
+                            onClick={() => handleDelete(tx._id, tx.type)}
+                            className="px-2.5 py-1.5 bg-rose-700 hover:bg-rose-900 text-white rounded-lg text-[10px] font-black transition-colors"
+                          >
+                            ডিলিট
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* 2. On-Screen Print Preview Modal (Hidden when printing) */}
+      {printData && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 print:hidden">
+          <div
+            className={`bg-white rounded-2xl shadow-2xl border border-slate-200 w-full ${
+              printData.type === "income" ? "max-w-5xl" : "max-w-2xl"
+            } overflow-hidden flex flex-col max-h-[92vh] animate-slide-in`}
+          >
+            {/* Modal Header */}
+            <div className="px-6 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+              <h3 className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-2">
+                <span>🖨️</span>
+                <span>
+                  {printData.type === "report"
+                    ? "রিপোর্ট প্রিন্ট প্রিভিউ"
+                    : printData.type === "income"
+                      ? "আদায় রসিদ প্রিন্ট প্রিভিউ (A4 Landscape - অফিস ও গ্রাহক কপি)"
+                      : "ব্যয় ভাউচার প্রিন্ট প্রিভিউ"}
+                </span>
+              </h3>
+              <button
+                onClick={() => setPrintData(null)}
+                className="text-slate-400 hover:text-slate-600 text-2xl font-bold leading-none p-1 transition-colors"
+                title="বন্ধ করুন"
+              >
+                &times;
+              </button>
+            </div>
+
+            {/* Modal Body (Scrollable preview) */}
+            <div className="p-4 sm:p-6 overflow-y-auto flex-1 bg-slate-100/60">
+              {printData.type === "income" ? (
+                <div className="bg-white border border-slate-300 p-4 sm:p-6 shadow-sm rounded-xl w-full mx-auto">
+                  <IncomeVoucherHtmlLayout
+                    tx={printData}
+                    formatBanglaNumber={formatBanglaNumber}
+                    parsePayerName={parsePayerName}
+                  />
+                </div>
+              ) : (
+                <div className="bg-white border border-slate-250 p-6 sm:p-8 shadow-sm rounded-xl max-w-xl mx-auto">
+                  {printData.type === "report" ? (
+                    <ReportPrintLayout
+                      title={printData.title}
+                      period={printData.period}
+                      data={printData.data}
+                      formatBanglaNumber={formatBanglaNumber}
+                      getMonthLabel={getMonthLabel}
+                    />
+                  ) : (
+                    <div
+                      ref={expenseVoucherRef}
+                      className="bg-white text-black w-full"
+                    >
+                      <ExpenseVoucherHtmlLayout
+                        tx={printData}
+                        formatBanglaNumber={formatBanglaNumber}
+                        parsePayerName={parsePayerName}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-3.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 bg-slate-50">
+              <button
+                onClick={() => setPrintData(null)}
+                className="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-650 hover:bg-slate-100 transition-colors"
+              >
+                বন্ধ করুন
+              </button>
+
+              {printData.type === "income" ? (
+                <IncomeVoucherPdfActions tx={printData} />
+              ) : printData.type === "report" ? (
+                <button
+                  onClick={() => window.print()}
+                  className="px-5 py-2 bg-emerald-800 hover:bg-emerald-950 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs"
+                >
+                  <Printer className="w-4 h-4" /> প্রিন্ট করুন
+                </button>
+              ) : (
+                <ExpenseVoucherPdfActions
+                  tx={printData}
+                  contentRef={expenseVoucherRef}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 3. Hidden Print-ready layout (Shown only when printing) */}
+      <div className="hidden print:block w-full bg-white text-black p-0 m-0 print:border-none print:shadow-none">
+        {printData &&
+          (printData.type === "report" ? (
+            <ReportPrintLayout
+              title={printData.title}
+              period={printData.period}
+              data={printData.data}
+              formatBanglaNumber={formatBanglaNumber}
+              getMonthLabel={getMonthLabel}
+            />
+          ) : printData.type === "income" ? (
+            <IncomeVoucherHtmlLayout
+              tx={printData}
+              formatBanglaNumber={formatBanglaNumber}
+              parsePayerName={parsePayerName}
+            />
+          ) : (
+            <ExpenseVoucherHtmlLayout
+              tx={printData}
+              formatBanglaNumber={formatBanglaNumber}
+              parsePayerName={parsePayerName}
+            />
+          ))}
+      </div>
+    </>
+  );
+}
+
+function ReportPrintLayout({
+  title,
+  period,
+  data,
+  formatBanglaNumber,
+  getMonthLabel,
+}) {
+  return (
+    <div className="space-y-6 text-black bg-white w-full max-w-full font-sans leading-relaxed">
+      {/* Logo/Header */}
+      <div className="text-center pb-6 border-b border-slate-400">
+        <h3 className="text-sm font-black bg-slate-50 border border-slate-300 inline-block px-6 py-1.5 rounded-full text-slate-700 mt-4 tracking-wide">
+          {title}
+        </h3>
+        <p className="text-xs text-emerald-800 font-extrabold mt-3 tracking-wider uppercase">
+          {period}
+        </p>
+      </div>
+
+      {/* Dual Column Sheet (Income vs Expense) */}
+      <div className="grid grid-cols-2 gap-px bg-slate-200 border border-slate-300 mt-6 w-full">
+        {/* Income Column */}
+        <div className="bg-white p-4 space-y-4">
+          <h4 className="text-xs font-extrabold text-emerald-900 uppercase tracking-widest border-b border-slate-200 pb-2 flex justify-between">
+            <span>📥 আয়ের খাতসমূহ</span>
+            <span className="text-[9px] text-slate-400">টাকা (৳)</span>
+          </h4>
+
+          {!data.incomeBreakdown || data.incomeBreakdown.length === 0 ? (
+            <p className="text-xs text-slate-400 py-6 text-center">
+              কোনো আয়ের এন্ট্রি নেই
+            </p>
+          ) : (
+            <div className="divide-y divide-slate-100 font-semibold text-slate-700 text-xs">
+              {data.incomeBreakdown.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex justify-between py-2 border-b border-slate-100 last:border-0"
+                >
+                  <span className="pr-4">{item.head}</span>
+                  <span className="font-bold text-slate-900 whitespace-nowrap">
+                    ৳ {formatBanglaNumber(item.amount.toLocaleString("bn-BD"))}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Expense Column */}
+        <div className="bg-white p-4 space-y-4">
+          <h4 className="text-xs font-extrabold text-rose-900 uppercase tracking-widest border-b border-slate-200 pb-2 flex justify-between">
+            <span>📤 ব্যয়ের খাতসমূহ</span>
+            <span className="text-[9px] text-slate-400">টাকা (৳)</span>
+          </h4>
+
+          {!data.expenseBreakdown || data.expenseBreakdown.length === 0 ? (
+            <p className="text-xs text-slate-400 py-6 text-center">
+              কোনো ব্যয়ের এন্ট্রি নেই
+            </p>
+          ) : (
+            <div className="divide-y divide-slate-100 font-semibold text-slate-700 text-xs">
+              {data.expenseBreakdown.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex justify-between py-2 border-b border-slate-100 last:border-0"
+                >
+                  <span className="pr-4">{item.head}</span>
+                  <span className="font-bold text-slate-900 whitespace-nowrap">
+                    ৳ {formatBanglaNumber(item.amount.toLocaleString("bn-BD"))}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Calculations / Summary Footer Row (5 Rolling Balance Figures) */}
+      <div className="grid grid-cols-5 gap-px bg-slate-350 border border-slate-300 text-[10px] font-black">
+        <div className="bg-indigo-50 p-2.5 text-indigo-950 flex flex-col justify-between gap-1">
+          <span className="text-[9px] text-indigo-700">
+            প্রারম্ভিক ব্যালেন্স:
+          </span>
+          <span className="text-xs font-black whitespace-nowrap">
+            ৳{" "}
+            {formatBanglaNumber(
+              (data.openingBalance || 0).toLocaleString("bn-BD"),
+            )}
+          </span>
+        </div>
+        <div className="bg-emerald-50 p-2.5 text-emerald-950 flex flex-col justify-between gap-1">
+          <span className="text-[9px] text-emerald-700">চলতি আয়:</span>
+          <span className="text-xs font-black whitespace-nowrap">
+            ৳{" "}
+            {formatBanglaNumber(
+              (data.totalIncome || 0).toLocaleString("bn-BD"),
+            )}
+          </span>
+        </div>
+        <div className="bg-teal-50 p-2.5 text-teal-950 flex flex-col justify-between gap-1">
+          <span className="text-[9px] text-teal-700">ব্যয়যোগ্য তহবিল:</span>
+          <span className="text-xs font-black whitespace-nowrap">
+            ৳{" "}
+            {formatBanglaNumber(
+              (
+                (data.totalUsableFund ??
+                  (data.openingBalance || 0) + (data.totalIncome || 0)) ||
+                0
+              ).toLocaleString("bn-BD"),
+            )}
+          </span>
+        </div>
+        <div className="bg-rose-50 p-2.5 text-rose-950 flex flex-col justify-between gap-1">
+          <span className="text-[9px] text-rose-700">চলতি ব্যয়:</span>
+          <span className="text-xs font-black whitespace-nowrap">
+            ৳{" "}
+            {formatBanglaNumber(
+              (data.totalExpense || 0).toLocaleString("bn-BD"),
+            )}
+          </span>
+        </div>
+        <div
+          className={`p-2.5 flex flex-col justify-between gap-1 ${(data.netBalance || 0) >= 0 ? "bg-blue-50 text-blue-950" : "bg-amber-50 text-amber-950"}`}
+        >
+          <span className="text-[9px]">সমাপনী উদ্বৃত্ত:</span>
+          <span className="text-xs font-black whitespace-nowrap">
+            ৳{" "}
+            {formatBanglaNumber((data.netBalance || 0).toLocaleString("bn-BD"))}
+          </span>
+        </div>
+      </div>
+
+      {/* Fund-Wise Breakdown Table in Print */}
+      {Array.isArray(data.fundBreakdown) && data.fundBreakdown.length > 0 && (
+        <div className="mt-4">
+          <h4 className="text-[11px] font-black text-emerald-950 mb-1.5">
+            ফান্ড-ভিত্তিক ব্যালেন্স বিবরণী (Fund-Wise Rolling Balance)
+          </h4>
+          <table className="w-full text-[9.5px] border border-collapse border-slate-300">
+            <thead>
+              <tr className="bg-slate-100 text-slate-700 font-bold">
+                <th className="p-1.5 border border-slate-300 text-left">
+                  ফান্ড ও ব্যাংক হিসাব
+                </th>
+                <th className="p-1.5 border border-slate-300 text-right">
+                  প্রারম্ভিক জের
+                </th>
+                <th className="p-1.5 border border-slate-300 text-right">
+                  চলতি আয়
+                </th>
+                <th className="p-1.5 border border-slate-300 text-right">
+                  ব্যয়যোগ্য তহবিল
+                </th>
+                <th className="p-1.5 border border-slate-300 text-right">
+                  চলতি ব্যয়
+                </th>
+                <th className="p-1.5 border border-slate-300 text-right">
+                  সমাপনী উদ্বৃত্ত
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.fundBreakdown.map((f) => (
+                <tr key={f.accountNumber}>
+                  <td className="p-1.5 border border-slate-300 font-bold">
+                    <div>{f.nameBn || f.name}</div>
+                    <div className="text-[8px] font-mono text-slate-500">
+                      Acc: {f.accountNumber}
+                    </div>
+                  </td>
+                  <td className="p-1.5 border border-slate-300 text-right font-semibold">
+                    ৳{" "}
+                    {formatBanglaNumber(
+                      (f.openingBalance || 0).toLocaleString("bn-BD"),
+                    )}
+                  </td>
+                  <td className="p-1.5 border border-slate-300 text-right font-semibold text-emerald-800">
+                    ৳{" "}
+                    {formatBanglaNumber(
+                      (f.totalIncome || 0).toLocaleString("bn-BD"),
+                    )}
+                  </td>
+                  <td className="p-1.5 border border-slate-300 text-right font-bold text-teal-900">
+                    ৳{" "}
+                    {formatBanglaNumber(
+                      (f.availableBalance || 0).toLocaleString("bn-BD"),
+                    )}
+                  </td>
+                  <td className="p-1.5 border border-slate-300 text-right font-semibold text-rose-800">
+                    ৳{" "}
+                    {formatBanglaNumber(
+                      (f.totalExpense || 0).toLocaleString("bn-BD"),
+                    )}
+                  </td>
+                  <td className="p-1.5 border border-slate-300 text-right font-black text-blue-950">
+                    ৳{" "}
+                    {formatBanglaNumber(
+                      (f.closingBalance || 0).toLocaleString("bn-BD"),
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
