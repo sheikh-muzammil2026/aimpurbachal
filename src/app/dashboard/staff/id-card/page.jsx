@@ -21,9 +21,9 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
 import StaffIdFront from "@/components/dashboard/staff/id-card/StaffIdFront";
 import StaffIdBack from "@/components/dashboard/staff/id-card/StaffIdBack";
+import siteConfig from "@/config/siteConfig";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000";
+const API_BASE = siteConfig.contact.apiUrl;
 
 export default function StaffIdCardPage() {
   const { data: session, isPending: sessionLoading } = authClient.useSession();
@@ -104,7 +104,7 @@ export default function StaffIdCardPage() {
             </h1>
 
             <p className="text-xs sm:text-sm text-emerald-200/90">
-              আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল কর্তৃক প্রদত্ত প্রাতিষ্ঠানিক ডিজিটাল পরিচিতিপত্র
+              {siteConfig.institution.nameBn} কর্তৃক প্রদত্ত প্রাতিষ্ঠানিক ডিজিটাল পরিচিতিপত্র
             </p>
           </div>
 

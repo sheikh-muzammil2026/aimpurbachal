@@ -1,6 +1,7 @@
 // src/app/api/fatwa-assistant/route.js
 import { retrieveWhitelistedFatwas } from "../../../lib/fatwa/retriever.js";
 import { isWhitelistedUrl, getDomainInfo } from "../../../lib/fatwa/whitelist.js";
+import { siteConfig } from "@/config/siteConfig";
 
 export const dynamic = "force-dynamic";
 
@@ -111,7 +112,7 @@ function extractDirectFatwaAnswer(article, query) {
  */
 async function callGeminiFormatter(apiKey, userQuery, sourceArticle) {
   const models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
-  const prompt = `তুমি "আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল" এর "ফাতওয়া জিজ্ঞাসা" সহকারী।
+  const prompt = `তুমি "${siteConfig.institution.nameBn}" এর "ফাতওয়া জিজ্ঞাসা" সহকারী।
 নিচে একটি অনুমোদিত ফতোয়া ওয়েবসাইট থেকে হুবহু সংগৃহীত পাঠ দেওয়া হলো:
 
 [উৎস শিরোনাম]: ${sourceArticle.title}

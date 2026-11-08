@@ -15,6 +15,7 @@ import {
   ChevronUp,
   Share2
 } from "lucide-react";
+import { siteConfig } from "@/config/siteConfig";
 
 export default function FatwaAnswerCard({ data, isLoading, error }) {
   const [copied, setCopied] = useState(false);
@@ -70,14 +71,14 @@ export default function FatwaAnswerCard({ data, isLoading, error }) {
 
             <div className="pt-4 border-t border-amber-200/80 dark:border-amber-900/60 flex flex-wrap gap-3">
               <a
-                href="tel:+8801748868161"
+                href={`tel:+88${siteConfig.contact.phonePrimary}`}
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs sm:text-sm font-semibold shadow-sm transition-all"
               >
                 <PhoneCall className="w-4 h-4" />
-                <span>মাদরাসার ফতোয়া বিভাগে কল করুন (+৮৮০ ১৭৪৮-৮৬৮১৬১)</span>
+                <span>মাদরাসার ফতোয়া বিভাগে কল করুন ({siteConfig.contact.phonePrimaryBn})</span>
               </a>
               <a
-                href="https://wa.me/8801748868161"
+                href={`https://wa.me/${siteConfig.contact.whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-700 text-gray-800 dark:text-gray-100 border border-gray-300 dark:border-zinc-700 text-xs sm:text-sm font-medium transition-all"
@@ -94,7 +95,7 @@ export default function FatwaAnswerCard({ data, isLoading, error }) {
 
   // 4. Copy to Clipboard Handler
   const handleCopy = () => {
-    const textToCopy = `【ফাতওয়া জিজ্ঞাসা - আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল】\n\n📌 মূল ফতোয়া:\n${data.summary}\n\n📖 বিস্তারিত ব্যাখ্যা:\n${data.detailedExplanation}\n\n📚 রেফারেন্স / কিতাবের দলীল:\n${
+    const textToCopy = `【ফাতওয়া জিজ্ঞাসা - ${siteConfig.institution.nameBn}】\n\n📌 মূল ফতোয়া:\n${data.summary}\n\n📖 বিস্তারিত ব্যাখ্যা:\n${data.detailedExplanation}\n\n📚 রেফারেন্স / কিতাবের দলীল:\n${
       data.references && data.references.length > 0
         ? data.references.map((r, i) => `${i + 1}. ${r}`).join("\n")
         : "মূল আর্টিকেলে দেখুন"

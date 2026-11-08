@@ -21,6 +21,8 @@ export function formatAcademicYear(yearStr) {
 export const formatSession = formatAcademicYear;
 export const formatBanglaYear = formatAcademicYear;
 
+import { siteConfig } from "@/config/siteConfig";
+
 /**
  * Generates single-year dropdown options in Bengali numerals.
  *
@@ -28,7 +30,10 @@ export const formatBanglaYear = formatAcademicYear;
  * @param {number} endYear e.g. 2026
  * @returns {string[]} e.g. ["২০২৬", "২০২৫", ..., "২০১৮"]
  */
-export function getAcademicYearOptions(startYear = 2018, endYear = 2026) {
+export function getAcademicYearOptions(
+  startYear = 2018,
+  endYear = parseInt(siteConfig.academic.currentYearEn, 10) || 2026
+) {
   const bnDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
   const toBn = (num) => String(num).replace(/\d/g, (d) => bnDigits[d]);
 

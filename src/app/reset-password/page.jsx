@@ -13,6 +13,7 @@ import {
   ArrowLeft,
   KeyRound,
 } from "lucide-react";
+import { siteConfig } from "@/config/siteConfig";
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -25,8 +26,7 @@ function ResetPasswordForm() {
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState({ type: "", text: "" });
 
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000";
+  const API_BASE_URL = siteConfig.contact.serverApiUrl;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -261,7 +261,7 @@ export default function ResetPasswordPage() {
           নতুন পাসওয়ার্ড সেট করুন
         </h2>
         <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-          আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল পোর্টাল
+          {siteConfig.institution.nameBn} পোর্টাল
         </p>
       </div>
 

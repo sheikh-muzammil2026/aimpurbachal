@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useLanguage } from "@/context/LanguageContext";
+import { siteConfig } from "@/config/siteConfig";
 import NavbarTicker from "./NavbarTicker";
 import LanguageSwitcher from "./LanguageSwitcher";
 
@@ -392,8 +393,8 @@ export default function Navbar() {
               >
                 <div className="relative w-10 h-10 sm:w-10 sm:h-10 rounded-full overflow-hidden flex-shrink-0 border border-emerald-100 shadow-xs">
                   <Image
-                    src="/aimlogo1.png"
-                    alt="AIM Logo"
+                    src={siteConfig.branding.iconLogo}
+                    alt={`${siteConfig.institution.shortName} Logo`}
                     fill
                     sizes="40px"
                     className="object-cover"

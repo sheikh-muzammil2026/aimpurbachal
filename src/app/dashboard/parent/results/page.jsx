@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Check, Copy } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { authClient } from '@/lib/auth-client';
+import siteConfig from '@/config/siteConfig';
 
 function StudentResultSearchContent() {
     const router = useRouter();
@@ -38,7 +39,7 @@ function StudentResultSearchContent() {
         setResult(null);
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_API}/api/results/student/${trimmedId}?year=${encodeURIComponent(targetYear)}`, {
+            const res = await fetch(`${siteConfig.contact.apiUrl}/api/results/student/${trimmedId}?year=${encodeURIComponent(targetYear)}`, {
                 headers: {
                     'x-user-email': userRef.current?.email || '',
                     'x-user-role': userRef.current?.role || '',
@@ -186,10 +187,10 @@ function StudentResultSearchContent() {
                         {/* মাদরাসা হেডার */}
                         <div className="text-center border-b-2 border-emerald-900 pb-5 mb-6">
                             <div className="flex items-center justify-center gap-3 mb-2">
-                                <img src="/aimlogo1.png" alt="Logo" className="w-14 h-14 object-contain" />
+                                <img src={siteConfig.branding.iconLogo} alt="Logo" className="w-14 h-14 object-contain" />
                                 <div>
-                                    <h1 className="text-xl sm:text-2xl font-black text-[#043e30]">আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল</h1>
-                                    <p className="text-xs font-semibold text-emerald-800">কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।</p>
+                                    <h1 className="text-xl sm:text-2xl font-black text-[#043e30]">{siteConfig.institution.nameBn}</h1>
+                                    <p className="text-xs font-semibold text-emerald-800">{siteConfig.contact.addressBn}</p>
                                 </div>
                             </div>
                             <span className="inline-block bg-amber-400 text-[#043e30] font-black px-4 py-1 rounded-full text-xs uppercase tracking-widest mt-1">

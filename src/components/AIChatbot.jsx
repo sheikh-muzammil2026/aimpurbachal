@@ -3,11 +3,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { MessageSquare, X, Send, Bot, BookOpen } from "lucide-react";
+import { siteConfig } from "@/config/siteConfig";
 
 export default function AIChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "আস-সালামু আলাইকুম! আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল পোর্টালে আপনাকে স্বাগতম। আমি আপনাকে কীভাবে সাহায্য করতে পারি?" }
+    { role: "assistant", content: `আস-সালামু আলাইকুম! ${siteConfig.institution.nameBn} পোর্টালে আপনাকে স্বাগতম। আমি আপনাকে কীভাবে সাহায্য করতে পারি?` }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);

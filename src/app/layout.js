@@ -2,12 +2,14 @@ import "./globals.css";
 import Providers from "@/components/Providers/providers";
 import AIChatbot from "@/components/AIChatbot";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import { siteConfig } from "@/config/siteConfig";
 
 export const metadata = {
-  title: "As-Salam Ideal Madrasah (AIM) Purbachal",
-  description: "Welcome to our website",
+  title: siteConfig.institution.nameEn,
+  description: siteConfig.institution.descriptionBn,
   icons: {
     icon: [
+      { url: siteConfig.branding.favicon, sizes: "any" },
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
     ],

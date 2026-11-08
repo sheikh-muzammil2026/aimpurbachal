@@ -2,6 +2,7 @@
 "use client";
 
 import React from "react";
+import { siteConfig } from "@/config/siteConfig";
 
 export default function AdmissionFormCover({ formData, handleChange }) {
   return (
@@ -42,32 +43,27 @@ export default function AdmissionFormCover({ formData, handleChange }) {
           {/* মনোগ্রাম লোগো ফ্রেম */}
           <div className="w-20 h-20 sm:w-26 sm:h-26 border-[3px] border-[#1b2d56] rounded-full flex items-center justify-center bg-white mb-2 p-1 shadow-sm print:w-24 print:h-24">
             <div className="w-full h-full rounded-full border border-dashed border-[#e36d27] flex flex-col items-center justify-center p-1">
-              <span className="text-[9px] sm:text-[12px] font-black text-[#1b2d56] tracking-tight leading-none">AIM</span>
-              <span className="text-[6px] sm:text-[9px] text-[#e36d27] font-mono mt-0.5">Founded 2018</span>
+              <span className="text-[9px] sm:text-[12px] font-black text-[#1b2d56] tracking-tight leading-none">{siteConfig.institution.acronym}</span>
+              <span className="text-[6px] sm:text-[9px] text-[#e36d27] font-mono mt-0.5">Founded {siteConfig.institution.foundedYear}</span>
             </div>
           </div>
 
           {/* আরবী নাম */}
           <h3 className="font-arabic text-lg sm:text-[22px] font-medium text-[#1b2d56] tracking-wide mb-0.5 antialiased" style={{ fontFamily: "serif" }}>
-            مدرسة السلام النموذجية
+            {siteConfig.institution.nameAr}
           </h3>
           {/* বাংলা নাম */}
           <h1 className="text-xl sm:text-[30px] font-extrabold text-[#cc1e29] tracking-normal mb-0.5 drop-shadow-sm px-2 print:text-[28px]">
-            আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল
+            {siteConfig.institution.nameBn}
           </h1>
           {/* ইংরেজি নাম */}
           <h2 className="text-base sm:text-[24px] font-black text-[#231f20] font-sans tracking-tight mb-1 print:text-[22px]">
-            As-Salam Ideal Madrasah (AIM) Purbachal
+            {siteConfig.institution.nameEn}
           </h2>
 
           {/* স্লোগান সেকশন */}
           <p className="text-[10px] sm:text-[13px] font-black text-[#006cb7] font-sans tracking-wide flex items-center justify-center gap-0.5">
-            <span>A</span>
-            <span className="relative inline-block text-[#cc1e29] font-serif not-italic font-black mx-[2px] pr-[2px]">
-              I
-              <span className="absolute -top-[2px] left-1/2 -translate-x-1/2 w-[4px] sm:w-[5px] h-[5px] sm:h-[7px] bg-[#cc1e29] rounded-b-full rounded-tl-full rotate-45"></span>
-            </span>
-            <span>M For Ultimate Success</span>
+            <span>{siteConfig.institution.slogan}</span>
           </p>
         </div>
 
@@ -104,18 +100,18 @@ export default function AdmissionFormCover({ formData, handleChange }) {
         {/* ফুটার সেকশন */}
         <div className="w-full text-center mt-4 px-4 pb-2 relative z-10 print:mt-2">
           <h4 className="text-xs sm:text-base font-extrabold text-[#cc1e29] tracking-wide mb-0.5 px-2">
-            কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।
+            {siteConfig.contact.addressBn}
           </h4>
           <p className="text-[10px] sm:text-[14px] font-black text-[#1b2d56] font-mono mb-3 tracking-wide print:mb-2">
-            মোবাইল (অফিস): ০১৩১৬ ২০১ ২০১, ০১৭৪৮ ৮৬৮ ১৬১
+            মোবাইল (অফিস): {siteConfig.contact.phonePrimaryBn}, {siteConfig.contact.phoneSecondaryBn}
           </p>
 
           {/* সোশ্যাল বার */}
           <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-1 text-[8px] sm:text-[11px] text-gray-600 font-bold pt-1.5 border-t border-gray-300/70 w-full max-w-lg mx-auto print:pt-1">
-            <span className="flex items-center gap-1 whitespace-nowrap">🌐 www.aimhabiganj.com</span>
-            <span className="flex items-center gap-1 whitespace-nowrap">✉️ aimhabiganj@gmail.com</span>
-            <span className="flex items-center gap-1 whitespace-nowrap">🔷 aim habiganj</span>
-            <span className="flex items-center gap-1 whitespace-nowrap">🔺 aimhabiganj</span>
+            <span className="flex items-center gap-1 whitespace-nowrap">🌐 {siteConfig.contact.websiteDomain}</span>
+            <span className="flex items-center gap-1 whitespace-nowrap">✉️ {siteConfig.contact.email}</span>
+            <span className="flex items-center gap-1 whitespace-nowrap">🔷 {siteConfig.social.facebookHandle}</span>
+            <span className="flex items-center gap-1 whitespace-nowrap">🔺 {siteConfig.social.youtubeHandle}</span>
           </div>
         </div>
 

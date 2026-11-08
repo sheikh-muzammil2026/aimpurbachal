@@ -3,6 +3,7 @@
 import React from "react";
 // নোট: আইকনের জন্য lucide-react ব্যবহার করা হয়েছে।
 import { Phone, Mail, MapPin } from "lucide-react";
+import { siteConfig } from "@/config/siteConfig";
 
 export default function Header() {
   return (
@@ -14,45 +15,45 @@ export default function Header() {
           {/* বাংলা ও আরবি নাম একসাথে এক লাইনে বা পাশাপাশি */}
           <div className="flex flex-wrap justify-center md:justify-start items-baseline gap-2.5">
             <h1 className="text-lg sm:text-xl font-extrabold text-white tracking-wide">
-              আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল
+              {siteConfig.institution.nameBn}
             </h1>
             <span className="text-sm sm:text-base font-bold text-[#E8C87C] tracking-wide dir-rtl" style={{ fontFamily: "'Amiri', serif" }}>
-              مدرسة السلام النموذجية
+              {siteConfig.institution.nameAr}
             </span>
           </div>
 
           {/* ইংরেজি নাম */}
           <h2 className="text-xs sm:text-sm font-semibold text-gray-300">
-            As-Salam Ideal Madrasah (AIM) Purbachal
+            {siteConfig.institution.nameEn}
           </h2>
 
           {/* স্লোগান */}
           <p className="text-[11px] sm:text-xs font-medium tracking-wider uppercase text-[#E8C87C]/90 italic mt-0.5">
-            "Aim for Ultimate Success"
+            "{siteConfig.institution.slogan}"
           </p>
         </div>
 
         {/* --- ডান পাশে: যোগাযোগের তথ্য --- */}
         <div className="flex flex-wrap justify-center md:justify-end items-center gap-x-5 gap-y-2 text-xs sm:text-sm text-gray-200">
           <a
-            href="tel:+৮৮০১২৩৪৫৬৭৮৯০"
+            href={`tel:+88${siteConfig.contact.phonePrimary}`}
             className="flex items-center gap-1.5 hover:text-white transition-colors"
           >
             <Phone className="w-3.5 h-3.5 text-[#D4AF37]" />
-            <span>+৮৮০ ১২৩৪-৫৬৭৮৯০</span>
+            <span>{siteConfig.contact.phonePrimaryBn}</span>
           </a>
 
           <a
-            href="mailto:info@assalam.edu.bd"
+            href={`mailto:${siteConfig.contact.email}`}
             className="flex items-center gap-1.5 hover:text-white transition-colors"
           >
             <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
-            <span>info@assalam.edu.bd</span>
+            <span>{siteConfig.contact.email}</span>
           </a>
 
           <span className="flex items-center gap-1.5 text-gray-300">
             <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
-            <span>কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।</span>
+            <span>{siteConfig.contact.addressBn}</span>
           </span>
         </div>
 

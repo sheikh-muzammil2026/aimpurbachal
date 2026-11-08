@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { siteConfig } from "@/config/siteConfig";
 
 export default function HeroSection() {
   const { language, t } = useLanguage();
@@ -49,24 +50,28 @@ export default function HeroSection() {
             {/* Bold White Headline */}
             <h1 className="text-xl sm:text-4xl md:text-5xl lg:text-[60px] font-bold text-white tracking-tight leading-tight">
               {language === "bn"
-                ? "আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল"
+                ? siteConfig.institution.nameBn
                 : language === "ar"
-                  ? "مدرسة السلام النموذجية"
-                  : "As-Salam Ideal Madrasah (AIM) Purbachal"}
+                  ? siteConfig.institution.nameAr
+                  : siteConfig.institution.nameEn}
             </h1>
 
             {/* Slogan */}
             <p className="text-sm sm:text-base text-emerald-300 font-semibold tracking-wide">
-              {t("header.slogan")}
+              {language === "bn"
+                ? siteConfig.institution.sloganBn
+                : language === "ar"
+                  ? siteConfig.institution.sloganAr
+                  : siteConfig.institution.slogan}
             </p>
 
             {/* Concise Description Text */}
             <p className="text-xs sm:text-sm md:text-[15px] text-gray-200 font-normal leading-relaxed max-w-xl">
               {language === "bn"
-                ? "আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল একটি অনন্য দ্বীনি ও আধুনিক শিক্ষাপ্রতিষ্ঠান। আদর্শ মানুষ গড়ার প্রত্যয়ে অভিজ্ঞ উলামা ও মেধাবী শিক্ষকমণ্ডলীর তত্ত্বাবধানে পরিচালিত এক নির্ভরযোগ্য প্রতিষ্ঠান।"
+                ? `${siteConfig.institution.nameBn} একটি অনন্য দ্বীনি ও আধুনিক শিক্ষাপ্রতিষ্ঠান। আদর্শ মানুষ গড়ার প্রত্যয়ে অভিজ্ঞ উলামা ও মেধাবী শিক্ষকমণ্ডলীর তত্ত্বাবধানে পরিচালিত এক নির্ভরযোগ্য প্রতিষ্ঠান।`
                 : language === "ar"
-                  ? "مدرسة السلام النموذجية هي مؤسسة رائدة تجمع بين تحفيظ القرآن الكريم والتعليم الأكاديمي الحديث مع بيئة سকনية آمنة بإشراف نخبة من العلماء والأساتذة المتخصصين."
-                  : "As-Salam Ideal Madrasah (AIM) Purbachal is a premier educational institution committed to nurturing moral leadership through balanced Quranic Hifz and modern academic excellence."}
+                  ? siteConfig.institution.descriptionAr
+                  : `${siteConfig.institution.nameEn} is a premier educational institution committed to nurturing moral leadership through balanced Quranic Hifz and modern academic excellence.`}
             </p>
 
             {/* Two Action Buttons */}

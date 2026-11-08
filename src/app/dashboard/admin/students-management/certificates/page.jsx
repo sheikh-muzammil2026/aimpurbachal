@@ -10,6 +10,7 @@ import {
   getStudentClassDetails as getBaseStudentClassDetails,
   SESSION_YEARS,
 } from "@/lib/studentUtils";
+import siteConfig from "@/config/siteConfig";
 import {
   Award,
   Search,
@@ -133,7 +134,7 @@ function CertificatesContent() {
       if (selectedType !== "all") params.append("type", selectedType);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_API}/api/students?${params.toString()}`
+        `${siteConfig.contact.apiUrl}/api/students?${params.toString()}`
       );
       const result = await response.json();
 
@@ -183,7 +184,7 @@ function CertificatesContent() {
       const year = selectedStudent.sessionYear?.split(/[-–/]/)[0] || new Date().getFullYear();
       const stId = selectedStudent.studentId || selectedStudent.roll || "001";
       const certCode = certType.toUpperCase().slice(0, 3);
-      setRefNumber(`AIM/${year}/${certCode}-${stId}`);
+      setRefNumber(`${siteConfig.institution.shortName}/${year}/${certCode}-${stId}`);
 
       const foundType = CERTIFICATE_TYPES.find((c) => c.id === certType);
       if (foundType) {
@@ -756,7 +757,7 @@ function CertificatesContent() {
                     {/* Watermark Crest in Center */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04]">
                       <div className="w-80 h-80 rounded-full border-8 border-emerald-950 flex items-center justify-center">
-                        <span className="text-7xl font-black font-serif">AIM</span>
+                        <span className="text-7xl font-black font-serif">{siteConfig.institution.shortName}</span>
                       </div>
                     </div>
 
@@ -772,8 +773,8 @@ function CertificatesContent() {
                         <div className="w-16 h-16 sm:w-20 sm:h-20 relative shrink-0">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src="/aimlogo1.png"
-                            alt="AIM Madrasah"
+                            src={siteConfig.branding.iconLogo}
+                            alt={siteConfig.institution.nameEn}
                             className="w-full h-full object-contain"
                           />
                         </div>
@@ -781,23 +782,23 @@ function CertificatesContent() {
                         {/* Center: Madrasa Name & Titles */}
                         <div className="space-y-0.5 flex-1">
                           <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-950 tracking-tight font-serif">
-                            আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল
+                            {siteConfig.institution.nameBn}
                           </h2>
                           <h3 className="text-xs sm:text-sm font-bold text-emerald-900 tracking-wider font-sans uppercase">
-                            AS-SALAM IDEAL MADRASAH (AIM) PURBACHAL
+                            {siteConfig.institution.nameEn.toUpperCase()}
                           </h3>
                           <p className="text-[11px] text-slate-600 font-medium">
-                            দ্বীনি ও আধুনিক শিক্ষার এক অনন্য সমন্বিত বিদ্যাপীঠ
+                            {siteConfig.institution.sloganBn}
                           </p>
                           <p className="text-[10px] text-slate-500 font-mono">
-                            কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ। • গভ. রেজি নং: AIM-2024 • ফোন: +৮৮০১৭১০০০০০০০
+                            {siteConfig.contact.addressBn} • গভ. রেজি নং: {siteConfig.institution.govRegNo} • ফোন: {siteConfig.contact.phonePrimaryBn}
                           </p>
                         </div>
 
                         {/* Right: Student Photo / QR Code */}
                         <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center bg-slate-50 border border-emerald-200 rounded-lg p-1">
                           <QRCodeSVG
-                            value={`https://aimpurbachal.com/verify-certificate?id=${selectedStudent.studentId || selectedStudent._id}&ref=${encodeURIComponent(refNumber)}`}
+                            value={`${siteConfig.contact.baseUrl}/verify-certificate?id=${selectedStudent.studentId || selectedStudent._id}&ref=${encodeURIComponent(refNumber)}`}
                             size={64}
                             level="M"
                           />
@@ -893,7 +894,7 @@ function CertificatesContent() {
                       <div className="space-y-1">
                         <div className="w-32 sm:w-40 border-b border-slate-800 mx-auto" />
                         <p className="font-bold text-slate-800">যাচাইকারী / শ্রেণি শিক্ষক</p>
-                        <p className="text-[10px] text-slate-500 font-medium">AIM একাডেমিক শাখা</p>
+                        <p className="text-[10px] text-slate-500 font-medium">{siteConfig.institution.shortName} একাডেমিক শাখা</p>
                       </div>
 
                       {/* Center: Official Seal / Stamp */}
@@ -908,7 +909,7 @@ function CertificatesContent() {
                         <div className="h-10 flex items-center justify-center">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src="/principle's_signature.jpg"
+                            src={siteConfig.branding.principalSignature}
                             alt="Principal Signature"
                             className="max-h-9 object-contain"
                             onError={(e) => {
@@ -919,7 +920,7 @@ function CertificatesContent() {
                         <div className="w-36 sm:w-44 border-b border-slate-800 mx-auto" />
                         <p className="font-bold text-emerald-950">অধ্যক্ষ / মুহতামিম</p>
                         <p className="text-[10px] text-slate-500 font-medium">
-                          আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল
+                          {siteConfig.institution.nameBn}
                         </p>
                       </div>
                     </div>

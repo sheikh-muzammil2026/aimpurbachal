@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import siteConfig from "@/config/siteConfig";
 
 export default function ClassWiseRoutinePage() {
   const [exams, setExams] = useState([]);
@@ -16,7 +17,7 @@ export default function ClassWiseRoutinePage() {
     async function fetchExams() {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_API}/api/admit-cards/exams`,
+          `${siteConfig.contact.apiUrl}/api/admit-cards/exams`,
         );
         const result = await res.json();
         if (result.success && result.data?.length > 0) {
@@ -42,7 +43,7 @@ export default function ClassWiseRoutinePage() {
         setLoading(true);
         setError(null);
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_API}/api/admin/routine?examTitle=${encodeURIComponent(
+          `${siteConfig.contact.apiUrl}/api/admin/routine?examTitle=${encodeURIComponent(
             selectedExam,
           )}&division=all`,
         );
@@ -188,10 +189,10 @@ export default function ClassWiseRoutinePage() {
               {/* প্রাতিষ্ঠানিক হেডার */}
               <div className="text-center pb-4 mb-6 border-b-2 border-slate-800 dark:border-slate-600 space-y-1">
                 <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-amber-400">
-                  আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল 🕌
+                  {siteConfig.institution.nameBn} 🕌
                 </h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  ইসলামিক শিক্ষা ও সাধারণ শিক্ষার এক অপূর্ব সমন্বয়
+                  {siteConfig.institution.sloganBn}
                 </p>
                 <h3 className="text-md sm:text-lg font-bold bg-emerald-950/15 dark:bg-emerald-950/45 text-emerald-900 dark:text-emerald-300 py-1.5 px-3 rounded-lg inline-block mt-2">
                   পরীক্ষার সময়সূচী ও রুটিন
@@ -292,7 +293,7 @@ export default function ClassWiseRoutinePage() {
                     অধ্যক্ষ / মোহতামিম
                   </p>
                   <p className="text-[9px] text-slate-400">
-                    আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল
+                    {siteConfig.institution.nameBn}
                   </p>
                 </div>
                 <div className="text-center w-28 sm:w-36 space-y-1">
@@ -301,7 +302,7 @@ export default function ClassWiseRoutinePage() {
                     পরীক্ষা নিয়ন্ত্রক
                   </p>
                   <p className="text-[9px] text-slate-400">
-                    পরীক্ষা কমিটি (AIM)
+                    পরীক্ষা কমিটি ({siteConfig.institution.shortName})
                   </p>
                 </div>
               </div>

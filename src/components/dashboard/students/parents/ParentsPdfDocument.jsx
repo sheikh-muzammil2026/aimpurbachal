@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer";
+import { siteConfig } from "@/config/siteConfig";
 
 // Register HindSiliguri Bangla Fonts
 Font.register({
@@ -202,11 +203,11 @@ export const ParentsPdfDocument = ({
   );
 
   return (
-    <Document title={`AIM-Parents-Directory-${sessionYear}`} author="As-Salam Ideal Madrasah (AIM) Purbachal">
+    <Document title={`AIM-Parents-Directory-${sessionYear}`} author={siteConfig.institution.nameEn}>
       <Page size="A4" orientation="landscape" style={styles.page}>
         {/* Document Header */}
         <View style={styles.header} fixed>
-          <Text style={styles.madrasaTitle}>আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল</Text>
+          <Text style={styles.madrasaTitle}>{siteConfig.institution.nameBn}</Text>
           <Text style={styles.subTitle}>
             অভিভাবকের তথ্য ও যোগাযোগ ডিরেক্টরি (Parents Information Directory)
           </Text>
@@ -335,7 +336,7 @@ export const ParentsPdfDocument = ({
 
         {/* Page Footer */}
         <View style={styles.footer} fixed>
-          <Text>আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল • প্রশাসনিক নথি (গোপনীয় ও সংরক্ষিত)</Text>
+          <Text>{siteConfig.institution.nameBn} • প্রশাসনিক নথি (গোপনীয় ও সংরক্ষিত)</Text>
           <Text
             render={({ pageNumber, totalPages }) =>
               `পৃষ্ঠা ${pageNumber} / ${totalPages}`

@@ -1,6 +1,7 @@
 // components/public/contact/ContactComponent.jsx
 "use client";
 import { useState } from "react";
+import { siteConfig } from "@/config/siteConfig";
 
 export default function ContactComponent() {
   const [formData, setFormData] = useState({
@@ -39,8 +40,8 @@ export default function ContactComponent() {
           <div>
             <h3 className="text-lg sm:text-xl font-bold text-amber-400 mb-2">প্রধান কার্যালয়</h3>
             <p className="text-xs sm:text-sm leading-relaxed opacity-90 font-medium">
-              আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল<br />
-              কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।
+              {siteConfig.institution.nameBn}<br />
+              {siteConfig.contact.addressBn}
             </p>
           </div>
 
@@ -49,15 +50,15 @@ export default function ContactComponent() {
           <div className="space-y-3 text-xs sm:text-sm font-medium">
             <p className="flex items-center gap-3">
               <span>📞</span> 
-              <span>+৮৮০১৭১২-৩৪৫৬৭৮, +৮৮০১৯৮৭-৬৫৪৩২১</span>
+              <span>{siteConfig.contact.phoneOfficeDisplayBn}</span>
             </p>
             <p className="flex items-center gap-3">
               <span>✉️</span> 
-              <span>info@jamiamadrasa.edu.bd</span>
+              <span>{siteConfig.contact.email}</span>
             </p>
             <p className="flex items-center gap-3">
               <span>⏱️</span> 
-              <span>শনিবার - বৃহস্পতিবার: সকাল ৮:০০ - বিকাল ৫:০০</span>
+              <span>{siteConfig.contact.supportHoursBn}</span>
             </p>
           </div>
 
@@ -67,8 +68,22 @@ export default function ContactComponent() {
           <div>
             <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2">সোশ্যাল মিডিয়া</h4>
             <div className="flex gap-3 text-sm">
-              <span className="bg-emerald-800 px-3 py-1.5 rounded-lg cursor-pointer hover:bg-emerald-700 transition-colors">Facebook</span>
-              <span className="bg-emerald-800 px-3 py-1.5 rounded-lg cursor-pointer hover:bg-emerald-700 transition-colors">YouTube</span>
+              <a
+                href={siteConfig.social.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-emerald-800 px-3 py-1.5 rounded-lg cursor-pointer hover:bg-emerald-700 transition-colors"
+              >
+                Facebook
+              </a>
+              <a
+                href={siteConfig.social.youtubeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-emerald-800 px-3 py-1.5 rounded-lg cursor-pointer hover:bg-emerald-700 transition-colors"
+              >
+                YouTube
+              </a>
             </div>
           </div>
         </div>

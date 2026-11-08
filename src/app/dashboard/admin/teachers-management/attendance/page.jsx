@@ -38,8 +38,9 @@ import {
   AttendanceFilterBar,
 } from "@/components/dashboard/attendance/AttendanceMetricsAndFilters";
 import { useLanguage } from "@/context/LanguageContext";
+import siteConfig from "@/config/siteConfig";
 
-const API_BASE = process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000";
+const API_BASE = siteConfig.contact.apiUrl;
 
 const formatMonthBangla = (monthStr) => formatMonthBanglaUtil(monthStr, true);
 
@@ -1523,7 +1524,7 @@ export default function AdminTeachersAttendancePage() {
                   <div className="flex items-center justify-center gap-0 mb-2 border-b-4 border-double border-gray-800 pb-1 pl-2">
                     <div className="w-20 h-20 md:w-28 md:h-28 rounded-full overflow-hidden flex-shrink-0 bg-transparent relative flex items-center justify-center -mr-3">
                       <Image
-                        src="/aimlogo1.png"
+                        src={siteConfig.branding.iconLogo}
                         alt="Institution Logo"
                         width={200}
                         height={200}
@@ -1535,7 +1536,7 @@ export default function AdminTeachersAttendancePage() {
                     </div>
                     <div className="flex-grow text-center">
                       <Image
-                        src="/banner_routine.png"
+                        src={siteConfig.branding.bannerRoutine}
                         alt="Institution Banner"
                         width={2000}
                         height={400}
@@ -1680,7 +1681,7 @@ export default function AdminTeachersAttendancePage() {
                     <div className="text-center flex flex-col items-center">
                       <div className="relative w-36 h-6 print:mt-auto">
                         <Image
-                          src={"/principle's_signature.jpg"}
+                          src={siteConfig.branding.principalSignature}
                           alt="Principal Signature"
                           width={100}
                           height={40}

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import PrintInstitutionalHeader from "@/components/shared/print/PrintInstitutionalHeader";
+import siteConfig from "@/config/siteConfig";
 
 export default function RoutinePreview({ routine }) {
     if (!routine) {
@@ -56,7 +57,7 @@ export default function RoutinePreview({ routine }) {
                 <div>
                     {/* Header with separate Logo and Banner */}
                     <PrintInstitutionalHeader
-                        bannerSrc="/banner_routine.png"
+                        bannerSrc={siteConfig.branding.bannerRoutine}
                         containerClassName="flex items-center justify-center gap-0 mb-2 border-b-4 border-double border-gray-800 pb-1 pl-2"
                         logoWrapperClassName="w-20 h-20 md:w-28 md:h-28 rounded-full overflow-hidden flex-shrink-0 bg-transparent relative flex items-center justify-center -mr-3"
                         logoWidth={200}
@@ -132,7 +133,7 @@ export default function RoutinePreview({ routine }) {
                 <div className="mt-6 pt-4 flex justify-end items-end print:mt-auto relative">
                     <div className="text-center w-48">
                         <Image
-                            src="/principle's_signature.jpg"
+                            src={siteConfig.branding.principalSignature}
                             alt="Principal Signature"
                             width={150}
                             height={60}

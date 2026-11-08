@@ -9,10 +9,9 @@ import {
   ChevronRight,
   Sparkles,
 } from "lucide-react";
+import { siteConfig } from "@/config/siteConfig";
 
-const API_BASE = (
-  process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000"
-).replace(/\/$/, "");
+const API_BASE = siteConfig.contact.serverApiUrl.replace(/\/$/, "");
 
 export default function NavbarTicker() {
   const [tickerNotices, setTickerNotices] = useState([]);
@@ -71,8 +70,7 @@ export default function NavbarTicker() {
           {
             _id: "default-1",
             title: "ভর্তি সংক্রান্ত জরুরি বিজ্ঞপ্তি",
-            description:
-              "আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল-এ নতুন শিক্ষাবর্ষে নূরানী, নাজেরা ও হিফজ বিভাগে ভর্তি কার্যক্রম চলমান। আসন সংখ্যা সীমিত, বিস্তারিত জানতে যোগাযোগ করুন।",
+            description: `${siteConfig.institution.nameBn}-এ নতুন শিক্ষাবর্ষে নূরানী, নাজেরা ও হিফজ বিভাগে ভর্তি কার্যক্রম চলমান। আসন সংখ্যা সীমিত, বিস্তারিত জানতে যোগাযোগ করুন।`,
           },
         ];
 

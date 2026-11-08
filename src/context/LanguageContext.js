@@ -4,8 +4,64 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import en from '../locales/en.json';
 import bn from '../locales/bn.json';
 import ar from '../locales/ar.json';
+import { siteConfig } from '@/config/siteConfig';
 
-const translations = { en, bn, ar };
+const translations = {
+    en: {
+        ...en,
+        header: {
+            ...en.header,
+            title: siteConfig.institution.nameEn,
+            subtitle: siteConfig.institution.slogan,
+            address: siteConfig.contact.addressEn,
+        },
+        footer: {
+            ...en.footer,
+            title: siteConfig.institution.nameEn,
+            description: siteConfig.institution.descriptionEn,
+            address: siteConfig.contact.addressEn,
+            phone: `${siteConfig.contact.phonePrimaryDisplay}, +880 ${siteConfig.contact.phoneSecondary}`,
+            email: siteConfig.contact.email,
+            copyright: `© ${siteConfig.academic.currentYearEn} ${siteConfig.institution.nameEn}. All rights reserved.`,
+        },
+    },
+    bn: {
+        ...bn,
+        header: {
+            ...bn.header,
+            title: siteConfig.institution.nameBn,
+            subtitle: siteConfig.institution.sloganBn,
+            address: siteConfig.contact.addressBn,
+        },
+        footer: {
+            ...bn.footer,
+            title: siteConfig.institution.nameBn,
+            description: siteConfig.institution.descriptionBn,
+            address: siteConfig.contact.addressBn,
+            phone: siteConfig.contact.phoneOfficeDisplayBn,
+            email: siteConfig.contact.email,
+            copyright: `© ${siteConfig.academic.currentYearBn} ${siteConfig.institution.nameBn}। সর্বস্বত্ব সংরক্ষিত।`,
+        },
+    },
+    ar: {
+        ...ar,
+        header: {
+            ...ar.header,
+            title: siteConfig.institution.nameAr,
+            subtitle: siteConfig.institution.sloganAr,
+            address: siteConfig.contact.addressAr,
+        },
+        footer: {
+            ...ar.footer,
+            title: siteConfig.institution.nameAr,
+            description: siteConfig.institution.descriptionAr,
+            address: siteConfig.contact.addressAr,
+            phone: siteConfig.contact.phonePrimaryDisplay,
+            email: siteConfig.contact.email,
+            copyright: `© ${siteConfig.academic.currentYearEn} ${siteConfig.institution.nameAr}. جميع الحقوق محفوظة.`,
+        },
+    },
+};
 
 const LanguageContext = createContext();
 

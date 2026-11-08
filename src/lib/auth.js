@@ -1,9 +1,11 @@
 import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { siteConfig } from "@/config/siteConfig";
 
+const dbName = process.env.MONGODB_DB_NAME || siteConfig.db.name || "aimpurbachal";
 const uri =
-  process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/aimhabiganj";
+  process.env.MONGODB_URI || `mongodb://127.0.0.1:27017/${dbName}`;
 
 const options = {
   serverSelectionTimeoutMS: 15000,
@@ -43,7 +45,7 @@ const clientProxy = new Proxy({}, {
 const dbProxy = new Proxy({}, {
   get(target, prop, receiver) {
     const client = getMongoClient();
-    const db = client.db("aimhabiganj");
+    const db = client.db(dbName);
     const val = Reflect.get(db, prop, receiver);
     return typeof val === "function" ? val.bind(db) : val;
   },

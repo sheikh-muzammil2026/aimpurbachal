@@ -25,8 +25,9 @@ import {
   HeartHandshake,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import siteConfig from "@/config/siteConfig";
 
-const API_BASE = process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000";
+const API_BASE = siteConfig.contact.apiUrl;
 
 const DAYS_OF_WEEK = [
   "শনিবার",
@@ -813,10 +814,10 @@ export default function ParentRoutinesPage() {
                   বিসমিল্লাহির রাহমানির রাহিম
                 </div>
                 <h2 className="text-2xl font-black text-neutral-900 mt-1">
-                  দারুল উলুম আল-ইসলামিয়া হাবিবগঞ্জ
+                  {siteConfig.institution.nameBn}
                 </h2>
                 <p className="text-xs text-neutral-600">
-                  মাদরাসা রোড, সদর, হাবিবগঞ্জ | ফোন: ০১৭৫০-২৩৯০০১ | শিক্ষাবর্ষ: {student.sessionYear || "২০২৬"}
+                  {siteConfig.contact.addressBn} | ফোন: {siteConfig.contact.phonePrimaryBn} | শিক্ষাবর্ষ: {student.sessionYear || siteConfig.academic.currentYearBn}
                 </p>
                 <div className="inline-block mt-2 px-4 py-1 bg-emerald-800 text-white text-xs font-black rounded-md">
                   {printType === "exam"

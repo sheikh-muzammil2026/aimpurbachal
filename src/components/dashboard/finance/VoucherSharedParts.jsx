@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { MdEmail, MdInstallMobile } from "react-icons/md";
+import siteConfig from "@/config/siteConfig";
 
 export function resolveVoucherParty(tx, parsePayerName) {
   const isIncome = tx?.type !== "expense";
@@ -46,8 +47,8 @@ export function VoucherHeader({
     <div className={className}>
       <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center bg-slate-50 border border-[#C5A059]">
         <Image
-          src="/aimlogo1.png"
-          alt="Institution Logo"
+          src={siteConfig.branding.iconLogo}
+          alt={siteConfig.institution.nameEn}
           width={40}
           height={40}
           className="object-contain"
@@ -57,8 +58,8 @@ export function VoucherHeader({
       <div className="flex-1 text-center min-w-0 px-1">
         <div className="w-full flex justify-center">
           <Image
-            src="/banner.png"
-            alt="Institution Banner"
+            src={siteConfig.branding.banner}
+            alt={siteConfig.branding.bannerAlt}
             width={280}
             height={40}
             className={bannerClassName}
@@ -66,17 +67,16 @@ export function VoucherHeader({
           />
         </div>
         <p className="text-[9px] text-slate-600 font-semibold mt-0.5">
-          কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।
+          {siteConfig.contact.addressBn}
         </p>
         {showContactRow && (
           <div className="flex items-center justify-center gap-2 text-[8.5px] text-emerald-800 font-medium">
             <span className="flex items-center gap-0.5">
-              <MdInstallMobile className="text-[10px] shrink-0" /> +880 1748
-              868161
+              <MdInstallMobile className="text-[10px] shrink-0" /> {siteConfig.contact.whatsappDisplay}
             </span>
             <span className="text-slate-300">|</span>
             <span className="flex items-center gap-0.5">
-              <MdEmail className="text-[10px] shrink-0" /> aimhabiganj@gmail.com
+              <MdEmail className="text-[10px] shrink-0" /> {siteConfig.contact.email}
             </span>
           </div>
         )}
@@ -85,8 +85,8 @@ export function VoucherHeader({
       {showRightLogo && (
         <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center bg-slate-50 border border-[#C5A059]">
           <Image
-            src="/aimlogo1.png"
-            alt="Institution Logo"
+            src={siteConfig.branding.iconLogo}
+            alt={siteConfig.institution.nameEn}
             width={40}
             height={40}
             className="object-contain"

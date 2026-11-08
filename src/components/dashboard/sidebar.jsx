@@ -19,8 +19,9 @@ import {
   Settings,
 } from "lucide-react";
 import { IoNotificationsCircle } from "react-icons/io5";
+import { siteConfig } from "@/config/siteConfig";
 
-const API_BASE = process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000";
+const API_BASE = siteConfig.contact.serverApiUrl;
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -808,17 +809,17 @@ export default function Sidebar() {
             <div className="w-10 h-10 rounded-full border border-blue-900 p-0.5 flex-shrink-0 flex items-center justify-center bg-white">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/aimlogo1.png"
-                alt="AIM Logo"
+                src={siteConfig.branding.iconLogo}
+                alt={`${siteConfig.institution.shortName} Logo`}
                 className="w-full h-full object-contain rounded-full"
               />
             </div>
             <div>
               <h2 className="font-black text-sm text-amber-400 tracking-wide">
-                আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল
+                {siteConfig.institution.nameBn}
               </h2>
               <p className="text-[10px] text-emerald-300/80 font-medium tracking-wider">
-                কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।
+                {siteConfig.contact.addressBn}
               </p>
             </div>
           </Link>

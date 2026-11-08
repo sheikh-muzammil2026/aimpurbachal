@@ -1,4 +1,5 @@
 import Image from "next/image";
+import siteConfig from "@/config/siteConfig";
 
 export default function CalendarPage() {
     const monthsData = [
@@ -67,8 +68,8 @@ export default function CalendarPage() {
                 {/* Left Logo */}
                 <div className="md:col-span-2 flex justify-center">
                     <Image
-                        src="/aimlogo1.png"
-                        alt="AIM Logo"
+                        src={siteConfig.branding.iconLogo}
+                        alt={siteConfig.institution.nameEn}
                         width={120}
                         height={120}
                         priority
@@ -93,8 +94,8 @@ export default function CalendarPage() {
                 </div> */}
                 <div className="md:col-span-10 relative h-60 w-full  overflow-hidden">
                     <Image
-                        src="/banner_routine.png"
-                        alt="As-Salam Ideal Madrasah (AIM) Purbachal Campus Banner"
+                        src={siteConfig.branding.bannerRoutine}
+                        alt={siteConfig.institution.nameEn}
                         fill
                         sizes="(max-width: 768px) 100vw, 66vw"
                         className="object-fill object-center"
@@ -269,13 +270,13 @@ export default function CalendarPage() {
             <footer className="mt-4 bg-emerald-900 text-white p-4 rounded-lg flex flex-col md:flex-row justify-between items-center text-xs space-y-2 md:space-y-0">
                 <div>
                     <p className="font-bold text-emerald-200">
-                        কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।
+                        {siteConfig.contact.addressBn}
                     </p>
-                    <p>মোবাইল (অফিস): 01316 209 201, 01748 868 161</p>
+                    <p>মোবাইল (অফিস): {siteConfig.contact.phoneOffice}, {siteConfig.contact.phoneSecondary}</p>
                 </div>
                 <div className="text-right">
-                    <p>www.aimhabiganj.com</p>
-                    <p>aimhabiganj@gmail.com</p>
+                    <p>{siteConfig.contact.websiteDisplay}</p>
+                    <p>{siteConfig.contact.email}</p>
                 </div>
             </footer>
         </div>

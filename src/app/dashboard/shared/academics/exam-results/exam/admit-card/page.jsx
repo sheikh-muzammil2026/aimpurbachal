@@ -14,6 +14,7 @@ import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
+import siteConfig from "@/config/siteConfig";
 
 const ADMIT_CARD_PAGE_STYLE = `
   @media print {
@@ -90,7 +91,7 @@ export default function AdmitCardGenerator() {
   const fetchExams = useCallback(async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_API}/api/admit-cards/exams`,
+        `${siteConfig.contact.apiUrl}/api/admit-cards/exams`,
       );
       const result = await response.json();
       if (result.success && result.data && result.data.length > 0) {
@@ -133,7 +134,7 @@ export default function AdmitCardGenerator() {
         params.append("feeCategory", selectedFeeCategory);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_API}/api/students?${params.toString()}`,
+        `${siteConfig.contact.apiUrl}/api/students?${params.toString()}`,
       );
       const result = await response.json();
 
@@ -185,7 +186,7 @@ export default function AdmitCardGenerator() {
         setLoadingAdmitCards(true);
         setAdmitCardsError(null);
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_API}/api/admit-cards?studentIds=${selectedIds.join(",")}&examName=${encodeURIComponent(examName)}`,
+          `${siteConfig.contact.apiUrl}/api/admit-cards?studentIds=${selectedIds.join(",")}&examName=${encodeURIComponent(examName)}`,
         );
         const result = await response.json();
         if (result.success) {
@@ -539,7 +540,7 @@ export default function AdmitCardGenerator() {
                   {/* ওয়াটারমার্ক (Watermark) */}
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 opacity-[0.08]">
                     <Image
-                      src="/aimlogo1.png"
+                      src={siteConfig.branding.iconLogo}
                       alt="Watermark Logo"
                       width={260}
                       height={260}
@@ -556,7 +557,7 @@ export default function AdmitCardGenerator() {
                       {/* ১. বামে QR Code */}
                       <div className="w-16 h-20 border border-[#C5A059] rounded-lg bg-white p-1 shadow-sm flex-shrink-0 flex items-center justify-center mt-1">
                         <QRCodeSVG
-                          value={`${process.env.NEXT_PUBLIC_BASE_URI}/dashboard/academics/admit-card?id=${card._id || ""}`}
+                          value={`${siteConfig.contact.baseUrl}/dashboard/academics/admit-card?id=${card._id || ""}`}
                           size={56}
                           level="L"
                         />

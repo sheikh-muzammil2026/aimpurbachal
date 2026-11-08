@@ -4,11 +4,9 @@ import { MdEmail, MdInstallMobile } from "react-icons/md";
 import Image from "next/image";
 import PrintInstitutionalHeader from "@/components/shared/print/PrintInstitutionalHeader";
 import PrintSocialFooter from "@/components/shared/print/PrintSocialFooter";
+import siteConfig from "@/config/siteConfig";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_SERVER_API ||
-  process.env.NEXT_PUBLIC_SERVER_URL ||
-  "http://localhost:5000";
+const API_BASE_URL = siteConfig.contact.apiUrl;
 
 // Aggregate transactions list into income/expense breakdowns (pure helper defined outside)
 const aggregateTransactions = (txList) => {
@@ -324,7 +322,7 @@ export default function MonthlyReport({
         {/* Logo/Header */}
         <div className="text-center pb-6 sm:pb-8 border-b border-emerald-900/15">
           <PrintInstitutionalHeader
-            bannerSrc="/banner_routine.png"
+            bannerSrc={siteConfig.branding.bannerRoutine}
             containerClassName="flex items-center justify-between gap-2 border-b-2 border-[#C5A059] pb-2"
             logoWrapperClassName="w-20 h-20 md:w-45 md:h-45 print:!w-36 print:!h-36 rounded-full overflow-hidden flex-shrink-0 bg-transparent relative flex items-center justify-center -mr-3"
             logoWidth={200}
@@ -335,16 +333,15 @@ export default function MonthlyReport({
             bannerClassName="w-full h-auto max-h-45 object-fill mx-auto print:max-h-45"
           />
           <p className="text-sm text-slate-600 font-semibold mt-2">
-            কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।
+            {siteConfig.contact.addressBn}
           </p>
           <div className="flex items-center justify-center gap-2 mt-1 text-[8.5px] text-emerald-800 font-medium">
             <span className="flex items-center gap-0.5">
-              <MdInstallMobile className="text-[10px] shrink-0" /> +880 1748
-              868161
+              <MdInstallMobile className="text-[10px] shrink-0" /> {siteConfig.contact.whatsappDisplay}
             </span>
             <span className="text-slate-300">|</span>
             <span className="flex items-center gap-0.5">
-              <MdEmail className="text-[10px] shrink-0" /> aimhabiganj@gmail.com
+              <MdEmail className="text-[10px] shrink-0" /> {siteConfig.contact.email}
             </span>
           </div>
           <h3 className="text-[9px] sm:text-base font-black bg-slate-100 border border-slate-200 inline-block px-4 sm:px-6 py-1.5 rounded-full text-slate-700 mt-3 sm:mt-4 tracking-wide">

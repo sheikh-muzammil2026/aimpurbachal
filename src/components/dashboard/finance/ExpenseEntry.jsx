@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Plus, Trash2, Loader2, RefreshCw, AlertTriangle } from 'lucide-react';
+import siteConfig from '@/config/siteConfig';
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_SERVER_API ||
-  process.env.NEXT_PUBLIC_SERVER_URL ||
-  "http://localhost:5000";
+const API_BASE_URL = siteConfig.contact.apiUrl;
 
 export default function ExpenseEntry({
   expenseForm,
@@ -99,8 +97,8 @@ export default function ExpenseEntry({
     <div className="max-w-4xl mx-auto bg-white border-2 border-emerald-900/10 rounded-2xl shadow-xs overflow-hidden print:hidden">
       {/* Header Banner */}
       <div className="bg-emerald-900 text-white p-4 sm:p-6 text-center space-y-1">
-        <h2 className="text-lg sm:text-xl font-black tracking-wide">আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল</h2>
-        <p className="text-xs text-emerald-100 font-medium">কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।</p>
+        <h2 className="text-lg sm:text-xl font-black tracking-wide">{siteConfig.institution.nameBn}</h2>
+        <p className="text-xs text-emerald-100 font-medium">{siteConfig.contact.addressBn}</p>
         <div className="inline-block bg-white text-emerald-950 font-black text-xs px-3 sm:px-4 py-1 sm:py-1.5 rounded-full mt-2 sm:mt-3 shadow-xs">
           খরচ ভাউচার ফর্ম (Voucher Entry)
         </div>

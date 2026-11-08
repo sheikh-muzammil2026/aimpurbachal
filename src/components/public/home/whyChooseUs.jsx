@@ -11,6 +11,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { siteConfig } from "@/config/siteConfig";
 
 export default function WhyChooseUs() {
   const { language } = useLanguage();
@@ -19,7 +20,7 @@ export default function WhyChooseUs() {
     bn: {
       badge: "আমাদের বিশেষত্ব ও শ্রেষ্ঠত্ব",
       titlePrefix: "কেন আপনার সন্তানের জন্য",
-      titleHighlight: "আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল",
+      titleHighlight: siteConfig.institution.nameBn,
       titleSuffix: "নির্বাচন করবেন?",
       subtitle:
         "দ্বীনি ইলম, সুন্নতি আখলাক এবং আধুনিক একাডেমিক শিক্ষার এক অনন্য ও যুগোপযোগী সমন্বয়—যা আপনার সন্তানকে দুনিয়া ও আখিরাতে সফল মানুষ হিসেবে গড়ে তুলবে।",
@@ -72,7 +73,7 @@ export default function WhyChooseUs() {
     en: {
       badge: "Why Choose Us",
       titlePrefix: "Why Select",
-      titleHighlight: "As-Salam Ideal Madrasah (AIM) Purbachal",
+      titleHighlight: siteConfig.institution.nameEn,
       titleSuffix: "for Your Child’s Future?",
       subtitle:
         "A harmonious blend of authentic Islamic scholarship, prophetic character, and modern academic excellence designed to nurture leaders for both worlds.",
@@ -125,7 +126,7 @@ export default function WhyChooseUs() {
     ar: {
       badge: "مميزاتنا الفريدة",
       titlePrefix: "لماذا تختار",
-      titleHighlight: "مدرسة السلام النموذجية (AIM)",
+      titleHighlight: siteConfig.institution.nameAr,
       titleSuffix: "لمستقبل أبنائك؟",
       subtitle:
         "منظومة تربوية متكاملة تجمع بين أصالة العلوم الشرعية والتربية الإيمانية وبين التفوق الأكاديمي الحديث لبناء جيل رائد ومتميز.",

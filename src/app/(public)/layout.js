@@ -4,23 +4,23 @@ import AIChatbot from "@/components/AIChatbot";
 import React from "react";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import Navbar from "@/components/public/shared/navbar";
+import { siteConfig } from "@/config/siteConfig";
 
 export const metadata = {
   // মেটাডাটা বেস URL (ওপেন গ্রাফ ইমেজের জন্য আবশ্যক)
-  metadataBase: new URL("https://aimhabiganj.vercel.app"),
+  metadataBase: new URL(siteConfig.contact.baseUrl),
 
   title: {
-    default: "As-Salam Ideal Madrasah (AIM) Purbachal | আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল",
-    template: "%s | As-Salam Ideal Madrasah (AIM) Purbachal",
+    default: `${siteConfig.institution.nameEn} | ${siteConfig.institution.nameBn}`,
+    template: `%s | ${siteConfig.institution.nameEn}`,
   },
-  description:
-    "আধুনিক ও সুশৃঙ্খল আবাসন ব্যবস্থাসহ একাডেমিক শিক্ষা ও ৬ মাসে হিফজ করার এক অনন্য প্রতিষ্ঠান, কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।",
+  description: siteConfig.institution.descriptionBn,
 
   // কিওয়ার্ড সংখ্যা ও প্রাসঙ্গিকতা বৃদ্ধি
   keywords: [
-    "aimpurbachal",
-    "As-Salam Ideal Madrasah (AIM) Purbachal",
-    "আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল",
+    siteConfig.institution.shortName.toLowerCase().replace(/\s+/g, ""),
+    siteConfig.institution.nameEn,
+    siteConfig.institution.nameBn,
     "পুর্বাচল মাদ্রাসা",
     "Hifz Madrasah Purbachal",
     "Purbachal Islamic School",
@@ -44,17 +44,16 @@ export const metadata = {
 
   // সোশ্যাল মিডিয়া রিচ বাড়াতে OpenGraph (Facebook, WhatsApp, LinkedIn)
   openGraph: {
-    title: "As-Salam Ideal Madrasah (AIM) Purbachal | আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল",
-    description:
-      "আধুনিক ও সুশৃঙ্খল আবাসন ব্যবস্থাসহ একাডেমিক শিক্ষা ও ৬ মাসে হিফজ করার এক অনন্য প্রতিষ্ঠান, কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।",
-    url: "https://aimhabiganj.vercel.app",
-    siteName: "As-Salam Ideal Madrasah (AIM) Purbachal",
+    title: `${siteConfig.institution.nameEn} | ${siteConfig.institution.nameBn}`,
+    description: siteConfig.institution.descriptionBn,
+    url: siteConfig.contact.baseUrl,
+    siteName: siteConfig.institution.nameEn,
     images: [
       {
-        url: "/og-image.png", // public/og-image.png ফোল্ডারে ১২০০x৬৩০ সাইজের ব্যানার রাখবেন
+        url: siteConfig.branding.ogImage,
         width: 1200,
         height: 630,
-        alt: "As-Salam Ideal Madrasah (AIM) Purbachal Banner",
+        alt: `${siteConfig.institution.nameEn} Banner`,
       },
     ],
     locale: "bn_BD",
@@ -64,15 +63,14 @@ export const metadata = {
   // Twitter / X কার্ড মেটাডেটা
   twitter: {
     card: "summary_large_image",
-    title: "As-Salam Ideal Madrasah (AIM) Purbachal",
-    description:
-      "আধুনিক ও সুশৃঙ্খল আবাসন ব্যবস্থাসহ একাডেমিক শিক্ষা ও ৬ মাসে হিফজ করার এক অনন্য প্রতিষ্ঠান।",
-    images: ["/og-image.png"],
+    title: siteConfig.institution.nameEn,
+    description: siteConfig.institution.descriptionBn,
+    images: [siteConfig.branding.ogImage],
   },
 
   // ডুপ্লিকেট ইউআরএল সমস্যা দূর করতে
   alternates: {
-    canonical: "https://aimhabiganj.vercel.app",
+    canonical: siteConfig.contact.baseUrl,
   },
 };
 

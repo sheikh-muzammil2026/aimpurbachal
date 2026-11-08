@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   Building,
 } from "lucide-react";
+import siteConfig from "@/config/siteConfig";
 
 export default function ClassRoutinePage() {
   const [activeTab, setActiveTab] = useState("form");
@@ -449,10 +450,10 @@ export default function ClassRoutinePage() {
           {/* Printable Top Header */}
           <div className="text-center space-y-1 pb-6 border-b-2 border-emerald-900">
             <h2 className="text-2xl font-black text-emerald-900">
-              আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল
+              {siteConfig.institution.nameBn}
             </h2>
             <p className="text-xs text-slate-600">
-              কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ। | মোবাইল: ০১৭১১-০০০০০০
+              {siteConfig.contact.addressBn} | মোবাইল: {siteConfig.contact.phonePrimaryBn}
             </p>
             <div className="inline-block px-4 py-1 rounded-full bg-emerald-100 text-emerald-900 font-bold text-sm mt-2">
               সাপ্তাহিক শ্রেণি পাঠপরিকল্পনা ও রুটিন - {academicYear}

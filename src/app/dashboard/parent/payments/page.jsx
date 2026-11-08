@@ -24,9 +24,9 @@ import {
   QrCode,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import siteConfig from "@/config/siteConfig";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000";
+const API_BASE = siteConfig.contact.apiUrl;
 
 const FEE_HEADS = [
   "মাসিক টিউশন ফি",
@@ -573,13 +573,13 @@ export default function ParentPaymentsPage() {
               <div>
                 <p className="text-xs text-pink-100">মাদরাসার অফিশিয়াল বিকাশ নম্বর:</p>
                 <div className="flex items-center justify-between bg-black/20 p-3 rounded-2xl mt-1">
-                  <span className="font-mono text-lg font-bold tracking-wider">01750239001</span>
+                  <span className="font-mono text-lg font-bold tracking-wider">{siteConfig.payment.bkashNumber}</span>
                   <button
-                    onClick={() => handleCopy("01750239001")}
+                    onClick={() => handleCopy(siteConfig.payment.bkashNumber)}
                     className="p-1.5 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
                     title="কপি করুন"
                   >
-                    {copiedText === "01750239001" ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    {copiedText === siteConfig.payment.bkashNumber ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
@@ -610,13 +610,13 @@ export default function ParentPaymentsPage() {
               <div>
                 <p className="text-xs text-orange-100">মাদরাসার অফিশিয়াল নগদ নম্বর:</p>
                 <div className="flex items-center justify-between bg-black/20 p-3 rounded-2xl mt-1">
-                  <span className="font-mono text-lg font-bold tracking-wider">01750239002</span>
+                  <span className="font-mono text-lg font-bold tracking-wider">{siteConfig.payment.nagadNumber}</span>
                   <button
-                    onClick={() => handleCopy("01750239002")}
+                    onClick={() => handleCopy(siteConfig.payment.nagadNumber)}
                     className="p-1.5 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
                     title="কপি করুন"
                   >
-                    {copiedText === "01750239002" ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    {copiedText === siteConfig.payment.nagadNumber ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
@@ -640,21 +640,21 @@ export default function ParentPaymentsPage() {
               </div>
 
               <div className="space-y-1.5 text-xs text-blue-100">
-                <p>ব্যাংকের নাম: <strong className="text-white text-sm block">ইসলামী ব্যাংক বাংলাদেশ পিএলসি (IBBL)</strong></p>
-                <p>হিসাবের নাম: <strong className="text-white block">আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল</strong></p>
+                <p>ব্যাংকের নাম: <strong className="text-white text-sm block">{siteConfig.payment.bankName}</strong></p>
+                <p>হিসাবের নাম: <strong className="text-white block">{siteConfig.payment.bankAccountName}</strong></p>
                 <div className="flex items-center justify-between bg-black/20 p-2.5 rounded-xl mt-1">
                   <div>
                     <span className="text-[10px] text-blue-200 block">হিসাব নম্বর:</span>
-                    <strong className="font-mono text-base text-amber-300">২০৫০১২৩৪৫৬৭৮৯০</strong>
+                    <strong className="font-mono text-base text-amber-300">{siteConfig.payment.bankAccountNoBn}</strong>
                   </div>
                   <button
-                    onClick={() => handleCopy("20501234567890")}
+                    onClick={() => handleCopy(siteConfig.payment.bankAccountNo)}
                     className="p-1.5 bg-white/20 rounded-lg"
                   >
                     <Copy className="w-4 h-4" />
                   </button>
                 </div>
-                <p>শাখা: <strong>পুর্বাচল শাখা</strong> | রাউটিং নং: <strong>১২৫২৫০১৮০</strong></p>
+                <p>শাখা: <strong>{siteConfig.payment.bankBranch}</strong> | রাউটিং নং: <strong>{siteConfig.payment.bankRoutingNo}</strong></p>
               </div>
 
               <p className="text-[11px] text-blue-200/80 pt-2 border-t border-white/10">
@@ -824,10 +824,10 @@ export default function ParentPaymentsPage() {
                   بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
                 </p>
                 <h1 className="text-xl sm:text-2xl font-black text-emerald-950 font-shalda">
-                  আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল
+                  {siteConfig.institution.nameBn}
                 </h1>
                 <p className="text-xs font-semibold text-slate-700 font-sans">
-                  কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ। | ইমেইল: info@assalam.edu.bd | মোবাইল: +৮৮০ ১২৩৪-৫৬৭৮৯০
+                  {siteConfig.contact.addressBn} | ইমেইল: {siteConfig.contact.email} | মোবাইল: {siteConfig.contact.phonePrimaryBn}
                 </p>
                 <div className="inline-block mt-2 px-4 py-1 bg-emerald-900 text-white text-xs font-extrabold uppercase rounded-full tracking-widest shadow-sm">
                   অফিসিয়াল মানি রসিদ ও ফি ভাউচার (Money Receipt)
@@ -924,7 +924,7 @@ export default function ParentPaymentsPage() {
                 </div>
 
                 <div className="border border-emerald-500/50 rounded-xl p-2 text-[10px] text-emerald-700 font-bold uppercase tracking-wider bg-emerald-50">
-                  <p>আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল</p>
+                  <p>{siteConfig.institution.nameBn}</p>
                   <p className="text-emerald-800">★ PAID & VERIFIED ★</p>
                 </div>
 

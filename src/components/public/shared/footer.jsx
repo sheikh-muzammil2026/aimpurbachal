@@ -6,13 +6,14 @@ import { BsYoutube } from "react-icons/bs";
 import { RiFacebookCircleFill, RiGlobalFill } from "react-icons/ri";
 import { MapPin, Phone, Mail, ChevronRight, Sparkles } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { siteConfig } from "@/config/siteConfig";
 
 export default function Footer() {
   const { language } = useLanguage();
 
   const content = {
     bn: {
-      desc: "দ্বীনি ও আধুনিক শিক্ষার এক অপূর্ব সমন্বয়। অভিজ্ঞ উলামায়ে কেরাম ও দক্ষ শিক্ষকমণ্ডলী দ্বারা পরিচালিত পূর্বাচলের একটি নির্ভরযোগ্য ও যুগোপযোগী দ্বীনি শিক্ষা প্রতিষ্ঠান।",
+      desc: siteConfig.institution.descriptionBn,
       colLinks: "গুরুত্বপূর্ণ লিংক",
       links: [
         { name: "আমাদের সম্পর্কে", href: "/about" },
@@ -30,12 +31,11 @@ export default function Footer() {
         { name: "আবাসিক কার্যসূচি", href: "/hostel#routine" },
       ],
       colContact: "যোগাযোগ করুন",
-      address: "কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।",
-      copyright:
-        "© ২০২৬ আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল। সর্বস্বত্ব সংরক্ষিত।",
+      address: siteConfig.contact.addressBn,
+      copyright: `© ${siteConfig.academic.currentYearBn} ${siteConfig.institution.nameBn}। সর্বস্বত্ব সংরক্ষিত।`,
     },
     en: {
-      desc: "A distinguished blend of authentic Islamic scholarship and modern education. Managed by experienced Ulama and dedicated faculty in Purbachal.",
+      desc: siteConfig.institution.descriptionEn,
       colLinks: "Quick Links",
       links: [
         { name: "About Us", href: "/about" },
@@ -57,13 +57,11 @@ export default function Footer() {
         { name: "Residential Hostel Routine", href: "/hostel#routine" },
       ],
       colContact: "Contact Info",
-      address:
-        "Kazirbag (Adjacent to Purbachal), Rupganj, Narayanganj",
-      copyright:
-        "© 2026 As-Salam Ideal Madrasah (AIM) Purbachal. All rights reserved.",
+      address: siteConfig.contact.addressEn,
+      copyright: `© ${siteConfig.academic.currentYearEn} ${siteConfig.institution.nameEn}. All rights reserved.`,
     },
     ar: {
-      desc: "منظومة تعليمية رائدة تجمع بين الأصالة الشرعية والتميز الأكاديمي الحديث تحت إشراف نخبة من العلماء والأساتذة المتخصصين في فورباشال.",
+      desc: siteConfig.institution.descriptionAr,
       colLinks: "روابط هامة",
       links: [
         { name: "من نحن", href: "/about" },
@@ -85,9 +83,8 @@ export default function Footer() {
         { name: "برنامج السكن الداخلي", href: "/hostel#routine" },
       ],
       colContact: "تواصل معنا",
-      address: "كازيرباغ (بجوار فورباشال)، روبغانج، نارايانغانج، بنغلاديش.",
-      copyright:
-        "© ٢٠٢٦ مدرسة السلام النموذجية (AIM) فورباشال. جميع الحقوق محفوظة.",
+      address: siteConfig.contact.addressAr,
+      copyright: `© ${siteConfig.academic.currentYearEn} ${siteConfig.institution.nameAr}. جميع الحقوق محفوظة.`,
     },
   };
 
@@ -109,8 +106,8 @@ export default function Footer() {
               <div className="relative w-12 h-12 rounded-full p-[2px] bg-gradient-to-tr from-amber-500 via-amber-200 to-emerald-400 shadow-[0_0_20px_rgba(245,158,11,0.25)] flex-shrink-0">
                 <div className="relative w-full h-full rounded-full overflow-hidden bg-[#021d12]">
                   <Image
-                    src="/aimlogo1.png"
-                    alt="As-Salam Ideal Madrasah (AIM) Purbachal Logo"
+                    src={siteConfig.branding.iconLogo}
+                    alt={`${siteConfig.institution.nameEn} Logo`}
                     fill
                     sizes="48px"
                     className="object-cover scale-[1.10] rounded-full"
@@ -119,7 +116,7 @@ export default function Footer() {
               </div>
               <div className="flex flex-col">
                 <span className="font-black text-[15px] text-amber-300 tracking-wide leading-tight font-britanic">
-                  As-Salam Ideal Madrasah (AIM) Purbachal
+                  {siteConfig.institution.nameEn}
                 </span>
                 {language === "ar" ? (
                   <h2
@@ -127,13 +124,11 @@ export default function Footer() {
                     dir="rtl"
                     lang="ar"
                   >
-                    مدرس<span className="font-sans">ة</span> الس
-                    <span className="font-sans">لا</span>م النموذجي
-                    <span className="font-sans">ة</span>
+                    {siteConfig.institution.nameAr}
                   </h2>
                 ) : (
                   <span className="text-sm font-bold text-white mt-0.5 font-shalda">
-                    আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল
+                    {siteConfig.institution.nameBn}
                   </span>
                 )}
               </div>
@@ -146,7 +141,7 @@ export default function Footer() {
             {/* সোশ্যাল মিডিয়া ও ওয়েবসাইট আইকন লিংক */}
             <div className="flex items-center gap-3 pt-1">
               <a
-                href="https://www.facebook.com/p/AIM-Habiganj-100062973924471/"
+                href={siteConfig.social.facebookUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 text-amber-300 hover:bg-gradient-to-r hover:from-amber-400 hover:to-amber-500 hover:text-slate-950 hover:border-amber-400 flex items-center justify-center transition-all duration-300 hover:-translate-y-0.5 shadow-sm text-lg"
@@ -155,7 +150,7 @@ export default function Footer() {
                 <RiFacebookCircleFill />
               </a>
               <a
-                href="http://www.youtube.com/@aimhabiganj"
+                href={siteConfig.social.youtubeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 text-amber-300 hover:bg-gradient-to-r hover:from-amber-400 hover:to-amber-500 hover:text-slate-950 hover:border-amber-400 flex items-center justify-center transition-all duration-300 hover:-translate-y-0.5 shadow-sm text-base"
@@ -164,7 +159,7 @@ export default function Footer() {
                 <BsYoutube />
               </a>
               <a
-                href="https://aimhabiganj.com"
+                href={siteConfig.contact.baseUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 text-amber-300 hover:bg-gradient-to-r hover:from-amber-400 hover:to-amber-500 hover:text-slate-950 hover:border-amber-400 flex items-center justify-center transition-all duration-300 hover:-translate-y-0.5 shadow-sm text-lg"
@@ -240,10 +235,10 @@ export default function Footer() {
                   <Phone className="w-4 h-4" />
                 </div>
                 <a
-                  href="tel:+8801748868161"
+                  href={`tel:+88${siteConfig.contact.phonePrimary}`}
                   className="hover:text-amber-300 transition-colors font-mono"
                 >
-                  +8801748-868161
+                  {siteConfig.contact.phonePrimaryDisplay}
                 </a>
               </li>
               <li className="flex items-center gap-3">
@@ -251,10 +246,10 @@ export default function Footer() {
                   <Mail className="w-4 h-4" />
                 </div>
                 <a
-                  href="mailto:aimhabiganj@gmail.com"
+                  href={`mailto:${siteConfig.contact.email}`}
                   className="break-all hover:text-amber-300 transition-colors"
                 >
-                  aimhabiganj@gmail.com
+                  {siteConfig.contact.email}
                 </a>
               </li>
             </ul>
@@ -271,9 +266,7 @@ export default function Footer() {
             dir="rtl"
             lang="ar"
           >
-            مدرس<span className="font-sans">ة</span> الس
-            <span className="font-sans">لا</span>م النموذجي
-            <span className="font-sans">ة</span>، فورباشال
+            {siteConfig.institution.nameAr}
           </p>
         </div>
       </div>

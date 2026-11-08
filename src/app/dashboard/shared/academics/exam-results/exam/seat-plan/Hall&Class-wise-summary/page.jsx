@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import siteConfig from '@/config/siteConfig';
 
 export default function SeatPlanSummary() {
     const [loading, setLoading] = useState(true);
@@ -83,7 +84,7 @@ export default function SeatPlanSummary() {
         try {
             setLoading(true);
             setError(null);
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_API}/api/seat-plans/summary`);
+            const response = await fetch(`${siteConfig.contact.apiUrl}/api/seat-plans/summary`);
             const result = await response.json();
 
             if (result.success && result.data) {
@@ -220,7 +221,7 @@ export default function SeatPlanSummary() {
                     {/* Logo on Left */}
                     <div className="w-[130px] h-[100px] relative flex-shrink-0">
                         <img
-                            src="/aimlogo1.png"
+                            src={siteConfig.branding.iconLogo}
                             alt="Logo"
                             className="w-full h-full object-contain"
                         />
@@ -229,7 +230,7 @@ export default function SeatPlanSummary() {
                     {/* Banner / Institution Info on Right */}
                     <div className="flex-grow flex justify-end items-center">
                         <img
-                            src="/banner.png"
+                            src={siteConfig.branding.banner}
                             alt="Institution Banner"
                             className="max-h-[100px] object-contain"
                         />

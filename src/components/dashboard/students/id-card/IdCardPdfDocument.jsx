@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer";
+import { siteConfig } from "@/config/siteConfig";
 
 // বাংলা ফন্ট রেজিস্ট্রেশন (ঐচ্ছিক কিন্তু সুনির্দিষ্ট রেন্ডারিংয়ের জন্য প্রস্তাবিত)
 Font.register({
@@ -107,7 +108,7 @@ export const IdCardPdfDocument = ({ students, getStudentClassDetails }) => {
               <View style={styles.cardInner}>
                 {/* হেডার ও লোগো */}
                 <View style={styles.headerContainer}>
-                  <Image src="/aimlogo1.png" style={styles.logo} />
+                  <Image src={siteConfig.branding.iconLogo} style={styles.logo} />
                 </View>
 
                 {/* স্টুডেন্ট ছবি */}

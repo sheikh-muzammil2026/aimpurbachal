@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import siteConfig from '@/config/siteConfig';
 
 export default function SeatPlanMap() {
   const [selectedHall, setSelectedHall] = useState(1);
@@ -53,7 +54,7 @@ export default function SeatPlanMap() {
       try {
         setLoading(true);
         setError(null);
-        const serverApi = process.env.NEXT_PUBLIC_SERVER_API || 'http://localhost:8000';
+        const serverApi = siteConfig.contact.apiUrl;
         const url = `${serverApi}/api/seat-plan?hallNo=${selectedHall}&semester=${encodeURIComponent(selectedSemester)}`;
         console.log("Fetching seat plan from URL:", url);
 
@@ -234,7 +235,7 @@ export default function SeatPlanMap() {
               {/* লোগো (বামপাশে) */}
               <div className="w-24 h-24 relative flex-shrink-0 flex items-center justify-center">
                 <Image
-                  src="/aimlogo1.png"
+                  src={siteConfig.branding.iconLogo}
                   alt="Logo"
                   width={96}
                   height={96}
@@ -246,7 +247,7 @@ export default function SeatPlanMap() {
               {/* মাঝের টাইটেল */}
               <div className="flex-grow flex justify-center items-center px-4">
                 <Image
-                  src="/banner.png"
+                  src={siteConfig.branding.banner}
                   alt="Institution Banner"
                   width={800}
                   height={96}

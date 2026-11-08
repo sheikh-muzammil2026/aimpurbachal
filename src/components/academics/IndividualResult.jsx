@@ -18,6 +18,7 @@ import { toBengaliDigits, toEnglishDigits } from "@/lib/studentUtils";
 import PrintInstitutionalHeader from "@/components/shared/print/PrintInstitutionalHeader";
 import PrintSignatures from "@/components/shared/print/PrintSignatures";
 import PrintSocialFooter from "@/components/shared/print/PrintSocialFooter";
+import siteConfig from "@/config/siteConfig";
 
 /**
  * Grade to remark conversion utility based on institutional academic standards.
@@ -1261,12 +1262,12 @@ function ResultSheetGeneratorContent() {
               const studentThana =
                 student.currentAddress?.thana ||
                 resData.student?.currentAddress?.thana ||
-                "চুনারুঘাট";
+                siteConfig.contact.upazilaBn;
 
               const studentDistrict =
                 student.currentAddress?.district ||
                 resData.student?.currentAddress?.district ||
-                "হবিগঞ্জ";
+                siteConfig.contact.districtBn;
 
               const studentPhoto =
                 student.studentImage ||
@@ -1293,7 +1294,7 @@ function ResultSheetGeneratorContent() {
                       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0 opacity-[0.05]">
                         <div className="w-[420px] h-[420px] rounded-full overflow-hidden flex items-center justify-center">
                           <Image
-                            src="/aimlogo1.png"
+                            src={siteConfig.branding.iconLogo}
                             alt="Watermark Logo"
                             width={420}
                             height={420}
@@ -1309,7 +1310,7 @@ function ResultSheetGeneratorContent() {
                           {/* হেডার: লোগো ও মাদরাসার নাম */}
                           <div>
                             <PrintInstitutionalHeader
-                              bannerSrc="/banner_routine.png"
+                              bannerSrc={siteConfig.branding.bannerRoutine}
                               logoWrapperClassName="w-20 h-20 md:w-45 md:h-45 print:!w-36 print:!h-36 rounded-full overflow-hidden flex-shrink-0 bg-transparent relative flex items-center justify-center -mr-3"
                               logoWidth={200}
                               logoHeight={200}

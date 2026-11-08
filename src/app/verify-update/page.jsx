@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { CheckCircle, AlertCircle, Loader2, LayoutDashboard, ArrowLeft, ShieldCheck } from "lucide-react";
+import { siteConfig } from "@/config/siteConfig";
 
 function VerifyUpdateContent() {
   const searchParams = useSearchParams();
@@ -20,8 +21,7 @@ function VerifyUpdateContent() {
       : { success: false, message: "" }
   );
 
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000";
+  const API_BASE_URL = siteConfig.contact.serverApiUrl;
 
   useEffect(() => {
     if (!token) return;
@@ -158,7 +158,7 @@ export default function VerifyUpdatePage() {
           অ্যাকাউন্ট ভেরিফিকেশন
         </h2>
         <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-          আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল পোর্টাল
+          {siteConfig.institution.nameBn} পোর্টাল
         </p>
       </div>
 

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { siteConfig } from "@/config/siteConfig";
 import { toast } from "react-toastify";
 import { Eye, EyeOff, X } from "lucide-react";
 
@@ -173,8 +174,8 @@ export default function LoginPage({ onClose }) {
           >
             <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-full p-1 bg-white dark:bg-slate-800 shadow-md border-2 border-emerald-700 dark:border-amber-400 flex items-center justify-center transition-transform duration-200 group-hover:scale-105 group-hover:shadow-lg">
               <Image
-                src="/aimlogo1.png"
-                alt="As-Salam Ideal Madrasah (AIM) Purbachal Logo"
+                src={siteConfig.branding.iconLogo}
+                alt={`${siteConfig.institution.nameEn} Logo`}
                 width={72}
                 height={72}
                 className="object-contain rounded-full"
@@ -186,7 +187,7 @@ export default function LoginPage({ onClose }) {
             অ্যাকাউন্টে লগইন করুন
           </h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল ম্যানেজমেন্ট সিস্টেম
+            {siteConfig.institution.nameBn} ম্যানেজমেন্ট সিস্টেম
           </p>
         </div>
 

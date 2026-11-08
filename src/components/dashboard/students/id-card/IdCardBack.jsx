@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import { siteConfig } from '@/config/siteConfig';
 
 export const IdCardBack = () => {
     return (
@@ -29,7 +30,7 @@ export const IdCardBack = () => {
                         This card remains the property of
                     </p>
                     <p className="text-[8.5px] font-bold font-serif text-black leading-tight">
-                        As-Salam Ideal Madrasah (AIM) Purbachal
+                        {siteConfig.institution.nameEn}
                     </p>
                     <p className="text-[7.5px] font-serif leading-tight font-normal text-black">
                         Not Transferable
@@ -38,13 +39,13 @@ export const IdCardBack = () => {
                         This card identifies you as a student of
                     </p>
                     <p className="text-[8px] font-bold font-serif text-black leading-tight">
-                        As-Salam Ideal Madrasah (AIM) Purbachal
+                        {siteConfig.institution.nameEn}
                     </p>
                     <p className="text-[7px] leading-tight font-serif font-normal text-black">
                         You must produce this card on demand
                     </p>
                     <p className="text-[7px] leading-tight font-serif font-normal text-black">
-                        If you leave the institute you must return this card to the office of AIM Purbachal
+                        If you leave the institute you must return this card to the office of {siteConfig.institution.shortName}
                     </p>
 
                     {/* হাইলাইটেড রিকোভারি নোটিশ */}
@@ -60,18 +61,17 @@ export const IdCardBack = () => {
                     </div>
 
                     <p className="text-[8.5px] font-bold font-serif text-black leading-none mt-0.5">
-                        As-Salam Ideal Madrasah (AIM) Purbachal
+                        {siteConfig.institution.nameEn}
                     </p>
 
                     {/* ঠিকানা ও যোগাযোগ */}
                     <div className="text-[7.5px] font-serif leading-snug text-black mt-0.5 space-y-1">
-                        <p className="font-normal text-gray-900">Kazirbag (Adjacent to Purbachal)</p>
-                        <p className="font-normal text-gray-900">Rupganj, Narayanganj</p>
+                        <p className="font-normal text-gray-900">{siteConfig.contact.shortAddressEn}</p>
                         <p className="font-bold tracking-wider font-mono text-[8px] mt-0.5 text-black">
-                            01316-209-201
+                            {siteConfig.contact.whatsappDisplay}
                         </p>
                         <p className="font-bold tracking-wider font-mono text-[8px] text-black">
-                            01748-868-161
+                            {siteConfig.contact.phoneSecondary}
                         </p>
                     </div>
 
@@ -79,19 +79,19 @@ export const IdCardBack = () => {
                     <div className="pt-2 border-t border-gray-300 grid grid-cols-2 gap-x-1 gap-y-0.5 font-sans w-full px-0.6">
                         <div className="flex items-center justify-center gap-0.5 text-[6.5px]">
                             <span className="text-blue-600 font-bold">f</span>
-                            <span className="truncate font-medium">aimhabiganj</span>
+                            <span className="truncate font-medium">{siteConfig.social.facebookHandle}</span>
                         </div>
                         <div className="flex items-center justify-center gap-0.5 text-[6.5px]">
                             <span className="text-red-600 font-bold">▶</span>
-                            <span className="truncate font-medium">aimhabiganj</span>
+                            <span className="truncate font-medium">{siteConfig.social.youtubeHandle}</span>
                         </div>
                         <div className="flex items-center justify-center gap-0.5 text-[6.5px]">
                             <span className="text-emerald-600 font-bold">🌐</span>
-                            <span className="truncate font-medium">www.aimhabiganj.com</span>
+                            <span className="truncate font-medium">{siteConfig.contact.websiteDomain}</span>
                         </div>
                         <div className="flex items-center justify-center gap-0.5 text-[5.5px] leading-tight">
                             <span className="text-red-500 font-bold text-[6.5px]">✉</span>
-                            <span className="break-all font-medium">aimhabiganj@gmail.com</span>
+                            <span className="break-all font-medium">{siteConfig.contact.email}</span>
                         </div>
                     </div>
                 </div>

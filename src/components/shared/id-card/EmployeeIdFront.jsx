@@ -2,6 +2,7 @@
 
 import React from "react";
 import BarcodeSVG from "react-barcode";
+import { siteConfig } from "@/config/siteConfig";
 
 /**
  * EmployeeIdFront
@@ -74,8 +75,8 @@ export default function EmployeeIdFront({
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/aimlogo1.png"
-                alt="AIM Logo"
+                src={siteConfig.branding.iconLogo}
+                alt={`${siteConfig.institution.shortName} Logo`}
                 className="w-full h-full object-contain"
               />
             </div>
@@ -85,30 +86,30 @@ export default function EmployeeIdFront({
           {isStaff ? (
             <div className="flex-1 flex flex-col items-center justify-center text-center pl-1 pr-1">
               <p className="text-[9.5px] font-bold tracking-wider leading-none text-white drop-shadow-xs font-serif">
-                المدرسة الإسلامية النموذجية
+                {siteConfig.institution.nameAr}
               </p>
               <h1 className="text-[11.5px] font-black tracking-normal leading-tight uppercase font-sans text-white drop-shadow-sm mt-[1px]">
-                AS SALAM IDEAL MADRASAH (AIM) PURBACHAL
+                {siteConfig.institution.nameEn}
               </h1>
               <p className="text-[6.8px] font-semibold text-emerald-100 leading-none tracking-tight">
-                Kazirbag (Adjacent to Purbachal), Rupganj, Narayanganj. EIIN: 139589
+                {siteConfig.contact.addressEn} EIIN: {siteConfig.institution.eiinEn}
               </p>
             </div>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-center pl-1 pr-1">
               <p className="text-[9.5px] font-bold tracking-wider leading-none text-white drop-shadow-xs font-serif">
-                مدرسة السلام النموذجية
+                {siteConfig.institution.nameAr}
               </p>
               <p className="text-[8px] font-bold text-emerald-100 leading-tight mt-0.5 tracking-tight">
-                আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল
+                {siteConfig.institution.nameBn}
               </p>
               <div className="mt-0.5 px-2 py-[1px] bg-white rounded-full shadow-2xs">
                 <h1 className="text-[9px] font-black tracking-tight leading-none text-[#C02626] uppercase">
-                  As-Salam Ideal Madrasah (AIM) Purbachal
+                  {siteConfig.institution.nameEn}
                 </h1>
               </div>
               <p className="text-[6px] font-black italic tracking-wider leading-tight text-cyan-200 mt-0.5 drop-shadow-xs">
-                ✦ AIM For Ultimate Success ✦
+                ✦ {siteConfig.institution.slogan} ✦
               </p>
             </div>
           )}
@@ -216,7 +217,7 @@ export default function EmployeeIdFront({
               <div className="w-[54px] flex flex-col items-center pt-0.5 mt-0.5 border-t border-slate-400">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/principle's_signature.jpg"
+                  src={siteConfig.branding.principalSignature}
                   alt="Signature"
                   className="h-[12px] object-contain opacity-85"
                 />
@@ -308,7 +309,7 @@ export default function EmployeeIdFront({
                 <div className="relative h-6 w-16 flex items-center justify-end">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/principle's_signature.jpg"
+                    src={siteConfig.branding.principalSignature}
                     alt="Authorized Signature"
                     className="max-h-6 max-w-full object-contain mix-blend-multiply contrast-[400%]"
                   />

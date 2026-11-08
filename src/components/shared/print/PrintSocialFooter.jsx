@@ -2,6 +2,7 @@ import React from "react";
 import { Globe, Mail, Phone } from "lucide-react";
 import { BsWhatsapp, BsYoutube } from "react-icons/bs";
 import { FaFacebook } from "react-icons/fa";
+import { siteConfig } from "@/config/siteConfig";
 
 export default function PrintSocialFooter({
   className = "pt-1 border-t border-gray-300",
@@ -13,32 +14,36 @@ export default function PrintSocialFooter({
       <div className={innerClassName}>
         <span className="flex items-center gap-0.5">
           <Phone className="w-2.5 h-2.5 text-gray-700" />
-          {englishDigits ? "01316-209201" : "০১৩১৬-২০৯২০১"}
+          {englishDigits
+            ? siteConfig.contact.phoneSecondary
+            : siteConfig.contact.phoneSecondaryBn}
         </span>
 
         <span className="flex items-center gap-0.5">
           <BsWhatsapp className="w-2.5 h-2.5 text-green-600" />
-          {englishDigits ? "01748-886161" : "০১৭৪৮-৮৮৬১৬১"}
+          {englishDigits
+            ? siteConfig.contact.whatsappDisplay
+            : siteConfig.contact.whatsappDisplayBn}
         </span>
 
         <span className="flex items-center gap-0.5">
           <Globe className="w-2.5 h-2.5 text-blue-500" />
-          www.aimhabiganj.com
+          {siteConfig.contact.websiteDomain}
         </span>
 
         <span className="flex items-center gap-0.5">
           <Mail className="w-2.5 h-2.5 text-red-500" />
-          aimhabiganj@gmail.com
+          {siteConfig.contact.email}
         </span>
 
         <span className="flex items-center gap-0.5">
           <FaFacebook className="w-2.5 h-2.5 text-blue-600" />
-          aimhabiganj
+          {siteConfig.social.facebookHandle}
         </span>
 
         <span className="flex items-center gap-0.5">
           <BsYoutube className="w-2.5 h-2.5 text-red-600" />
-          aimhabiganj
+          {siteConfig.social.youtubeHandle}
         </span>
       </div>
     </div>

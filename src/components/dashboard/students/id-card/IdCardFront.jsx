@@ -4,6 +4,7 @@ import React from "react";
 import BarcodeSVG from "react-barcode";
 import AutoScaledText from "@/components/shared/AutoScaledText";
 import { getStudentClassDetails } from "@/lib/studentUtils";
+import { siteConfig } from "@/config/siteConfig";
 
 export function IdCardFront({ student }) {
   if (!student) return null;
@@ -35,8 +36,8 @@ export function IdCardFront({ student }) {
           <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 bg-white">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/aimlogo1.png"
-              alt="AIM Logo"
+              src={siteConfig.branding.iconLogo}
+              alt={`${siteConfig.institution.shortName} Logo`}
               className="w-full h-full object-cover scale-[1.06] rounded-full"
             />
           </div>
@@ -45,8 +46,8 @@ export function IdCardFront({ student }) {
           <div className="flex-1 flex items-center h-11">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/banner.jpeg"
-              alt="As-Salam Ideal Madrasah (AIM) Purbachal Name and Slogan"
+              src={siteConfig.branding.banner}
+              alt={`${siteConfig.institution.nameEn} Name and Slogan`}
               className="h-full object-cover"
             />
           </div>
@@ -206,7 +207,7 @@ export function IdCardFront({ student }) {
           {/* সিগনেচার ইমেজ */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/principle's_signature.jpg"
+            src={siteConfig.branding.principalSignature}
             alt="Authorized Signature"
             className="absolute -top-9 -right-2 h-10 w-18 object-contain mix-blend-multiply contrast-[800%] brightness-[80%] grayscale -rotate-45"
           />

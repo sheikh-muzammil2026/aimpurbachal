@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { siteConfig } from "@/config/siteConfig";
 
 export default function AdmissionFormPage3({ formData, handleChange }) {
   const [uploadingField, setUploadingField] = useState(null);
@@ -90,7 +91,7 @@ export default function AdmissionFormPage3({ formData, handleChange }) {
               placeholder="(শিক্ষার্থীর নাম লিখুন)"
               className="w-full sm:w-60 text-center font-bold border-b border-gray-400 focus:outline-none bg-transparent px-1 text-sm mt-1 sm:mt-0 text-emerald-850"
             />
-            <span>আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল এ ভর্তি হওয়ার আগ্রহ প্রকাশ করে অঙ্গীকার করছি যে—</span>
+            <span>{siteConfig.institution.nameBn} এ ভর্তি হওয়ার আগ্রহ প্রকাশ করে অঙ্গীকার করছি যে—</span>
           </div>
 
           {/* ১০টি পয়েন্ট */}

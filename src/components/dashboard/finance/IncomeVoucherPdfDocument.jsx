@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer";
+import siteConfig from "@/config/siteConfig";
 
 // Register HindSiliguri Bangla Fonts with fallback
 try {
@@ -385,8 +386,12 @@ function VoucherHalf({ tx, copyType, baseUrl = "" }) {
     subInfo = "দাতা / অনুদানকারী";
   }
 
-  const logoUrl = baseUrl ? `${baseUrl}/aimlogo1.png` : "/aimlogo1.png";
-  const bannerUrl = baseUrl ? `${baseUrl}/banner.png` : "/banner.png";
+  const logoUrl = baseUrl
+    ? `${baseUrl}${siteConfig.branding.iconLogo}`
+    : siteConfig.branding.iconLogo;
+  const bannerUrl = baseUrl
+    ? `${baseUrl}${siteConfig.branding.banner}`
+    : siteConfig.branding.banner;
 
   const copyLabel =
     copyType === "office"
@@ -421,7 +426,7 @@ function VoucherHalf({ tx, copyType, baseUrl = "" }) {
               alt="Madrasah Banner"
             />
             <Text style={styles.headerSubtitle}>
-              কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।
+              {siteConfig.contact.addressBn}
             </Text>
           </View>
         </View>
@@ -575,8 +580,8 @@ function VoucherHalf({ tx, copyType, baseUrl = "" }) {
         {/* সোশ্যাল ও কন্টাক্ট ইনফো */}
         <View style={styles.socialFooter}>
           <Text style={styles.socialFooterText}>
-            ০১৩১৬-২০৯২০১ | WhatsApp: ০১৭৪৮-৮৮৬১৬১ | www.aimhabiganj.com |
-            aimhabiganj@gmail.com | FB/YT: aimhabiganj
+            {siteConfig.contact.phoneOfficeBn} | WhatsApp: {siteConfig.contact.phoneSecondaryBn} | {siteConfig.contact.websiteDisplay} |{" "}
+            {siteConfig.contact.email} | FB/YT: {siteConfig.social.facebookHandle}
           </Text>
         </View>
       </View>
@@ -590,8 +595,8 @@ export default function IncomeVoucherPdfDocument({ tx, baseUrl = "" }) {
 
   return (
     <Document
-      title={`AIM-Income-Voucher-${tx.receiptNo || "Receipt"}`}
-      author="Assalam Ideal Madrasah"
+      title={`${siteConfig.institution.shortName}-Income-Voucher-${tx.receiptNo || "Receipt"}`}
+      author={siteConfig.institution.nameEn}
       subject="Official Income Receipt"
     >
       <Page size="A4" orientation="landscape" style={styles.page}>

@@ -10,10 +10,9 @@ import PrintSignatures from "@/components/shared/print/PrintSignatures";
 import PrintSocialFooter from "@/components/shared/print/PrintSocialFooter";
 import useUrlPagination from "@/hooks/useUrlPagination";
 import { toBengaliDigits } from "@/lib/studentUtils";
+import siteConfig from "@/config/siteConfig";
 
-const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000"
-).replace(/\/$/, "");
+const API_BASE_URL = siteConfig.contact.apiUrl.replace(/\/$/, "");
 
 function ClassWiseResultContent() {
   const { currentPage, currentLimit, updatePaginationParams, resetPageToFirst } =
@@ -68,8 +67,8 @@ function ClassWiseResultContent() {
   const [loading, setLoading] = useState(false);
   const [toggling, setToggling] = useState(false);
 
-  const [principalSignatureSrc] = useState("/principle's_signature.jpg");
-  const [controllerSignatureSrc] = useState("/anarul.png");
+  const [principalSignatureSrc] = useState(siteConfig.branding.principalSignature);
+  const [controllerSignatureSrc] = useState(siteConfig.branding.controllerSignature);
 
   const fetchClassResults = useCallback(async () => {
     if (!selectedClass) return;
@@ -949,7 +948,7 @@ function ClassWiseResultContent() {
               <div className="watermark-wrapper absolute inset-0 m-auto flex items-center justify-center pointer-events-none z-0 opacity-[0.06] overflow-hidden">
                 <div className="w-[480px] h-[480px] rounded-full overflow-hidden flex items-center justify-center">
                   <Image
-                    src="/aimlogo1.png"
+                    src={siteConfig.branding.iconLogo}
                     alt="Watermark Logo"
                     width={480}
                     height={480}
@@ -965,7 +964,7 @@ function ClassWiseResultContent() {
                     <div className="flex items-center justify-between gap-2">
                       <div className="header-logo-container w-30 h-30 print:w-30 print:h-30 rounded-full overflow-hidden flex-shrink-0 bg-transparent relative flex items-center justify-center -mr-3">
                         <Image
-                          src={"/aimlogo1.png"}
+                          src={siteConfig.branding.iconLogo}
                           alt="Institution Logo"
                           width={120}
                           height={120}
@@ -976,7 +975,7 @@ function ClassWiseResultContent() {
                       </div>
                       <div className="flex-1 text-center px-1">
                         <Image
-                          src={"/banner_routine.png"}
+                          src={siteConfig.branding.bannerRoutine}
                           alt="Institution Banner"
                           width={2000}
                           height={400}

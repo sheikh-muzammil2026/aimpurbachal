@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer";
+import { siteConfig } from "@/config/siteConfig";
 
 // Register HindSiliguri Bangla Fonts from local public/fonts directory
 try {
@@ -289,20 +290,22 @@ export default function TeacherMonthlyAttendancePdfDocument({
   selectedMonth = "",
   origin = "",
 }) {
-  const logoUrl = origin ? `${origin}/aimlogo1.png` : "/aimlogo1.png";
+  const logoUrl = origin
+    ? `${origin}${siteConfig.branding.logo}`
+    : siteConfig.branding.logo;
   const bannerUrl = origin
-    ? `${origin}/banner_routine.png`
-    : "/banner_routine.png";
+    ? `${origin}${siteConfig.branding.bannerRoutine}`
+    : siteConfig.branding.bannerRoutine;
   const signatureUrl = origin
-    ? `${origin}/principle's_signature.jpg`
-    : "/principle's_signature.jpg";
+    ? `${origin}${siteConfig.branding.principalSignature}`
+    : siteConfig.branding.principalSignature;
 
   const teachersSummary = monthlyData?.teachersSummary || [];
 
   return (
     <Document
       title={`Teachers-Monthly-Attendance-${selectedMonth || "Report"}`}
-      author="As-Salam Ideal Madrasah (AIM) Purbachal"
+      author={siteConfig.institution.nameEn}
       subject="Monthly Teacher Attendance Report"
     >
       <Page size="A4" orientation="landscape" style={styles.page}>
@@ -482,7 +485,7 @@ export default function TeacherMonthlyAttendancePdfDocument({
           <View style={styles.signatureBlock}>
             <View style={styles.signatureImageWrapper}>
               <Image
-                src={"/principle's_signature.jpg"}
+                src={signatureUrl}
                 style={styles.signatureImage}
                 alt="Principal Signature"
               />

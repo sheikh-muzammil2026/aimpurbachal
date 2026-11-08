@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer";
+import { siteConfig } from "@/config/siteConfig";
 
 // Register fonts
 Font.register({
@@ -396,10 +397,12 @@ export const PdfTeacherFront = ({ teacher = {}, origin = "" }) => {
   const mobile = teacher?.phone || teacher?.mobile || "—";
   const bloodGroup = teacher?.bloodGroup || teacher?.blood || "—";
   const idNo = teacher?.teacherId || teacher?.idNo || "—";
-  const logoUrl = origin ? `${origin}/aimlogo1.png` : "/aimlogo1.png";
+  const logoUrl = origin
+    ? `${origin}${siteConfig.branding.iconLogo}`
+    : siteConfig.branding.iconLogo;
   const sigUrl = origin
-    ? `${origin}/principle's_signature.jpg`
-    : "/principle's_signature.jpg";
+    ? `${origin}${siteConfig.branding.principalSignature}`
+    : siteConfig.branding.principalSignature;
   const photoUrl =
     teacher?.profileImage ||
     teacher?.image ||
@@ -413,12 +416,12 @@ export const PdfTeacherFront = ({ teacher = {}, origin = "" }) => {
           <Image src={logoUrl} style={styles.logoImg} alt="AIM Logo" />
         </View>
         <View style={styles.headerTitles}>
-          <Text style={styles.arabicText}>مدرسة السلام النموذجية</Text>
-          <Text style={styles.banglaTitle}>আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল</Text>
+          <Text style={styles.arabicText}>{siteConfig.institution.nameAr}</Text>
+          <Text style={styles.banglaTitle}>{siteConfig.institution.nameBn}</Text>
           <View style={styles.englishPill}>
-            <Text style={styles.englishTitle}>AS-SALAM IDEAL MADRASAH (AIM) PURBACHAL</Text>
+            <Text style={styles.englishTitle}>{siteConfig.institution.nameEn.toUpperCase()}</Text>
           </View>
-          <Text style={styles.mottoText}>✦ AIM For Ultimate Success ✦</Text>
+          <Text style={styles.mottoText}>✦ {siteConfig.institution.slogan} ✦</Text>
         </View>
       </View>
 
@@ -508,20 +511,20 @@ export const PdfTeacherBack = () => {
             This card remains the property of
           </Text>
           <Text style={styles.backNoticeBold}>
-            As Salam Ideal Madrasah (AIM)
+            {siteConfig.institution.nameEn}
           </Text>
           <Text style={styles.backNoticeBold}>Not Transferable</Text>
           <Text style={styles.backNoticeRegular}>
             This card identifies you as an employee of
           </Text>
           <Text style={styles.backNoticeBold}>
-            As Salam Ideal Madrasah (AIM)
+            {siteConfig.institution.nameEn}
           </Text>
           <Text style={styles.backNoticeRegular}>
             You must produce this card on demand. If you leave the job
           </Text>
           <Text style={styles.backNoticeRegular}>
-            you must return this card to the office of AIM.
+            you must return this card to the office of {siteConfig.institution.shortName}.
           </Text>
         </View>
 
@@ -534,19 +537,19 @@ export const PdfTeacherBack = () => {
 
         {/* Org Details */}
         <View style={styles.backOrgSection}>
-          <Text style={styles.backOrgName}>AS Salam Ideal Madrasah (AIM)</Text>
-          <Text style={styles.backOrgAddr}>Kazirbag (Adjacent to Purbachal), Rupganj, Narayanganj</Text>
+          <Text style={styles.backOrgName}>{siteConfig.institution.nameEn}</Text>
+          <Text style={styles.backOrgAddr}>{siteConfig.contact.addressEn}</Text>
           <Text style={styles.backOrgPhone}>
-            Please Call : 01316209201 (office)
+            Please Call : {siteConfig.contact.phonePrimary} (office)
           </Text>
         </View>
 
         {/* Footer */}
         <View style={styles.backFooter}>
-          <Text style={styles.backFooterItem}>web: aimhabiganj.com</Text>
-          <Text style={styles.backFooterItem}>YT: aimhabiganj</Text>
-          <Text style={styles.backFooterItem}>FB: aimhabiganj</Text>
-          <Text style={styles.backFooterItem}>aimhabiganj@gmail.com</Text>
+          <Text style={styles.backFooterItem}>web: {siteConfig.contact.websiteDomain}</Text>
+          <Text style={styles.backFooterItem}>YT: {siteConfig.social.youtubeHandle}</Text>
+          <Text style={styles.backFooterItem}>FB: {siteConfig.social.facebookHandle}</Text>
+          <Text style={styles.backFooterItem}>{siteConfig.contact.email}</Text>
         </View>
       </View>
     </View>

@@ -30,8 +30,9 @@ import {
   Volume2,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import siteConfig from "@/config/siteConfig";
 
-const API_BASE = process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000";
+const API_BASE = siteConfig.contact.apiUrl;
 
 const NOTICE_CATEGORIES = [
   { id: "all", label: "সকল নোটিশ" },
@@ -604,7 +605,7 @@ export default function ParentNoticesPage() {
 
                         <div className="pt-4 mt-3 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between text-xs text-neutral-500">
                           <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400">
-                            {n.publisher || "দারুল উলুম প্রশাসন"}
+                            {n.publisher || `${siteConfig.institution.shortNameBn} প্রশাসন`}
                           </span>
                           <span className="flex items-center gap-1 text-emerald-600 font-bold hover:underline">
                             <span>বিস্তারিত পড়ুন</span>
@@ -656,10 +657,10 @@ export default function ParentNoticesPage() {
                   বিসমিল্লাহির রাহমানির রাহিম
                 </div>
                 <h2 className="text-2xl font-black text-neutral-900 mt-0.5">
-                  আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল
+                  {siteConfig.institution.nameBn}
                 </h2>
                 <p className="text-xs text-neutral-600">
-                  কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ। | ফোন: ০১৭৫০-২৩৯০০১ | ওয়েবসাইট: aimhabiganj.edu.bd
+                  {siteConfig.contact.addressBn} | ফোন: {siteConfig.contact.phonePrimaryBn} | ওয়েবসাইট: {siteConfig.contact.websiteDisplay}
                 </p>
                 <div className="inline-block mt-2 px-4 py-0.5 bg-emerald-800 text-white text-xs font-black rounded-md">
                   অফিসিয়াল বিজ্ঞপ্তি / নোটিশ
@@ -668,7 +669,7 @@ export default function ParentNoticesPage() {
 
               {/* Memo Info Row */}
               <div className="flex items-center justify-between text-xs font-bold text-neutral-600 border-b border-neutral-200 pb-2">
-                <div>স্মারক নং: {selectedNotice.referenceNo || "AIM/NOT/2026/099"}</div>
+                <div>স্মারক নং: {selectedNotice.referenceNo || `${siteConfig.institution.shortName}/NOT/${siteConfig.academic.currentYearEn}/099`}</div>
                 <div>তারিখ: {selectedNotice.date}</div>
               </div>
 

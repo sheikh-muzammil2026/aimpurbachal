@@ -34,8 +34,9 @@ import {
 } from "@/components/dashboard/attendance/AttendanceMetricsAndFilters";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
+import siteConfig from "@/config/siteConfig";
 
-const API_BASE = process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000";
+const API_BASE = siteConfig.contact.apiUrl;
 
 const ADMIN_STAFF_I18N = {
   bn: {
@@ -1007,7 +1008,7 @@ export default function StaffAttendancePage() {
                     <div className="w-20 h-20 md:w-28 md:h-28 rounded-full overflow-hidden flex-shrink-0 bg-transparent relative flex items-center justify-center -mr-3">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src="/aimlogo1.png"
+                        src={siteConfig.branding.iconLogo}
                         alt="Institution Logo"
                         className="w-full h-full object-cover scale-[1.05]"
                       />
@@ -1015,7 +1016,7 @@ export default function StaffAttendancePage() {
                     <div className="flex-grow text-center">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src="/banner_routine.png"
+                        src={siteConfig.branding.bannerRoutine}
                         alt="Institution Banner"
                         className="w-full h-auto max-h-45 object-fill mx-auto print:max-h-45"
                       />
@@ -1158,7 +1159,7 @@ export default function StaffAttendancePage() {
                     <div className="text-center flex flex-col items-center">
                       <div className="relative w-36 h-6 print:mt-auto">
                         <Image
-                          src={"/principle's_signature.jpg"}
+                          src={siteConfig.branding.principalSignature}
                           alt="Principal Signature"
                           width={100}
                           height={40}

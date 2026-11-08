@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import siteConfig from '@/config/siteConfig';
 
 export default function ExamAttendanceSheet() {
     // নির্বাচন করার জন্য স্টেটসমূহ
@@ -40,7 +41,7 @@ export default function ExamAttendanceSheet() {
     useEffect(() => {
         const fetchExams = async () => {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_API}/api/exams/list`);
+                const response = await fetch(`${siteConfig.contact.apiUrl}/api/exams/list`);
                 const result = await response.json();
                 if (result.success && Array.isArray(result.data) && result.data.length > 0) {
                     setExams(result.data);
@@ -63,7 +64,7 @@ export default function ExamAttendanceSheet() {
             setLoading(true);
             setError(null);
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_SERVER_API}/api/exams/attendance-sheet?className=${encodeURIComponent(selectedClass)}&examName=${encodeURIComponent(selectedExam)}`
+                `${siteConfig.contact.apiUrl}/api/exams/attendance-sheet?className=${encodeURIComponent(selectedClass)}&examName=${encodeURIComponent(selectedExam)}`
             );
             const result = await response.json();
 
@@ -274,7 +275,7 @@ export default function ExamAttendanceSheet() {
                             <div className="flex justify-between items-center border-b-2 border-black pb-2 mb-3">
                                 <div className="w-[130px] h-[100px] relative flex-shrink-0">
                                     <img
-                                        src="/aimlogo1.png"
+                                        src={siteConfig.branding.iconLogo}
                                         alt="Logo"
                                         className="w-full h-full object-contain"
                                     />
@@ -282,7 +283,7 @@ export default function ExamAttendanceSheet() {
 
                                 <div className="flex-grow flex justify-end items-center">
                                     <img
-                                        src="/banner.png"
+                                        src={siteConfig.branding.banner}
                                         alt="Institution Banner"
                                         className="max-h-[100px] object-contain"
                                     />

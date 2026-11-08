@@ -33,8 +33,9 @@ import {
   BookOpen,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import siteConfig from "@/config/siteConfig";
 
-const API_BASE = process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000";
+const API_BASE = siteConfig.contact.apiUrl;
 
 export default function ChildProfilePage() {
   const [data, setData] = useState(null);
@@ -951,7 +952,7 @@ export default function ChildProfilePage() {
                         প্রতিষ্ঠান কর্তৃক অনুমোদিত শিক্ষার্থী প্রোফাইল
                       </h4>
                       <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-0.5">
-                        প্রদত্ত সকল তথ্য দারুল উলুম আল-ইসলামিয়া হাবিবগঞ্জ প্রশাসন রেকর্ড অনুযায়ী সংরক্ষিত।
+                        প্রদত্ত সকল তথ্য {siteConfig.institution.nameBn} প্রশাসন রেকর্ড অনুযায়ী সংরক্ষিত।
                       </p>
                     </div>
                   </div>
@@ -999,9 +1000,9 @@ export default function ChildProfilePage() {
                       বিসমিল্লাহির রাহমানির রাহিম
                     </div>
                     <h3 className="font-black text-sm tracking-tight leading-tight">
-                      দারুল উলুম আল-ইসলামিয়া হাবিবগঞ্জ
+                      {siteConfig.institution.nameBn}
                     </h3>
-                    <p className="text-[9px] text-emerald-200">মাদরাসা রোড, সদর, হাবিবগঞ্জ</p>
+                    <p className="text-[9px] text-emerald-200">{siteConfig.contact.addressBn}</p>
                     <div className="inline-block mt-1 px-3 py-0.5 bg-amber-400 text-neutral-950 text-[10px] font-black rounded-full shadow-xs">
                       শিক্ষার্থী পরিচয়পত্র
                     </div>
@@ -1074,7 +1075,7 @@ export default function ChildProfilePage() {
                       পরিচয়পত্রের জরুরি নির্দেশনাবলী
                     </h4>
                     <p className="text-[10px] text-neutral-500">
-                      এই কার্ডটি দারুল উলুম আল-ইসলামিয়া হাবিবগঞ্জ-এর সম্পত্তি।
+                      এই কার্ডটি {siteConfig.institution.nameBn}-এর সম্পত্তি।
                     </p>
                   </div>
 
@@ -1087,8 +1088,8 @@ export default function ChildProfilePage() {
 
                   <div className="bg-neutral-50 p-2.5 rounded-xl border border-neutral-200 text-[10px] space-y-1">
                     <div className="font-bold text-neutral-900">মাদরাসা ক্যাম্পাস ঠিকানা:</div>
-                    <div className="text-neutral-600">কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।</div>
-                    <div className="text-emerald-700 font-bold">ফোন: ০১৭৫০-২৩৯০০১</div>
+                    <div className="text-neutral-600">{siteConfig.contact.addressBn}</div>
+                    <div className="text-emerald-700 font-bold">ফোন: {siteConfig.contact.phonePrimaryBn}</div>
                   </div>
 
                   <div className="text-center pt-2 border-t border-neutral-200">
@@ -1138,10 +1139,10 @@ export default function ChildProfilePage() {
                   বিসমিল্লাহির রাহমানির রাহিম
                 </div>
                 <h2 className="text-2xl font-black text-neutral-900 mt-0.5">
-                  আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল
+                  {siteConfig.institution.nameBn}
                 </h2>
                 <p className="text-xs text-neutral-600">
-                  কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ। | ফোন: ০১৭৫০-২৩৯০০১ | ওয়েবসাইট: aimhabiganj.edu.bd
+                  {siteConfig.contact.addressBn} | ফোন: {siteConfig.contact.phonePrimaryBn} | ওয়েবসাইট: {siteConfig.contact.websiteDisplay}
                 </p>
                 <div className="inline-block mt-2 px-4 py-0.5 bg-emerald-800 text-white text-xs font-black rounded-md">
                   শিক্ষার্থীর পূর্ণাঙ্গ প্রাতিষ্ঠানিক তথ্যপঞ্জি (বায়োডাটা)

@@ -7,6 +7,7 @@ import {
   resolveVoucherParty,
   VoucherHeader,
 } from "@/components/dashboard/finance/VoucherSharedParts";
+import siteConfig from "@/config/siteConfig";
 
 // Single Half for Income Voucher (Office Copy or Donor/Student Copy)
 function VoucherSingleHalf({
@@ -37,7 +38,7 @@ function VoucherSingleHalf({
       {/* Background Watermark Logo matching Admit Card */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 opacity-[0.06]">
         <Image
-          src="/aimlogo1.png"
+          src={siteConfig.branding.iconLogo}
           alt="Watermark Logo"
           width={180}
           height={180}

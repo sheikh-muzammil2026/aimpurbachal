@@ -2,6 +2,7 @@
 
 import { Star, Quote, Sparkles, BadgeCheck } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { siteConfig } from "@/config/siteConfig";
 
 export default function ReviewsTestimonial() {
   const { language } = useLanguage();
@@ -18,8 +19,7 @@ export default function ReviewsTestimonial() {
         {
           name: "মাওলানা মাহমুদুল হাসান",
           role: "বিশিষ্ট আলেম ও শিক্ষাবিদ",
-          comment:
-            "আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল-এর দ্বীনি ও আধুনিক শিক্ষার সমন্বয়টি সত্যিই অনন্য। বিশেষ করে শিক্ষার্থীদের আখলাক এবং সুন্নতি জিন্দেগি গঠনের প্রতি শিক্ষকদের আন্তরিকতা অত্যন্ত প্রশংসনীয়।",
+          comment: `${siteConfig.institution.nameBn}-এর দ্বীনি ও আধুনিক শিক্ষার সমন্বয়টি সত্যিই অনন্য। বিশেষ করে শিক্ষার্থীদের আখলাক এবং সুন্নতি জিন্দেগি গঠনের প্রতি শিক্ষকদের আন্তরিকতা অত্যন্ত প্রশংসনীয়।`,
         },
         {
           name: "প্রকৌশলী আনিসুর রহমান",
@@ -52,8 +52,7 @@ export default function ReviewsTestimonial() {
         {
           name: "Mawlana Mahmudul Hasan",
           role: "Islamic Scholar & Educator",
-          comment:
-            "The integration of authentic Islamic scholarship and modern academics at As-Salam Ideal Madrasah (AIM) Purbachal is exemplary. The faculty’s dedication to building prophetic character is truly inspiring.",
+          comment: `The integration of authentic Islamic scholarship and modern academics at ${siteConfig.institution.nameEn} is exemplary. The faculty’s dedication to building prophetic character is truly inspiring.`,
         },
         {
           name: "Engr. Anisur Rahman",

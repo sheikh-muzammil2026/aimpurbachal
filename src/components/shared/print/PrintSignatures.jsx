@@ -1,10 +1,11 @@
 import React from "react";
 import Image from "next/image";
+import { siteConfig } from "@/config/siteConfig";
 
 export default function PrintSignatures({
   variant = "compact",
-  controllerSignatureSrc = "/anarul.png",
-  principalSignatureSrc = "/principle's_signature.jpg",
+  controllerSignatureSrc = siteConfig.branding.controllerSignature,
+  principalSignatureSrc = siteConfig.branding.principalSignature,
   controllerLabel = "পরীক্ষা নিয়ন্ত্রকের স্বাক্ষর",
   principalLabel = "প্রিন্সিপালের স্বাক্ষর",
   principalTopClass = "-top-1",
@@ -20,7 +21,7 @@ export default function PrintSignatures({
         <div className="text-center flex flex-col items-center">
           <div className="relative w-28 sm:w-36 h-10 flex items-end justify-center mb-1">
             <Image
-              src={controllerSignatureSrc || "/anarul.png"}
+              src={controllerSignatureSrc || siteConfig.branding.controllerSignature}
               alt="Exam Controller Signature"
               width={90}
               height={34}
@@ -37,7 +38,7 @@ export default function PrintSignatures({
         <div className="text-center flex flex-col items-center">
           <div className="relative w-28 sm:w-36 h-10 flex items-end justify-center mb-1">
             <Image
-              src={principalSignatureSrc || "/principle's_signature.jpg"}
+              src={principalSignatureSrc || siteConfig.branding.principalSignature}
               alt="Principal Signature"
               width={90}
               height={34}
@@ -64,7 +65,7 @@ export default function PrintSignatures({
       <div className="text-center flex flex-col items-center print:mt-auto relative">
         <div className="relative w-28 h-5">
           <Image
-            src={controllerSignatureSrc || "/anarul.png"}
+            src={controllerSignatureSrc || siteConfig.branding.controllerSignature}
             alt="Controller Signature"
             width={100}
             height={40}
@@ -82,7 +83,7 @@ export default function PrintSignatures({
       <div className="text-center flex flex-col items-center">
         <div className="relative w-28 h-5 print:mt-auto relative">
           <Image
-            src={principalSignatureSrc || "/principle's_signature.jpg"}
+            src={principalSignatureSrc || siteConfig.branding.principalSignature}
             alt="Principal Signature"
             width={100}
             height={40}

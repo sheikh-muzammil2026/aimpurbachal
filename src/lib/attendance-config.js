@@ -1,13 +1,14 @@
+import { siteConfig } from "@/config/siteConfig";
+
 // Fixed Geofence Configuration for Madrasa premises
-// As-Salam Ideal Madrasah (AIM) Purbachal Campus
 export const MADRASA_LOCATION = {
-  LATITUDE: parseFloat(process.env.NEXT_PUBLIC_MADRASA_LAT || "24.381197"),
-  LONGITUDE: parseFloat(process.env.NEXT_PUBLIC_MADRASA_LNG || "91.416974"),
-  RADIUS_METERS: parseFloat(process.env.NEXT_PUBLIC_MADRASA_RADIUS || "200"),
+  LATITUDE: siteConfig.geofence.lat,
+  LONGITUDE: siteConfig.geofence.lng,
+  RADIUS_METERS: siteConfig.geofence.radiusMeters || 200,
   MAX_ALLOWED_ACCURACY_METERS: 500,
   ACCURACY_TOLERANCE_METERS: 50,
-  NAME: "আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল ক্যাম্পাস",
-  ADDRESS: "কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।",
+  NAME: `${siteConfig.institution.nameBn} ${siteConfig.institution.campusNameBn}`,
+  ADDRESS: siteConfig.contact.addressBn,
 };
 
 // Attendance Schedule & Rules (Teachers)

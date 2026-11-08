@@ -36,9 +36,9 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
 import StaffIdFront from "@/components/dashboard/staff/id-card/StaffIdFront";
 import StaffIdBack from "@/components/dashboard/staff/id-card/StaffIdBack";
+import siteConfig from "@/config/siteConfig";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000";
+const API_BASE = siteConfig.contact.apiUrl;
 
 const DEPARTMENTS = [
   "সাধারণ প্রশাসন ও অফিস",
@@ -366,7 +366,7 @@ export default function StaffDashboard() {
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-xs font-semibold text-emerald-200">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল • স্টাফ পোর্টাল</span>
+              <span>{siteConfig.institution.nameBn} • স্টাফ পোর্টাল</span>
             </div>
 
             <div>
@@ -904,7 +904,7 @@ export default function StaffDashboard() {
                 <div className="pt-2 border-t border-white/10 flex items-center justify-between text-xs">
                   <span className="text-slate-400">জরুরি অফিস হেল্পলাইন:</span>
                   <span className="font-mono font-bold text-amber-400">
-                    ০১৮০৪৯০৯৫০০
+                    {siteConfig.contact.phonePrimaryBn}
                   </span>
                 </div>
               </div>

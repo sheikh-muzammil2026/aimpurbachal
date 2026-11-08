@@ -13,6 +13,7 @@ import {
   Layers,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { siteConfig } from "@/config/siteConfig";
 
 export default function FeaturedSections() {
   const { language } = useLanguage();
@@ -99,8 +100,7 @@ export default function FeaturedSections() {
       badge: "Our Core Curriculum",
       headingPrefix: "Signature Academic",
       headingHighlight: "Departments",
-      subtitle:
-        "Every department at As-Salam Ideal Madrasah (AIM) Purbachal is thoughtfully structured to unite authentic Quranic scholarship with contemporary academic excellence.",
+      subtitle: `Every department at ${siteConfig.institution.nameEn} is thoughtfully structured to unite authentic Quranic scholarship with contemporary academic excellence.`,
       applyBtn: "Apply for Admission",
       detailsBtn: "Explore Curriculum",
       departments: [

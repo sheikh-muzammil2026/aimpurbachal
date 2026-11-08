@@ -3,14 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Mail, ArrowLeft, CheckCircle, AlertCircle, Loader2, Sparkles } from "lucide-react";
+import { siteConfig } from "@/config/siteConfig";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState({ type: "", text: "", devUrl: "" });
 
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000";
+  const API_BASE_URL = siteConfig.contact.serverApiUrl;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,7 +69,7 @@ export default function ForgotPasswordPage() {
           পাসওয়ার্ড ভুলে গেছেন?
         </h2>
         <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-          আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল পোর্টাল
+          {siteConfig.institution.nameBn} পোর্টাল
         </p>
       </div>
 
