@@ -8,14 +8,45 @@ try {
   dns.setDefaultResultOrder("ipv4first");
 } catch (_) {}
 
-const dbName = (
-  process.env.MONGODB_DB_NAME ||
+function sanitizeEnvValue(val, keyName = "") {
+  if (!val || typeof val !== "string") return "";
+  let cleaned = val.trim();
+  // Strip accidental wrapping quotes ("..." or '...')
+  while (
+    (cleaned.startsWith('"') && cleaned.endsWith('"')) ||
+    (cleaned.startsWith("'") && cleaned.endsWith("'"))
+  ) {
+    cleaned = cleaned.slice(1, -1).trim();
+  }
+  // Strip accidental "KEY_NAME=" prefix if pasted into Vercel Value box
+  if (keyName) {
+    const prefixRegex = new RegExp(`^${keyName}\\s*=\\s*`, "i");
+    cleaned = cleaned.replace(prefixRegex, "").trim();
+  }
+  // Also strip any wrapping quotes remaining after prefix removal
+  while (
+    (cleaned.startsWith('"') && cleaned.endsWith('"')) ||
+    (cleaned.startsWith("'") && cleaned.endsWith("'"))
+  ) {
+    cleaned = cleaned.slice(1, -1).trim();
+  }
+  // If mongodb:// or mongodb+srv:// appears inside the string after an '=' sign, extract from there
+  if (keyName === "MONGODB_URI" && !cleaned.startsWith("mongodb")) {
+    const match = cleaned.match(/(mongodb(?:\+srv)?:\/\/.+)/i);
+    if (match) {
+      cleaned = match[1].trim().replace(/^["']|["']$/g, "");
+    }
+  }
+  return cleaned;
+}
+
+const dbName =
+  sanitizeEnvValue(process.env.MONGODB_DB_NAME, "MONGODB_DB_NAME") ||
   siteConfig.db.name ||
-  "aimpurbachal"
-).trim();
-const uri = (
-  process.env.MONGODB_URI || `mongodb://127.0.0.1:27017/${dbName}`
-).trim();
+  "aimpurbachal";
+const uri =
+  sanitizeEnvValue(process.env.MONGODB_URI, "MONGODB_URI") ||
+  `mongodb://127.0.0.1:27017/${dbName}`;
 
 const options = {
   serverSelectionTimeoutMS: 15000,
@@ -77,12 +108,25 @@ export const auth = betterAuth({
     transaction: isReplicaSet,
   }),
   secret:
-    process.env.BETTER_AUTH_SECRET ||
+    sanitizeEnvValue(process.env.BETTER_AUTH_SECRET, "BETTER_AUTH_SECRET") ||
     "build-time-secret-placeholder-minimum-32-characters-long",
   baseURL:
-    process.env.BETTER_AUTH_URL ||
-    process.env.NEXT_PUBLIC_BASE_URI ||
+    sanitizeEnvValue(process.env.BETTER_AUTH_URL, "BETTER_AUTH_URL") ||
+    sanitizeEnvValue(process.env.NEXT_PUBLIC_BASE_URI, "NEXT_PUBLIC_BASE_URI") ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"),
+  trustedOrigins: [
     "http://localhost:3000",
+    "https://aimpurbachal.vercel.app",
+    "https://aimpurbachal.com",
+    "https://www.aimpurbachal.com",
+    ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
+    ...(process.env.BETTER_AUTH_URL
+      ? [sanitizeEnvValue(process.env.BETTER_AUTH_URL, "BETTER_AUTH_URL")]
+      : []),
+    ...(process.env.NEXT_PUBLIC_BASE_URI
+      ? [sanitizeEnvValue(process.env.NEXT_PUBLIC_BASE_URI, "NEXT_PUBLIC_BASE_URI")]
+      : []),
+  ].filter(Boolean),
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
