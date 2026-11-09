@@ -1,11 +1,21 @@
 import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import dns from "node:dns";
 import { siteConfig } from "@/config/siteConfig";
 
-const dbName = process.env.MONGODB_DB_NAME || siteConfig.db.name || "aimpurbachal";
-const uri =
-  process.env.MONGODB_URI || `mongodb://127.0.0.1:27017/${dbName}`;
+try {
+  dns.setDefaultResultOrder("ipv4first");
+} catch (_) {}
+
+const dbName = (
+  process.env.MONGODB_DB_NAME ||
+  siteConfig.db.name ||
+  "aimpurbachal"
+).trim();
+const uri = (
+  process.env.MONGODB_URI || `mongodb://127.0.0.1:27017/${dbName}`
+).trim();
 
 const options = {
   serverSelectionTimeoutMS: 15000,
@@ -28,8 +38,15 @@ function isClientClosed(client) {
 }
 
 function getMongoClient() {
-  if (isClientClosed(global._betterAuthMongoClient)) {
+  if (
+    isClientClosed(global._betterAuthMongoClient) ||
+    global._betterAuthMongoUri !== uri
+  ) {
+    if (global._betterAuthMongoClient) {
+      global._betterAuthMongoClient.close().catch(() => {});
+    }
     global._betterAuthMongoClient = new MongoClient(uri, options);
+    global._betterAuthMongoUri = uri;
   }
   return global._betterAuthMongoClient;
 }
