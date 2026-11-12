@@ -104,26 +104,26 @@ export const siteConfig = {
     districtBn: process.env.NEXT_PUBLIC_CONTACT_DISTRICT_BN || "নারায়ণগঞ্জ",
     districtEn: process.env.NEXT_PUBLIC_CONTACT_DISTRICT_EN || "Narayanganj",
     phonePrimary:
-      process.env.NEXT_PUBLIC_CONTACT_PHONE_PRIMARY || "01715926164",
+      process.env.NEXT_PUBLIC_CONTACT_PHONE_PRIMARY || "01992757431",
     phonePrimaryBn:
-      process.env.NEXT_PUBLIC_CONTACT_PHONE_PRIMARY_BN || "০১৭১৫-৯২৬১৬৪",
+      process.env.NEXT_PUBLIC_CONTACT_PHONE_PRIMARY_BN || "০১৯৯২-৭৫৭৪৩১",
     phonePrimaryDisplay:
       process.env.NEXT_PUBLIC_CONTACT_PHONE_PRIMARY_DISPLAY ||
-      "+880 1715-926164",
+      "+880 1992-757431",
     phoneSecondary:
-      process.env.NEXT_PUBLIC_CONTACT_PHONE_SECONDARY || "01831572652",
+      process.env.NEXT_PUBLIC_CONTACT_PHONE_SECONDARY || "01992757431",
     phoneSecondaryBn:
-      process.env.NEXT_PUBLIC_CONTACT_PHONE_SECONDARY_BN || "০১৮৩১-৫৭২৬৫২",
+      process.env.NEXT_PUBLIC_CONTACT_PHONE_SECONDARY_BN || "০১৯৯২-৭৫৭৪৩১",
     phoneOfficeDisplayBn:
       process.env.NEXT_PUBLIC_CONTACT_PHONE_OFFICE_BN ||
-      "+৮৮০ ১৭১৫-৯২৬১৬৪, +৮৮০ ১৮৩১-৫৭২৬৫২",
-    whatsapp: process.env.NEXT_PUBLIC_CONTACT_WHATSAPP || "8801715926164",
+      "+৮৮০ ১৭27-১০৬০০৯, +৮৮০ ১৯৯২-৭৫৭৪৩১",
+    whatsapp: process.env.NEXT_PUBLIC_CONTACT_WHATSAPP || "8801727106009",
     whatsappLocal:
-      process.env.NEXT_PUBLIC_CONTACT_WHATSAPP_LOCAL || "01715926164",
+      process.env.NEXT_PUBLIC_CONTACT_WHATSAPP_LOCAL || "8801727106009",
     whatsappDisplay:
-      process.env.NEXT_PUBLIC_CONTACT_WHATSAPP_DISPLAY || "01715-926164",
+      process.env.NEXT_PUBLIC_CONTACT_WHATSAPP_DISPLAY || "8801727106009",
     whatsappDisplayBn:
-      process.env.NEXT_PUBLIC_CONTACT_WHATSAPP_DISPLAY_BN || "০১৭১৫-৯২৬১৬৪",
+      process.env.NEXT_PUBLIC_CONTACT_WHATSAPP_DISPLAY_BN || "+৮৮০ ১৭২৭-১০৬০০৯",
     email:
       process.env.NEXT_PUBLIC_CONTACT_EMAIL || "aimpurbachal@gmail.com",
     supportHoursBn:
