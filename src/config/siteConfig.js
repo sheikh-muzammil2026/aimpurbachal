@@ -210,10 +210,10 @@ export const siteConfig = {
   },
 
   geofence: {
-    lat: parseFloat(process.env.NEXT_PUBLIC_MADRASA_LAT || "24.381197"),
-    lng: parseFloat(process.env.NEXT_PUBLIC_MADRASA_LNG || "91.416974"),
+    lat: parseFloat(process.env.NEXT_PUBLIC_MADRASA_LAT || "23.860061"),
+    lng: parseFloat(process.env.NEXT_PUBLIC_MADRASA_LNG || "90.546755"),
     radiusMeters: parseInt(
-      process.env.NEXT_PUBLIC_MADRASA_RADIUS || "100",
+      process.env.NEXT_PUBLIC_MADRASA_RADIUS || "15",
       10
     ),
   },
