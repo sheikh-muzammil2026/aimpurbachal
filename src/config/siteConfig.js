@@ -14,7 +14,7 @@ export const siteConfig = {
   institution: {
     nameBn:
       process.env.NEXT_PUBLIC_INSTITUTION_NAME_BN ||
-      "আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল",
+      "আস সালাম আইডিয়াল মাদরাসা (এইম) পূর্বাচল",
     nameEn:
       process.env.NEXT_PUBLIC_INSTITUTION_NAME_EN ||
       "As-Salam Ideal Madrasah (AIM) Purbachal",
@@ -35,23 +35,20 @@ export const siteConfig = {
       "In Search of Desired Knowledge",
     sloganBn:
       process.env.NEXT_PUBLIC_INSTITUTION_SLOGAN_BN ||
-      "কাঙ্ক্ষিত ইলমের সন্ধানে...",
+      "Aim for Ultimate Success",
     sloganAr:
       process.env.NEXT_PUBLIC_INSTITUTION_SLOGAN_AR ||
-      "في طلب العلم المنشود...",
-    foundedYear:
-      process.env.NEXT_PUBLIC_INSTITUTION_FOUNDED_YEAR || "2024",
+      "Aim for Ultimate Success",
+    foundedYear: process.env.NEXT_PUBLIC_INSTITUTION_FOUNDED_YEAR || "2024",
     foundedYearBn:
       process.env.NEXT_PUBLIC_INSTITUTION_FOUNDED_YEAR_BN || "২০২৪",
     eiin: process.env.NEXT_PUBLIC_INSTITUTION_EIIN || "১৩৮৫৬৯",
     eiinEn: process.env.NEXT_PUBLIC_INSTITUTION_EIIN_EN || "138569",
-    govRegNo:
-      process.env.NEXT_PUBLIC_INSTITUTION_GOV_REG_NO || "৪৫৮৭৯৬৩২",
-    govRegNoEn:
-      process.env.NEXT_PUBLIC_INSTITUTION_GOV_REG_NO_EN || "45879632",
+    govRegNo: process.env.NEXT_PUBLIC_INSTITUTION_GOV_REG_NO || "৪৫৮৭৯৬৩২",
+    govRegNoEn: process.env.NEXT_PUBLIC_INSTITUTION_GOV_REG_NO_EN || "45879632",
     descriptionBn:
       process.env.NEXT_PUBLIC_INSTITUTION_DESCRIPTION_BN ||
-      "আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল। কাঙ্ক্ষিত ইলমের সন্ধানে একটি আধুনিক ও দ্বীনি শিক্ষাপ্রতিষ্ঠান।",
+      "আস সালাম আইডিয়াল মাদরাসা (এইম) পূর্বাচল। বিদেশী বিশ্ববিদ্যালয় থেকে ডিগ্রী প্রাপ্ত শিক্ষকদের দ্বারা পরিচালিত একটি আধুনিক ও দ্বীনি শিক্ষাপ্রতিষ্ঠান।",
     descriptionEn:
       process.env.NEXT_PUBLIC_INSTITUTION_DESCRIPTION_EN ||
       "As-Salam Ideal Madrasah (AIM) Purbachal - Combining Islamic and modern education to build ideal citizens for the world and the Hereafter.",
@@ -63,17 +60,18 @@ export const siteConfig = {
   branding: {
     logo: process.env.NEXT_PUBLIC_BRAND_LOGO || "/logo-full-trimmed.png",
     iconLogo: process.env.NEXT_PUBLIC_BRAND_ICON_LOGO || "/aimlogo1.png",
-    banner: process.env.NEXT_PUBLIC_BRAND_BANNER || "/AIMBannar.png",
+    banner: process.env.NEXT_PUBLIC_BRAND_BANNER || "/banner.png",
     bannerRoutine:
-      process.env.NEXT_PUBLIC_BRAND_BANNER_ROUTINE || "/AIMBannar1.png",
-    bannerAlt:
-      process.env.NEXT_PUBLIC_BRAND_BANNER_ALT || "/AIMBannar2.png",
+      process.env.NEXT_PUBLIC_BRAND_BANNER_ROUTINE || "/banner_routine.png",
+    bannerAlt: process.env.NEXT_PUBLIC_BRAND_BANNER_ALT || "madrasah banner",
     favicon: process.env.NEXT_PUBLIC_BRAND_FAVICON || "/favicon.ico",
     ogImage: process.env.NEXT_PUBLIC_BRAND_OG_IMAGE || "/og-image.jpg",
     principalSignature:
-      process.env.NEXT_PUBLIC_PRINCIPAL_SIGNATURE || "/MuhtamimSign.png",
+      process.env.NEXT_PUBLIC_PRINCIPAL_SIGNATURE ||
+      "/principle's_signature.png",
     controllerSignature:
-      process.env.NEXT_PUBLIC_CONTROLLER_SIGNATURE || "/NazemeTalimatSign.png",
+      process.env.NEXT_PUBLIC_CONTROLLER_SIGNATURE ||
+      "/principle's_signature.png",
   },
 
   theme: {
@@ -86,19 +84,19 @@ export const siteConfig = {
   contact: {
     addressBn:
       process.env.NEXT_PUBLIC_CONTACT_ADDRESS_BN ||
-      "প্রজেক্ট রোড, ইউসুফগঞ্জ (সেক্টর ১), পূর্বাচল নতুন শহর, রূপগঞ্জ, নারায়ণগঞ্জ।",
+      "কাজিরবাগ (পূর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।",
     addressEn:
       process.env.NEXT_PUBLIC_CONTACT_ADDRESS_EN ||
-      "Project Road, Yusufganj (Sector 1), Purbachal New Town, Rupganj, Narayanganj.",
+      "Kazirbag (Adjacent to Purbachal), Rupganj, Narayanganj.",
     addressAr:
       process.env.NEXT_PUBLIC_CONTACT_ADDRESS_AR ||
-      "طريق المشروع، يوسف غنج (قطاع ١)، مدينة بورباتشال الجديدة، روب غنج، نارايان غنج.",
+      "كازيرباغ (المجاور لبورباتشال)، روبغانج، نارايانغانج",
     shortAddressBn:
       process.env.NEXT_PUBLIC_CONTACT_SHORT_ADDRESS_BN ||
-      "ইউসুফগঞ্জ (সেক্টর ১), পূর্বাচল, রূপগঞ্জ, নারায়ণগঞ্জ",
+      "কাজিরবাগ (পূর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।",
     shortAddressEn:
       process.env.NEXT_PUBLIC_CONTACT_SHORT_ADDRESS_EN ||
-      "Yusufganj, Sector 1, Purbachal, Narayanganj",
+      "Kazirbag (Adjacent to Purbachal), Rupganj, Narayanganj.",
     upazilaBn: process.env.NEXT_PUBLIC_CONTACT_UPAZILA_BN || "রূপগঞ্জ",
     upazilaEn: process.env.NEXT_PUBLIC_CONTACT_UPAZILA_EN || "Rupganj",
     districtBn: process.env.NEXT_PUBLIC_CONTACT_DISTRICT_BN || "নারায়ণগঞ্জ",
@@ -124,8 +122,7 @@ export const siteConfig = {
       process.env.NEXT_PUBLIC_CONTACT_WHATSAPP_DISPLAY || "01715-926164",
     whatsappDisplayBn:
       process.env.NEXT_PUBLIC_CONTACT_WHATSAPP_DISPLAY_BN || "০১৭১৫-৯২৬১৬৪",
-    email:
-      process.env.NEXT_PUBLIC_CONTACT_EMAIL || "aimpurbachal@gmail.com",
+    email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "aimpurbachal@gmail.com",
     supportHoursBn:
       process.env.NEXT_PUBLIC_CONTACT_SUPPORT_HOURS_BN ||
       "সকাল ৮:০০ থেকে রাত ৮:০০ (শুক্রবার বন্ধ)",
@@ -133,8 +130,7 @@ export const siteConfig = {
       process.env.NEXT_PUBLIC_CONTACT_SUPPORT_HOURS_EN ||
       "8:00 AM to 8:00 PM (Closed on Friday)",
     baseUrl: process.env.NEXT_PUBLIC_BASE_URI || "http://localhost:3000",
-    serverApiUrl:
-      process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000",
+    serverApiUrl: process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000",
     websiteDomain:
       process.env.NEXT_PUBLIC_WEBSITE_DOMAIN || "www.aimpurbachal.com",
   },
@@ -156,29 +152,21 @@ export const siteConfig = {
   },
 
   academic: {
-    currentYearBn:
-      process.env.NEXT_PUBLIC_ACADEMIC_YEAR_BN || "২০২৬",
-    currentYearEn:
-      process.env.NEXT_PUBLIC_ACADEMIC_YEAR_EN || "2026",
-    hijriYearBn:
-      process.env.NEXT_PUBLIC_HIJRI_YEAR_BN || "১৪৪৭-৪৮ হিজরি",
-    banglaYearBn:
-      process.env.NEXT_PUBLIC_BANGLA_YEAR_BN || "১৪৩২-৩৩ বঙ্গাব্দ",
-    currencySymbol:
-      process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "৳",
-    currencyCode:
-      process.env.NEXT_PUBLIC_CURRENCY_CODE || "BDT",
+    currentYearBn: process.env.NEXT_PUBLIC_ACADEMIC_YEAR_BN || "২০২৬",
+    currentYearEn: process.env.NEXT_PUBLIC_ACADEMIC_YEAR_EN || "2026",
+    hijriYearBn: process.env.NEXT_PUBLIC_HIJRI_YEAR_BN || "১৪৪৭-৪৮ হিজরি",
+    banglaYearBn: process.env.NEXT_PUBLIC_BANGLA_YEAR_BN || "১৪৩২-৩৩ বঙ্গাব্দ",
+    currencySymbol: process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "৳",
+    currencyCode: process.env.NEXT_PUBLIC_CURRENCY_CODE || "BDT",
     resultPortalEnabled:
       process.env.NEXT_PUBLIC_RESULT_PORTAL_ENABLED !== "false",
   },
 
   payment: {
-    bkashNumber:
-      process.env.NEXT_PUBLIC_PAYMENT_BKASH_NUMBER || "01715-926164",
+    bkashNumber: process.env.NEXT_PUBLIC_PAYMENT_BKASH_NUMBER || "01715-926164",
     bkashNumberBn:
       process.env.NEXT_PUBLIC_PAYMENT_BKASH_NUMBER_BN || "০১৭১৫-৯২৬১৬৪",
-    nagadNumber:
-      process.env.NEXT_PUBLIC_PAYMENT_NAGAD_NUMBER || "01831-572652",
+    nagadNumber: process.env.NEXT_PUBLIC_PAYMENT_NAGAD_NUMBER || "01831-572652",
     nagadNumberBn:
       process.env.NEXT_PUBLIC_PAYMENT_NAGAD_NUMBER_BN || "০১৮৩১-৫৭২৬৫২",
     bankNameBn:
@@ -210,12 +198,9 @@ export const siteConfig = {
   },
 
   geofence: {
-    lat: parseFloat(process.env.NEXT_PUBLIC_MADRASA_LAT || "24.381197"),
-    lng: parseFloat(process.env.NEXT_PUBLIC_MADRASA_LNG || "91.416974"),
-    radiusMeters: parseInt(
-      process.env.NEXT_PUBLIC_MADRASA_RADIUS || "100",
-      10
-    ),
+    lat: parseFloat(process.env.NEXT_PUBLIC_MADRASA_LAT || "23.860061"),
+    lng: parseFloat(process.env.NEXT_PUBLIC_MADRASA_LNG || "90.546755"),
+    radiusMeters: parseInt(process.env.NEXT_PUBLIC_MADRASA_RADIUS || "15", 10),
   },
 
   // Server-only database configuration (never exposed to browser bundle)
