@@ -23,10 +23,10 @@ function VoucherSingleHalf({
 
   const copyBadgeText =
     copyType === "office"
-      ? "অফিস কপি (Office Copy)"
+      ? "অফিস কপি"
       : isStudent
-        ? "শিক্ষার্থী কপি (Student Copy)"
-        : "দাতা কপি (Donor Copy)";
+        ? "শিক্ষার্থী কপি"
+        : "দাতা কপি";
 
   const items = Array.isArray(tx.items) && tx.items.length > 0 ? tx.items : [];
   const discount = Number(tx.discount) || 0;
@@ -114,9 +114,7 @@ function VoucherSingleHalf({
                 <th className="p-1 border border-slate-300 text-center w-8">
                   ক্র.
                 </th>
-                <th className="p-1 border border-slate-300">
-                  আয়ের খাত ও বিবরণ
-                </th>
+                <th className="p-1 border border-slate-300">বিবরণ</th>
                 <th className="p-1 border border-slate-300 text-right w-24">
                   পরিমাণ (টাকা)
                 </th>
@@ -201,7 +199,7 @@ function VoucherSingleHalf({
               স্বাক্ষর ও তারিখ
             </span>
           </div>
-       
+
           <div className="border-t border-slate-400 pt-1">
             <p>অনুমোদনকারী</p>
             <span className="text-[7px] text-slate-400 block font-normal">

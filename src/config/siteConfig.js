@@ -102,24 +102,24 @@ export const siteConfig = {
     districtBn: process.env.NEXT_PUBLIC_CONTACT_DISTRICT_BN || "নারায়ণগঞ্জ",
     districtEn: process.env.NEXT_PUBLIC_CONTACT_DISTRICT_EN || "Narayanganj",
     phonePrimary:
-      process.env.NEXT_PUBLIC_CONTACT_PHONE_PRIMARY || "01992757431",
+      process.env.NEXT_PUBLIC_CONTACT_PHONE_PRIMARY || "+880 1992-757431",
     phonePrimaryBn:
-      process.env.NEXT_PUBLIC_CONTACT_PHONE_PRIMARY_BN || "০১৯৯২-৭৫৭৪৩১",
+      process.env.NEXT_PUBLIC_CONTACT_PHONE_PRIMARY_BN || "+88০ ১৯৯২-৭৫৭৪৩১",
     phonePrimaryDisplay:
       process.env.NEXT_PUBLIC_CONTACT_PHONE_PRIMARY_DISPLAY ||
       "+880 1992-757431",
     phoneSecondary:
-      process.env.NEXT_PUBLIC_CONTACT_PHONE_SECONDARY || "01992757431",
+      process.env.NEXT_PUBLIC_CONTACT_PHONE_SECONDARY || "+880 1992-757431",
     phoneSecondaryBn:
-      process.env.NEXT_PUBLIC_CONTACT_PHONE_SECONDARY_BN || "০১৯৯২-৭৫৭৪৩১",
+      process.env.NEXT_PUBLIC_CONTACT_PHONE_SECONDARY_BN || "+৮৮০ ১৯৯২-৭৫৭৪৩১",
     phoneOfficeDisplayBn:
       process.env.NEXT_PUBLIC_CONTACT_PHONE_OFFICE_BN ||
       "+৮৮০ ১৭27-১০৬০০৯, +৮৮০ ১৯৯২-৭৫৭৪৩১",
-    whatsapp: process.env.NEXT_PUBLIC_CONTACT_WHATSAPP || "8801727106009",
+    whatsapp: process.env.NEXT_PUBLIC_CONTACT_WHATSAPP || "+880 1727-106009",
     whatsappLocal:
-      process.env.NEXT_PUBLIC_CONTACT_WHATSAPP_LOCAL || "8801727106009",
+      process.env.NEXT_PUBLIC_CONTACT_WHATSAPP_LOCAL || "+880 1727-106009",
     whatsappDisplay:
-      process.env.NEXT_PUBLIC_CONTACT_WHATSAPP_DISPLAY || "8801727106009",
+      process.env.NEXT_PUBLIC_CONTACT_WHATSAPP_DISPLAY || "+880 1727-106009",
     whatsappDisplayBn:
       process.env.NEXT_PUBLIC_CONTACT_WHATSAPP_DISPLAY_BN || "+৮৮০ ১৭২৭-১০৬০০৯",
     email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "aimpurbachal@gmail.com",

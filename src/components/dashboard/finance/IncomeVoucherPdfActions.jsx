@@ -53,7 +53,7 @@ export default function IncomeVoucherPdfActions({ tx }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       {/* 1. Direct PDF Download using @react-pdf/renderer */}
-      <PDFDownloadLink
+      {/* <PDFDownloadLink
         document={<IncomeVoucherPdfDocument tx={tx} baseUrl={baseUrl} />}
         fileName={`Income-Voucher-${tx.receiptNo || "Receipt"}.pdf`}
         className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs"
@@ -72,7 +72,7 @@ export default function IncomeVoucherPdfActions({ tx }) {
             </>
           )
         }
-      </PDFDownloadLink>
+      </PDFDownloadLink> */}
 
       {/* 2. Direct A4 Landscape PDF Viewer / Print tab */}
       <button

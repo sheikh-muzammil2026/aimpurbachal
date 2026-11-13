@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Plus, Trash2, Loader2, RefreshCw, AlertTriangle } from 'lucide-react';
-import siteConfig from '@/config/siteConfig';
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { Plus, Trash2, Loader2, RefreshCw, AlertTriangle } from "lucide-react";
+import siteConfig from "@/config/siteConfig";
 
 const API_BASE_URL = siteConfig.contact.apiUrl;
 
@@ -14,7 +14,7 @@ export default function ExpenseEntry({
   onReimbursementStatusUpdate,
   setActiveTab,
   formatBanglaNumber,
-  isEditing = false
+  isEditing = false,
 }) {
   const [isVoucherLoading, setIsVoucherLoading] = useState(false);
   const [pendingReimbursement, setPendingReimbursement] = useState(null);
@@ -24,7 +24,7 @@ export default function ExpenseEntry({
   // Dedicated Auto Voucher ID Generator
   const fetchNextVoucherNo = useCallback(async () => {
     if (isEditing || !expenseForm.date) return;
-    const dateParts = expenseForm.date.split('-');
+    const dateParts = expenseForm.date.split("-");
     if (dateParts.length < 2) return;
     const yy = dateParts[0].slice(-2);
     const mm = dateParts[1];
@@ -32,19 +32,21 @@ export default function ExpenseEntry({
 
     try {
       setIsVoucherLoading(true);
-      const res = await fetch(`${API_BASE_URL}/api/finance/next-receipt-no?date=${expenseForm.date}&type=expense`);
+      const res = await fetch(
+        `${API_BASE_URL}/api/finance/next-receipt-no?date=${expenseForm.date}&type=expense`,
+      );
       const data = await res.json();
       if (data.success && data.nextReceiptNo) {
-        setExpenseForm(prev => ({
+        setExpenseForm((prev) => ({
           ...prev,
-          voucherNo: data.nextReceiptNo
+          voucherNo: data.nextReceiptNo,
         }));
         return;
       }
-      setExpenseForm(prev => ({ ...prev, voucherNo: `${prefix}0001` }));
+      setExpenseForm((prev) => ({ ...prev, voucherNo: `${prefix}0001` }));
     } catch (err) {
       console.error("Error generating dynamic Voucher ID:", err);
-      setExpenseForm(prev => ({ ...prev, voucherNo: `${prefix}0001` }));
+      setExpenseForm((prev) => ({ ...prev, voucherNo: `${prefix}0001` }));
     } finally {
       setIsVoucherLoading(false);
     }
@@ -65,7 +67,16 @@ export default function ExpenseEntry({
   const handleAddRow = () => {
     setExpenseForm({
       ...expenseForm,
-      items: [...expenseForm.items, { head: EXPENSE_HEADS[0], amount: '', institutionName: '', shopName: '', shopVoucher: '' }]
+      items: [
+        ...expenseForm.items,
+        {
+          head: EXPENSE_HEADS[0],
+          amount: "",
+          institutionName: "",
+          shopName: "",
+          shopVoucher: "",
+        },
+      ],
     });
   };
 
@@ -90,17 +101,25 @@ export default function ExpenseEntry({
     setExpenseForm({ ...expenseForm, accountNumber: nextAcc, items: newItems });
   };
 
-  const currentExpenseTotal = expenseForm.items.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
-  const currentExpenseBalance = (parseFloat(expenseForm.advanceAmount) || 0) - currentExpenseTotal;
+  const currentExpenseTotal = expenseForm.items.reduce(
+    (sum, item) => sum + (parseFloat(item.amount) || 0),
+    0,
+  );
+  const currentExpenseBalance =
+    (parseFloat(expenseForm.advanceAmount) || 0) - currentExpenseTotal;
 
   return (
     <div className="max-w-4xl mx-auto bg-white border-2 border-emerald-900/10 rounded-2xl shadow-xs overflow-hidden print:hidden">
       {/* Header Banner */}
       <div className="bg-emerald-900 text-white p-4 sm:p-6 text-center space-y-1">
-        <h2 className="text-lg sm:text-xl font-black tracking-wide">{siteConfig.institution.nameBn}</h2>
-        <p className="text-xs text-emerald-100 font-medium">{siteConfig.contact.addressBn}</p>
+        <h2 className="text-lg sm:text-xl font-black tracking-wide">
+          {siteConfig.institution.nameBn}
+        </h2>
+        <p className="text-xs text-emerald-100 font-medium">
+          {siteConfig.contact.addressBn}
+        </p>
         <div className="inline-block bg-white text-emerald-950 font-black text-xs px-3 sm:px-4 py-1 sm:py-1.5 rounded-full mt-2 sm:mt-3 shadow-xs">
-          খরচ ভাউচার ফর্ম (Voucher Entry)
+          খরচ ভাউচার ফর্ম
         </div>
       </div>
 
@@ -109,7 +128,9 @@ export default function ExpenseEntry({
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="text-[10px] font-bold text-slate-600">ভাউচার নম্বর (Voucher ID)</label>
+              <label className="text-[10px] font-bold text-slate-600">
+                ভাউচার নম্বর
+              </label>
               {!isEditing && (
                 <button
                   type="button"
@@ -118,7 +139,9 @@ export default function ExpenseEntry({
                   className="text-[10px] text-emerald-700 hover:text-emerald-900 font-semibold flex items-center gap-1 transition-colors cursor-pointer"
                   title="ভাউচার নম্বর রিফ্রেশ করুন"
                 >
-                  <RefreshCw className={`w-3 h-3 ${isVoucherLoading ? 'animate-spin' : ''}`} />
+                  <RefreshCw
+                    className={`w-3 h-3 ${isVoucherLoading ? "animate-spin" : ""}`}
+                  />
                   <span>নতুন কোড</span>
                 </button>
               )}
@@ -126,7 +149,9 @@ export default function ExpenseEntry({
             <div className="relative">
               <input
                 type="text"
-                placeholder={isVoucherLoading ? "লোড হচ্ছে..." : "স্বয়ংক্রিয় তৈরি হবে"}
+                placeholder={
+                  isVoucherLoading ? "লোড হচ্ছে..." : "স্বয়ংক্রিয় তৈরি হবে"
+                }
                 value={expenseForm.voucherNo}
                 readOnly
                 className="px-3 py-2 bg-slate-100/80 border border-slate-200 rounded-xl text-xs w-full focus:outline-none font-mono font-bold text-slate-700 cursor-not-allowed select-none"
@@ -141,29 +166,38 @@ export default function ExpenseEntry({
           </div>
 
           <div>
-            <label className="text-[10px] font-bold text-slate-600 block mb-1">খরচকারির নাম (Spender Name)</label>
+            <label className="text-[10px] font-bold text-slate-600 block mb-1">
+              খরচকারির নাম
+            </label>
             <input
               type="text"
               placeholder="খরচকারির নাম লিখুন"
               value={expenseForm.receiverName}
-              onChange={(e) => setExpenseForm({ ...expenseForm, receiverName: e.target.value })}
+              onChange={(e) =>
+                setExpenseForm({ ...expenseForm, receiverName: e.target.value })
+              }
               className="px-3 py-2 border border-slate-200 rounded-xl text-xs w-full focus:outline-none focus:border-emerald-700"
               required
             />
           </div>
 
           <div>
-            <label className="text-[10px] font-bold text-slate-600 block mb-1">তারিখ</label>
+            <label className="text-[10px] font-bold text-slate-600 block mb-1">
+              তারিখ
+            </label>
             <input
               type="date"
               value={expenseForm.date}
               onChange={(e) => {
                 const selectedDate = e.target.value;
-                const parts = selectedDate.split('-');
+                const parts = selectedDate.split("-");
                 setExpenseForm({
                   ...expenseForm,
                   date: selectedDate,
-                  month: parts.length >= 2 ? `${parts[0]}-${parts[1]}` : expenseForm.month
+                  month:
+                    parts.length >= 2
+                      ? `${parts[0]}-${parts[1]}`
+                      : expenseForm.month,
                 });
               }}
               className="px-3 py-2 border border-slate-200 rounded-xl text-xs w-full focus:outline-none focus:border-emerald-700"
@@ -172,35 +206,49 @@ export default function ExpenseEntry({
           </div>
 
           <div>
-            <label className="text-[10px] font-bold text-slate-600 block mb-1">গৃহীত অগ্রীম টাকা (ঐচ্ছিক)</label>
+            <label className="text-[10px] font-bold text-slate-600 block mb-1">
+              গৃহীত অগ্রীম টাকা (ঐচ্ছিক)
+            </label>
             <input
               type="number"
               placeholder="যেমন: ৫০০০"
               value={expenseForm.advanceAmount}
-              onChange={(e) => setExpenseForm({ ...expenseForm, advanceAmount: e.target.value })}
-              className="px-3 py-2 border border-slate-200 rounded-xl text-xs w-full focus:outline-none focus:border-emerald-700"
-            />
-          </div>
-
-          <div>
-            <label className="text-[10px] font-bold text-slate-600 block mb-1">চেক নং (ঐচ্ছিক)</label>
-            <input
-              type="text"
-              placeholder="চেক নং (ব্যাংক হলে)"
-              value={expenseForm.chequeNo}
-              onChange={(e) => setExpenseForm({ ...expenseForm, chequeNo: e.target.value })}
+              onChange={(e) =>
+                setExpenseForm({
+                  ...expenseForm,
+                  advanceAmount: e.target.value,
+                })
+              }
               className="px-3 py-2 border border-slate-200 rounded-xl text-xs w-full focus:outline-none focus:border-emerald-700"
             />
           </div>
 
           <div>
             <label className="text-[10px] font-bold text-slate-600 block mb-1">
-              ফান্ড / ব্যাংক হিসাব (Fund Account)
+              চেক নং (ঐচ্ছিক)
+            </label>
+            <input
+              type="text"
+              placeholder="চেক নং (ব্যাংক হলে)"
+              value={expenseForm.chequeNo}
+              onChange={(e) =>
+                setExpenseForm({ ...expenseForm, chequeNo: e.target.value })
+              }
+              className="px-3 py-2 border border-slate-200 rounded-xl text-xs w-full focus:outline-none focus:border-emerald-700"
+            />
+          </div>
+
+          <div>
+            <label className="text-[10px] font-bold text-slate-600 block mb-1">
+              ফান্ড / ব্যাংক হিসাব
             </label>
             <select
               value={expenseForm.accountNumber || "19071310000015"}
               onChange={(e) =>
-                setExpenseForm({ ...expenseForm, accountNumber: e.target.value })
+                setExpenseForm({
+                  ...expenseForm,
+                  accountNumber: e.target.value,
+                })
               }
               className="px-3 py-2 border border-emerald-200 bg-emerald-50/30 rounded-xl text-xs font-bold text-emerald-950 w-full focus:outline-none focus:border-emerald-700"
             >
@@ -216,7 +264,9 @@ export default function ExpenseEntry({
         {/* Voucher Items */}
         <div className="space-y-4">
           <div className="flex items-center justify-between border-t border-slate-100 pt-4 gap-2">
-            <h3 className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">ব্যয়ের হিসাব/খাতসমূহ</h3>
+            <h3 className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
+              ব্যয়ের হিসাব/খাতসমূহ
+            </h3>
             <button
               type="button"
               onClick={handleAddRow}
@@ -227,7 +277,10 @@ export default function ExpenseEntry({
           </div>
 
           {expenseForm.items.map((item, idx) => (
-            <div key={idx} className="p-4 border border-slate-200 rounded-xl space-y-3 bg-slate-50/30 relative">
+            <div
+              key={idx}
+              className="p-4 border border-slate-200 rounded-xl space-y-3 bg-slate-50/30 relative"
+            >
               {expenseForm.items.length > 1 && (
                 <button
                   type="button"
@@ -240,49 +293,67 @@ export default function ExpenseEntry({
               )}
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                 <div>
-                  <label className="text-[10px] font-bold text-slate-505 block mb-1">ব্যয়ের খাত</label>
+                  <label className="text-[10px] font-bold text-slate-505 block mb-1">
+                    ব্যয়ের খাত
+                  </label>
                   <select
                     value={item.head}
-                    onChange={(e) => handleRowChange(idx, 'head', e.target.value)}
+                    onChange={(e) =>
+                      handleRowChange(idx, "head", e.target.value)
+                    }
                     className="px-2 py-1.5 border border-slate-200 rounded-lg text-xs w-full focus:outline-none focus:border-emerald-700 bg-white"
                   >
-                    {EXPENSE_HEADS.map(head => (
-                      <option key={head} value={head}>{head}</option>
+                    {EXPENSE_HEADS.map((head) => (
+                      <option key={head} value={head}>
+                        {head}
+                      </option>
                     ))}
                   </select>
                 </div>
-                
+
                 <div>
-                  <label className="text-[10px] font-bold text-slate-505 block mb-1">সরবরাহকারী প্রতিষ্ঠান</label>
+                  <label className="text-[10px] font-bold text-slate-505 block mb-1">
+                    সরবরাহকারী প্রতিষ্ঠান
+                  </label>
                   <input
                     type="text"
                     placeholder="সরবরাহকারী প্রতিষ্ঠান"
-                    value={item.institutionName || ''}
-                    onChange={(e) => handleRowChange(idx, 'institutionName', e.target.value)}
+                    value={item.institutionName || ""}
+                    onChange={(e) =>
+                      handleRowChange(idx, "institutionName", e.target.value)
+                    }
                     className="px-2 py-1.5 border border-slate-200 rounded-lg text-xs w-full focus:outline-none focus:border-emerald-700 bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-slate-505 block mb-1">মেমো নং</label>
+                  <label className="text-[10px] font-bold text-slate-505 block mb-1">
+                    মেমো নং
+                  </label>
                   <input
                     type="text"
                     placeholder="মেমো নং"
-                    value={item.shopVoucher || ''}
-                    onChange={(e) => handleRowChange(idx, 'shopVoucher', e.target.value)}
+                    value={item.shopVoucher || ""}
+                    onChange={(e) =>
+                      handleRowChange(idx, "shopVoucher", e.target.value)
+                    }
                     className="px-2 py-1.5 border border-slate-200 rounded-lg text-xs w-full focus:outline-none focus:border-emerald-700 bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-slate-505 block mb-1">টাকার পরিমাণ (৳)</label>
+                  <label className="text-[10px] font-bold text-slate-505 block mb-1">
+                    টাকার পরিমাণ (৳)
+                  </label>
                   <input
                     type="number"
                     step="0.01"
                     placeholder="টাকা (৳)"
                     min="0"
                     value={item.amount}
-                    onChange={(e) => handleRowChange(idx, 'amount', e.target.value)}
+                    onChange={(e) =>
+                      handleRowChange(idx, "amount", e.target.value)
+                    }
                     className="px-2 py-1.5 border border-slate-200 rounded-lg text-xs w-full focus:outline-none focus:border-emerald-700 text-right bg-white"
                     required
                   />
@@ -296,32 +367,39 @@ export default function ExpenseEntry({
         {currentExpenseBalance < 0 && (
           <div
             className={`border-t border-dashed pt-4 space-y-3 p-4 rounded-xl transition-colors ${
-              expenseForm.reimbursement?.status === 'paid'
-                ? 'border-emerald-200 bg-emerald-50/40'
-                : 'border-slate-200 bg-rose-50/30'
+              expenseForm.reimbursement?.status === "paid"
+                ? "border-emerald-200 bg-emerald-50/40"
+                : "border-slate-200 bg-rose-50/30"
             }`}
           >
             <h4
               className={`text-xs font-black flex items-center gap-1 ${
-                expenseForm.reimbursement?.status === 'paid'
-                  ? 'text-emerald-900'
-                  : 'text-rose-900'
+                expenseForm.reimbursement?.status === "paid"
+                  ? "text-emerald-900"
+                  : "text-rose-900"
               }`}
             >
-              <span>{expenseForm.reimbursement?.status === 'paid' ? '✅' : '⚠️'}</span> ঘাটতি বা ঋণ পরিশোধের বিবরণী (Reimbursement Details)
+              <span>
+                {expenseForm.reimbursement?.status === "paid" ? "✅" : "⚠️"}
+              </span>{" "}
+              ঘাটতি বা ঋণ পরিশোধের বিবরণী
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="text-[10px] font-bold text-slate-600 block mb-1">পরিশোধের মাধ্যম</label>
+                <label className="text-[10px] font-bold text-slate-600 block mb-1">
+                  পরিশোধের মাধ্যম
+                </label>
                 <select
-                  value={expenseForm.reimbursement?.method || 'Cash'}
-                  onChange={(e) => setExpenseForm({
-                    ...expenseForm,
-                    reimbursement: {
-                      ...(expenseForm.reimbursement || {}),
-                      method: e.target.value
-                    }
-                  })}
+                  value={expenseForm.reimbursement?.method || "Cash"}
+                  onChange={(e) =>
+                    setExpenseForm({
+                      ...expenseForm,
+                      reimbursement: {
+                        ...(expenseForm.reimbursement || {}),
+                        method: e.target.value,
+                      },
+                    })
+                  }
                   className="px-3 py-2 border border-slate-200 rounded-xl text-xs w-full focus:outline-none focus:border-emerald-700 bg-white"
                 >
                   <option value="Cash">নগদ</option>
@@ -332,43 +410,52 @@ export default function ExpenseEntry({
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-slate-600 block mb-1">পরিশোধের তারিখ</label>
+                <label className="text-[10px] font-bold text-slate-600 block mb-1">
+                  পরিশোধের তারিখ
+                </label>
                 <input
                   type="date"
-                  value={expenseForm.reimbursement?.date || ''}
-                  onChange={(e) => setExpenseForm({
-                    ...expenseForm,
-                    reimbursement: {
-                      ...(expenseForm.reimbursement || {}),
-                      date: e.target.value
-                    }
-                  })}
+                  value={expenseForm.reimbursement?.date || ""}
+                  onChange={(e) =>
+                    setExpenseForm({
+                      ...expenseForm,
+                      reimbursement: {
+                        ...(expenseForm.reimbursement || {}),
+                        date: e.target.value,
+                      },
+                    })
+                  }
                   className="px-3 py-2 border border-slate-200 rounded-xl text-xs w-full focus:outline-none focus:border-emerald-700 bg-white"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-slate-600 block mb-1">পরিশোধের অবস্থা / Status</label>
+                <label className="text-[10px] font-bold text-slate-600 block mb-1">
+                  পরিশোধের অবস্থা
+                </label>
                 <div className="flex items-center gap-2 mt-1.5">
                   <input
                     type="checkbox"
                     id="reimbursementStatusCheckbox"
-                    checked={expenseForm.reimbursement?.status === 'paid'}
+                    checked={expenseForm.reimbursement?.status === "paid"}
                     onChange={(e) => {
-                      const nextStatus = e.target.checked ? 'paid' : 'unpaid';
+                      const nextStatus = e.target.checked ? "paid" : "unpaid";
                       setPendingReimbursement({
                         ...(expenseForm.reimbursement || {}),
-                        method: expenseForm.reimbursement?.method || 'Cash',
+                        method: expenseForm.reimbursement?.method || "Cash",
                         date:
                           expenseForm.reimbursement?.date ||
                           expenseForm.date ||
-                          new Date().toISOString().split('T')[0],
+                          new Date().toISOString().split("T")[0],
                         status: nextStatus,
                       });
                     }}
                     className="w-4 h-4 text-emerald-800 focus:ring-emerald-700 border-slate-300 rounded cursor-pointer"
                   />
-                  <label htmlFor="reimbursementStatusCheckbox" className="text-xs font-bold text-slate-700 cursor-pointer select-none">
+                  <label
+                    htmlFor="reimbursementStatusCheckbox"
+                    className="text-xs font-bold text-slate-700 cursor-pointer select-none"
+                  >
                     পরিশোধিত (Paid)
                   </label>
                 </div>
@@ -380,11 +467,15 @@ export default function ExpenseEntry({
         {/* Calculations Banner */}
         <div className="border-t border-slate-100 pt-4 grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50/50 p-4 rounded-xl">
           <div>
-            <label className="text-[10px] font-bold text-slate-600 block mb-1">মন্তব্য/খরচের অতিরিক্ত বিবরণ</label>
+            <label className="text-[10px] font-bold text-slate-600 block mb-1">
+              মন্তব্য/খরচের অতিরিক্ত বিবরণ
+            </label>
             <textarea
               placeholder="ভাউচার বা খরচ সংক্রান্ত অতিরিক্ত নোট"
               value={expenseForm.description}
-              onChange={(e) => setExpenseForm({ ...expenseForm, description: e.target.value })}
+              onChange={(e) =>
+                setExpenseForm({ ...expenseForm, description: e.target.value })
+              }
               className="px-3 py-2 border border-slate-200 rounded-xl text-xs w-full focus:outline-none focus:border-emerald-700 h-16 resize-none"
             />
           </div>
@@ -392,15 +483,26 @@ export default function ExpenseEntry({
           <div className="flex flex-col justify-end text-left md:text-right text-xs font-bold space-y-1">
             <div className="flex justify-between border-b border-slate-200/60 pb-1 gap-2">
               <span className="text-slate-500">মোট খরচ:</span>
-              <span className="text-rose-950 font-black">৳ {formatBanglaNumber(currentExpenseTotal.toLocaleString('bn-BD'))}</span>
+              <span className="text-rose-950 font-black">
+                ৳{" "}
+                {formatBanglaNumber(
+                  currentExpenseTotal.toLocaleString("bn-BD"),
+                )}
+              </span>
             </div>
             {expenseForm.advanceAmount && (
               <div className="flex justify-between gap-2">
                 <span className="text-slate-500">উদ্বৃত্ত/ঋণ:</span>
-                <span className={`font-black ${currentExpenseBalance >= 0 ? 'text-emerald-800' : (expenseForm.reimbursement?.status === 'paid' ? 'text-emerald-600' : 'text-rose-850')}`}>
-                  {currentExpenseBalance >= 0 ? 'উদ্বৃত্ত: ' : 'ঘাটতি/ঋণ: '} 
-                  ৳ {formatBanglaNumber(Math.abs(currentExpenseBalance).toLocaleString('bn-BD'))}
-                  {currentExpenseBalance < 0 && expenseForm.reimbursement?.status === 'paid' && ' (paid)'}
+                <span
+                  className={`font-black ${currentExpenseBalance >= 0 ? "text-emerald-800" : expenseForm.reimbursement?.status === "paid" ? "text-emerald-600" : "text-rose-850"}`}
+                >
+                  {currentExpenseBalance >= 0 ? "উদ্বৃত্ত: " : "ঘাটতি/ঋণ: "}৳{" "}
+                  {formatBanglaNumber(
+                    Math.abs(currentExpenseBalance).toLocaleString("bn-BD"),
+                  )}
+                  {currentExpenseBalance < 0 &&
+                    expenseForm.reimbursement?.status === "paid" &&
+                    " (paid)"}
                 </span>
               </div>
             )}
@@ -411,7 +513,7 @@ export default function ExpenseEntry({
         <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2">
           <button
             type="button"
-            onClick={() => setActiveTab('overview')}
+            onClick={() => setActiveTab("overview")}
             className="w-full sm:w-auto px-5 py-2.5 border border-slate-200 rounded-xl text-xs font-bold text-slate-650 hover:bg-slate-100 transition-colors order-2 sm:order-1"
           >
             বাতিল করুন
@@ -421,7 +523,11 @@ export default function ExpenseEntry({
             disabled={loading}
             className="w-full sm:w-auto px-6 py-2.5 bg-rose-800 hover:bg-rose-950 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-colors order-1 sm:order-2"
           >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'ভাউচার সেভ করুন'}
+            {loading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              "ভাউচার সেভ করুন"
+            )}
           </button>
         </div>
       </form>
@@ -441,20 +547,21 @@ export default function ExpenseEntry({
 
             <div className="p-6 space-y-3">
               <p className="text-xs sm:text-sm text-slate-700 font-semibold leading-relaxed">
-                আপনি কি নিশ্চিতভাবে এই খরচের ঘাটতি বা ঋণ পরিশোধের অবস্থা পরিবর্তন করতে চান?
+                আপনি কি নিশ্চিতভাবে এই খরচের ঘাটতি বা ঋণ পরিশোধের অবস্থা
+                পরিবর্তন করতে চান?
               </p>
               <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs flex items-center justify-between">
                 <span className="text-slate-500 font-bold">নতুন অবস্থা:</span>
                 <span
                   className={`px-2.5 py-0.5 rounded-full font-black ${
-                    pendingReimbursement.status === 'paid'
-                      ? 'bg-emerald-100 text-emerald-900 border border-emerald-200'
-                      : 'bg-rose-100 text-rose-900 border border-rose-200'
+                    pendingReimbursement.status === "paid"
+                      ? "bg-emerald-100 text-emerald-900 border border-emerald-200"
+                      : "bg-rose-100 text-rose-900 border border-rose-200"
                   }`}
                 >
-                  {pendingReimbursement.status === 'paid'
-                    ? 'পরিশোধিত (Paid)'
-                    : 'অপরিশোধিত (Unpaid)'}
+                  {pendingReimbursement.status === "paid"
+                    ? "পরিশোধিত (Paid)"
+                    : "অপরিশোধিত (Unpaid)"}
                 </span>
               </div>
             </div>
@@ -475,7 +582,8 @@ export default function ExpenseEntry({
                   try {
                     setIsStatusUpdating(true);
                     if (onReimbursementStatusUpdate) {
-                      const ok = await onReimbursementStatusUpdate(pendingReimbursement);
+                      const ok =
+                        await onReimbursementStatusUpdate(pendingReimbursement);
                       if (ok !== false) {
                         setPendingReimbursement(null);
                       }

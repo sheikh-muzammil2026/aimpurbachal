@@ -35,7 +35,7 @@ export default function ExpenseVoucherHtmlLayout({
       <VoucherHeader
         showRightLogo
         showContactRow
-        bannerClassName="max-h-8 w-auto object-contain mx-auto"
+        bannerClassName="w-auto object-fill mx-auto max-h-45"
         className="flex items-center justify-between gap-3 border-b-2 border-[#C5A059] pb-3 text-center"
       />
 
@@ -223,19 +223,19 @@ export default function ExpenseVoucherHtmlLayout({
       )}
 
       {/* Signature Lines */}
-      <div className="grid grid-cols-3 gap-6 pt-12 text-center text-[9px] font-bold text-slate-500">
+      <div className="flex justify-between gap-6 pt-12 text-center text-[9px] font-bold text-slate-500">
         <div className="border-t border-slate-400 pt-1.5">
           <p>{isIncome ? "আদায়কারী" : "খরচকারী / গ্রহীতা"}</p>
           <span className="text-[7px] text-slate-400 block font-normal mt-0.5">
             স্বাক্ষর ও তারিখ
           </span>
         </div>
-        <div className="border-t border-slate-400 pt-1.5">
+        {/* <div className="border-t border-slate-400 pt-1.5">
           <p>হিসাবরক্ষক</p>
           <span className="text-[7px] text-slate-400 block font-normal mt-0.5">
             ক্যাশিয়ার
           </span>
-        </div>
+        </div> */}
         <div className="border-t border-slate-400 pt-1.5">
           <p>অনুমোদনকারী</p>
           <span className="text-[7px] text-slate-400 block font-normal mt-0.5">

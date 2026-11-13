@@ -127,17 +127,18 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   logoContainer: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: 75,
+    height: 75,
+    border: "1px solid #dcfce7",
+    borderRadius: "6px",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },
   logoImage: {
-    width: 55, // scale-[1.05] (80 * 1.05 = 84)
-    height: 55,
-    borderRadius: "9999px",
+    width: "100%", // w-full
+    maxHeight: 160,
+    borderRadius: "6px",
     objectFit: "cover", // object-cover
   },
   bannerContainer: {
@@ -395,10 +396,10 @@ function VoucherHalf({ tx, copyType, baseUrl = "" }) {
 
   const copyLabel =
     copyType === "office"
-      ? "অফিস কপি (Office Copy)"
+      ? "অফিস কপি"
       : isStudent
-        ? "শিক্ষার্থী কপি (Student Copy)"
-        : "দাতা কপি (Donor Copy)";
+        ? "শিক্ষার্থী কপি"
+        : "দাতা কপি";
 
   const items = Array.isArray(tx.items) && tx.items.length > 0 ? tx.items : [];
   const discount = Number(tx.discount) || 0;
@@ -434,9 +435,7 @@ function VoucherHalf({ tx, copyType, baseUrl = "" }) {
         {/* Voucher Title and Copy Type Badges */}
         <View style={styles.badgeRow}>
           <View style={styles.titleBadge}>
-            <Text style={styles.titleBadgeText}>
-              আদায় রসিদ (INCOME VOUCHER)
-            </Text>
+            <Text style={styles.titleBadgeText}>আদায় রসিদ</Text>
           </View>
           <View style={styles.copyBadge}>
             <Text style={styles.copyBadgeText}>{copyLabel}</Text>
@@ -493,9 +492,7 @@ function VoucherHalf({ tx, copyType, baseUrl = "" }) {
         <View style={styles.table}>
           <View style={styles.tableHeader}>
             <Text style={[styles.tableHeaderCell, styles.colSl]}>ক্র.</Text>
-            <Text style={[styles.tableHeaderCell, styles.colHead]}>
-              আয়ের খাত ও বিবরণ
-            </Text>
+            <Text style={[styles.tableHeaderCell, styles.colHead]}>বিবরণ</Text>
             <Text style={[styles.tableHeaderCell, styles.colAmount]}>
               পরিমাণ (টাকা)
             </Text>
@@ -567,10 +564,7 @@ function VoucherHalf({ tx, copyType, baseUrl = "" }) {
             <Text style={styles.signatureTitle}>আদায়কারী</Text>
             <Text style={styles.signatureSubtitle}>স্বাক্ষর ও তারিখ</Text>
           </View>
-          <View style={styles.signatureBlock}>
-            <Text style={styles.signatureTitle}>হিসাবরক্ষক</Text>
-            <Text style={styles.signatureSubtitle}>ক্যাশিয়ার</Text>
-          </View>
+
           <View style={styles.signatureBlock}>
             <Text style={styles.signatureTitle}>অনুমোদনকারী</Text>
             <Text style={styles.signatureSubtitle}>প্রিন্সিপাল</Text>
@@ -580,8 +574,10 @@ function VoucherHalf({ tx, copyType, baseUrl = "" }) {
         {/* সোশ্যাল ও কন্টাক্ট ইনফো */}
         <View style={styles.socialFooter}>
           <Text style={styles.socialFooterText}>
-            {siteConfig.contact.phoneOfficeBn} | WhatsApp: {siteConfig.contact.phoneSecondaryBn} | {siteConfig.contact.websiteDisplay} |{" "}
-            {siteConfig.contact.email} | FB/YT: {siteConfig.social.facebookHandle}
+            {siteConfig.contact.phoneOfficeBn} | WhatsApp:{" "}
+            {siteConfig.contact.phoneSecondaryBn} |{" "}
+            {siteConfig.contact.websiteDisplay} | {siteConfig.contact.email} |
+            FB/YT: {siteConfig.social.facebookHandle}
           </Text>
         </View>
       </View>

@@ -38,20 +38,18 @@ export function resolveVoucherParty(tx, parsePayerName) {
 }
 
 export function VoucherHeader({
-  showRightLogo = false,
-  showContactRow = false,
-  bannerClassName = "w-auto object-fill mx-auto max-h-45",
-  className = "flex items-center justify-between gap-2 border-b-2 border-[#C5A059] pb-2",
+  bannerClassName = "w-auto object-fill mx-auto max-h-15",
+  className = "flex items-center justify-between border-b-2 border-[#C5A059] pb-2",
 }) {
   return (
     <div className={className}>
-      <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center bg-slate-50 border border-[#C5A059]">
+      <div className="rounded-md overflow-hidden flex-shrink-0 flex items-center justify-center border border-green-100 px-2">
         <Image
           src={siteConfig.branding.iconLogo}
           alt={siteConfig.institution.nameEn}
-          width={40}
-          height={40}
-          className="object-contain"
+          width={160}
+          height={160}
+          className="w-25 h-25 object-contain"
         />
       </div>
 
@@ -60,7 +58,7 @@ export function VoucherHeader({
           <Image
             src={siteConfig.branding.banner}
             alt={siteConfig.branding.bannerAlt}
-            width={280}
+            width={500}
             height={40}
             className={bannerClassName}
             priority
@@ -69,30 +67,7 @@ export function VoucherHeader({
         <p className="text-[9px] text-slate-600 font-semibold mt-0.5">
           {siteConfig.contact.addressBn}
         </p>
-        {showContactRow && (
-          <div className="flex items-center justify-center gap-2 text-[8.5px] text-emerald-800 font-medium">
-            <span className="flex items-center gap-0.5">
-              <MdInstallMobile className="text-[10px] shrink-0" /> {siteConfig.contact.whatsappDisplay}
-            </span>
-            <span className="text-slate-300">|</span>
-            <span className="flex items-center gap-0.5">
-              <MdEmail className="text-[10px] shrink-0" /> {siteConfig.contact.email}
-            </span>
-          </div>
-        )}
       </div>
-
-      {showRightLogo && (
-        <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center bg-slate-50 border border-[#C5A059]">
-          <Image
-            src={siteConfig.branding.iconLogo}
-            alt={siteConfig.institution.nameEn}
-            width={40}
-            height={40}
-            className="object-contain"
-          />
-        </div>
-      )}
     </div>
   );
 }
