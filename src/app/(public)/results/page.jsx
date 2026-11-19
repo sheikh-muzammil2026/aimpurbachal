@@ -1,6 +1,6 @@
 // app/results/page.js
 "use client";
-import ResultSheetGenerator from "@/components/academics/IndividualResult";
+import ResultSheetGenerator from "@/components/dashboard/academics/IndividualResult";
 
 export default function ResultsPage() {
   return (
