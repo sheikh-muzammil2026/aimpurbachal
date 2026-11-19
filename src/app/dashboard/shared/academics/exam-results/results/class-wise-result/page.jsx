@@ -12,7 +12,11 @@ import useUrlPagination from "@/hooks/useUrlPagination";
 import { toBengaliDigits } from "@/lib/studentUtils";
 import siteConfig from "@/config/siteConfig";
 
-const API_BASE_URL = siteConfig.contact.apiUrl.replace(/\/$/, "");
+const API_BASE_URL = (
+  siteConfig?.contact?.apiUrl ||
+  siteConfig?.contact?.serverApiUrl ||
+  "http://localhost:5000"
+).replace(/\/$/, "");
 
 function ClassWiseResultContent() {
   const { currentPage, currentLimit, updatePaginationParams, resetPageToFirst } =
@@ -25,9 +29,11 @@ function ClassWiseResultContent() {
     user?.role?.toLowerCase() === "superadmin";
 
   const userRef = useRef(user);
+  const sessionTokenRef = useRef(session?.session?.token || "");
   useEffect(() => {
     userRef.current = user;
-  }, [user]);
+    sessionTokenRef.current = session?.session?.token || "";
+  }, [user, session]);
 
   const [selectedClass, setSelectedClass] = useState("প্রথম");
   const [examType, setExamType] = useState("term1");
@@ -87,6 +93,9 @@ function ClassWiseResultContent() {
         `${API_BASE_URL}/api/results/class?${queryParams.toString()}`,
         {
           headers: {
+            ...(sessionTokenRef.current
+              ? { Authorization: `Bearer ${sessionTokenRef.current}` }
+              : {}),
             "x-user-email": userRef.current?.email || "",
             "x-user-role": userRef.current?.role || "",
           },
@@ -171,6 +180,9 @@ function ClassWiseResultContent() {
           `${API_BASE_URL}/api/results/class?${queryParams.toString()}`,
           {
             headers: {
+              ...(sessionTokenRef.current
+                ? { Authorization: `Bearer ${sessionTokenRef.current}` }
+                : {}),
               "x-user-email": userRef.current?.email || "",
               "x-user-role": userRef.current?.role || "",
             },
@@ -261,6 +273,9 @@ function ClassWiseResultContent() {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          ...(sessionTokenRef.current
+            ? { Authorization: `Bearer ${sessionTokenRef.current}` }
+            : {}),
           "x-user-email": userRef.current?.email || "",
           "x-user-role": userRef.current?.role || "",
         },

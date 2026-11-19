@@ -15,9 +15,11 @@ function StudentResultSearchContent() {
     const { data: session } = authClient.useSession();
     const user = session?.user;
     const userRef = useRef(user);
+    const sessionTokenRef = useRef(session?.session?.token || '');
     useEffect(() => {
         userRef.current = user;
-    }, [user]);
+        sessionTokenRef.current = session?.session?.token || '';
+    }, [user, session]);
 
     const [searchId, setSearchId] = useState('');
     const [year, setYear] = useState('২০২৬');
@@ -41,6 +43,9 @@ function StudentResultSearchContent() {
         try {
             const res = await fetch(`${siteConfig.contact.apiUrl}/api/results/student/${trimmedId}?year=${encodeURIComponent(targetYear)}`, {
                 headers: {
+                    ...(sessionTokenRef.current
+                        ? { Authorization: `Bearer ${sessionTokenRef.current}` }
+                        : {}),
                     'x-user-email': userRef.current?.email || '',
                     'x-user-role': userRef.current?.role || '',
                 }

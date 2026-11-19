@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Pagination from "@/components/dashboard/Pagination";
+import { authClient } from "@/lib/auth-client";
 import {
   Users,
   Search,
@@ -47,6 +48,19 @@ const ROLES = [
 ];
 
 export default function AdministrationPage() {
+  const { data: session, isPending: sessionPending } = authClient.useSession();
+  const sessionToken = session?.session?.token || "";
+
+  const getAuthHeaders = useCallback(
+    (includeJson = false) => {
+      const headers = {};
+      if (includeJson) headers["Content-Type"] = "application/json";
+      if (sessionToken) headers["Authorization"] = `Bearer ${sessionToken}`;
+      return headers;
+    },
+    [sessionToken]
+  );
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -82,7 +96,9 @@ export default function AdministrationPage() {
         status: statusFilter,
       });
 
-      const res = await fetch(`${API_BASE}/api/admin/users?${params.toString()}`);
+      const res = await fetch(`${API_BASE}/api/admin/users?${params.toString()}`, {
+        headers: getAuthHeaders(),
+      });
       const data = await res.json();
 
       if (!res.ok || !data.success) {
@@ -98,11 +114,18 @@ export default function AdministrationPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, search, roleFilter, statusFilter]);
+  }, [page, search, roleFilter, statusFilter, getAuthHeaders]);
 
   useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+    if (sessionPending) return;
+    let cancelled = false;
+    Promise.resolve().then(() => {
+      if (!cancelled) fetchUsers();
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [fetchUsers, sessionPending]);
 
   const showToast = (text, type = "success") => {
     setMessage({ type, text });
@@ -116,7 +139,7 @@ export default function AdministrationPage() {
       setActionLoading(true);
       const res = await fetch(`${API_BASE}/api/admin/users/${roleModalUser.id}/role`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(true),
         body: JSON.stringify({ role: selectedRole }),
       });
       const data = await res.json();
@@ -166,7 +189,7 @@ export default function AdministrationPage() {
       setActionLoading(true);
       const res = await fetch(`${API_BASE}/api/admin/users/${permissionModalUser.id}/permissions`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(true),
         body: JSON.stringify({ permissions: userPermissions }),
       });
       const data = await res.json();
@@ -200,7 +223,7 @@ export default function AdministrationPage() {
       setActionLoading(true);
       const res = await fetch(`${API_BASE}/api/admin/users/${user.id}/status`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(true),
         body: JSON.stringify({ isBanned: nextBanState }),
       });
       const data = await res.json();
@@ -231,6 +254,7 @@ export default function AdministrationPage() {
       setActionLoading(true);
       const res = await fetch(`${API_BASE}/api/admin/users/${deleteModalUser.id}`, {
         method: "DELETE",
+        headers: getAuthHeaders(),
       });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.message || "ইউজার মুছতে ব্যর্থ হয়েছে");

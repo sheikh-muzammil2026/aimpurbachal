@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 export default function Dashboard() {
     // চার্ট ২-এর জন্য বাস্তবসম্মত ডাটা সেট
     const monthlyAnalysis = [
@@ -31,29 +29,9 @@ export default function Dashboard() {
     ];
 
     return (
-        <div className="flex min-h-screen bg-[#f7f6f0] text-slate-800 antialiased font-sans w-full selection:bg-emerald-800 selection:text-white">
-
-            {/* মেইন কন্টেন্ট উইন্ডো */}
-            <div className="flex-1 flex flex-col min-w-0 max-h-screen overflow-y-auto">
-
-                {/* টপ মোবাইল ও জেনারেল নেভিগেশন বার (ইসলামিক ক্যালিগ্রাফিক ভাইবসহ প্রফেশনাল হেডার) */}
-                {/* <header className="bg-white border-b border-emerald-900/10 p-4 flex items-center justify-between sticky top-0 z-30 shadow-xs">
-                    <div className="flex items-center gap-3">
-                        <span className="text-2xl">🕌</span>
-                        <div>
-                            <h2 className="font-black text-base sm:text-lg text-[#064e3b] tracking-wide">আস সালাম আইডিয়াল মাদরাসা (এইম) পুর্বাচল</h2>
-                            <p className="text-[10px] text-amber-600 font-semibold tracking-wider">কাজিরবাগ (পুর্বাচল সংলগ্ন), রূপগঞ্জ, নারায়ণগঞ্জ।</p>
-                        </div>
-                    </div>
-                    <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 bg-emerald-50/50 px-3 py-1.5 rounded-lg border border-emerald-100">
-                        <span>📞 ০১৮০৪৯০৯৫০০</span>
-                        <span className="text-emerald-300">|</span>
-                        <span>সাপোর্ট সময়: সকাল ১০টা - সন্ধ্যা ৭টা</span>
-                    </div>
-                </header>*/}
-
-                {/* ড্যাশবোর্ড বডি কন্টেনার */}
-                <main className="p-4 sm:p-6 md:p-8 space-y-8 max-w-7xl w-full mx-auto">
+        <div className="w-full text-slate-800 antialiased font-sans selection:bg-emerald-800 selection:text-white">
+            {/* ড্যাশবোর্ড বডি কন্টেনার */}
+            <div className="space-y-8 w-full">
 
                     {/* ফিল্টার গ্রুপ বার (অ্যাম্বার ও এমারেল্ড টোনড প্রফেশনাল ডিজাইন) */}
                     <div className="flex flex-wrap gap-2 items-center bg-white p-2.5 rounded-xl shadow-xs border border-emerald-900/5 text-xs sm:text-sm">
@@ -338,8 +316,7 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                </main>
+                </div>
             </div>
-        </div>
     );
 }

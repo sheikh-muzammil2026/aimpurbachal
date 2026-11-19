@@ -155,3 +155,35 @@ html {
 .group-marquee:hover .animate-marquee-reverse {
   animation-play-state: paused;
 }
+
+/* --- Print & Voucher Typography Defaults --- */
+.voucher-print-root,
+.voucher-print-root * {
+  font-family: "Bornomala", "Ubuntu Sans", sans-serif;
+}
+
+@media print {
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .voucher-print-root,
+  .voucher-print-root * {
+    font-family: "Bornomala", "Ubuntu Sans", sans-serif;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .voucher-print-root {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

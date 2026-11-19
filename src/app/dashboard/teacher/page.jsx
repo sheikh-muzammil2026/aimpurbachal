@@ -16,7 +16,7 @@ const DESIGNATION_OPTIONS = [
 
 export default function TeacherProfileDashboard() {
   const { data: session, isPending: sessionPending } = authClient.useSession();
-  const teacherEmail = session?.user?.email || "yousuf.hasani@madrasah.edu";
+  const teacherEmail = session?.user?.email || "";
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -243,10 +243,20 @@ export default function TeacherProfileDashboard() {
   }, []);
 
   useEffect(() => {
-    if (!sessionPending) {
+    if (sessionPending) return;
+    let cancelled = false;
+    Promise.resolve().then(() => {
+      if (cancelled) return;
+      if (!teacherEmail) {
+        setLoading(false);
+        return;
+      }
       setProfile((prev) => ({ ...prev, email: teacherEmail }));
       fetchTeacherProfile(teacherEmail);
-    }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [sessionPending, teacherEmail, fetchTeacherProfile]);
 
   // ইনপুট পরিবর্তন হ্যান্ডলার
@@ -382,12 +392,38 @@ export default function TeacherProfileDashboard() {
     window.print();
   };
 
-  if (loading) {
+  if (sessionPending || loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-slate-50 p-4">
-        <p className="text-slate-600 font-bold animate-pulse text-center">
-          তথ্য লোড হচ্ছে...
+      <div className="flex flex-col justify-center items-center min-h-[60vh] bg-slate-50/60 dark:bg-transparent rounded-2xl p-6 gap-3">
+        <div className="w-10 h-10 rounded-full border-4 border-emerald-200 border-t-emerald-700 animate-spin" />
+        <p className="text-slate-600 dark:text-slate-300 font-bold text-sm text-center">
+          শিক্ষকের প্রোফাইল তথ্য লোড হচ্ছে...
         </p>
+      </div>
+    );
+  }
+
+  if (!teacherEmail) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-[60vh] p-6">
+        <div className="max-w-md w-full rounded-2xl border border-amber-200 dark:border-amber-900/50 bg-white dark:bg-[#031810] p-6 sm:p-8 text-center shadow-sm space-y-4">
+          <div className="text-3xl">👤</div>
+          <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-amber-100">
+            শিক্ষকের অ্যাকাউন্ট তথ্য পাওয়া যায়নি
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            আপনার সেশনের ইমেইল শনাক্ত করা যায়নি। প্রোফাইল দেখতে এবং সম্পাদনা করতে
+            অনুগ্রহ করে পুনরায় লগইন করুন।
+          </p>
+          <div className="pt-1">
+            <Link
+              href="/login"
+              className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white text-xs sm:text-sm font-bold transition-colors"
+            >
+              লগইন পেজে যান
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }

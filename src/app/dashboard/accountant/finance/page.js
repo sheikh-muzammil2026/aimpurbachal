@@ -12,8 +12,6 @@ import {
   Globe,
   Mail,
 } from "lucide-react";
-import dynamic from "next/dynamic";
-
 import { BsWhatsapp, BsYoutube } from "react-icons/bs";
 import { FaFacebook } from "react-icons/fa";
 import Overview from "@/components/dashboard/finance/Overview";
@@ -21,25 +19,9 @@ import IncomeEntry from "@/components/dashboard/finance/IncomeEntry";
 import ExpenseEntry from "@/components/dashboard/finance/ExpenseEntry";
 import MonthlyReport from "@/components/dashboard/finance/MonthlyReport";
 import IncomeVoucherHtmlLayout from "@/components/dashboard/finance/IncomeVoucherHtmlLayout";
+import IncomeVoucherPdfActions from "@/components/dashboard/finance/IncomeVoucherPdfActions";
 import ExpenseVoucherHtmlLayout from "@/components/dashboard/finance/ExpenseVoucherHtmlLayout";
 import ExpenseVoucherPdfActions from "@/components/dashboard/finance/ExpenseVoucherPdfActions";
-
-const IncomeVoucherPdfActions = dynamic(
-  () => import("@/components/dashboard/finance/IncomeVoucherPdfActions"),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex items-center gap-2">
-        <button
-          disabled
-          className="px-4 py-2 bg-emerald-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 opacity-60 cursor-not-allowed shadow-xs"
-        >
-          <Printer className="w-4 h-4 animate-spin" /> ভাউচার লোড হচ্ছে...
-        </button>
-      </div>
-    ),
-  },
-);
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_SERVER_API ||
@@ -256,6 +238,7 @@ export default function FinanceDashboard() {
 
   // Print Preview / Media Print State
   const [printData, setPrintData] = useState(null);
+  const incomeVoucherRef = useRef(null);
   const expenseVoucherRef = useRef(null);
 
   // Alert Handler Helper
@@ -784,18 +767,32 @@ export default function FinanceDashboard() {
       <style>{`
         @media print {
           @page {
-            size: ${printData?.type === "income" ? "A4 landscape" : "A4 portrait"};
-            margin: ${printData?.type === "income" ? "5mm" : "10mm"};
+            size: ${
+              printData?.type === "income"
+                ? "A4 landscape"
+                : printData?.type === "expense"
+                  ? "A5 portrait"
+                  : "A4 portrait"
+            };
+            margin: ${
+              printData?.type === "income"
+                ? "8mm"
+                : printData?.type === "expense"
+                  ? "0mm"
+                  : "10mm"
+            };
           }
           body {
             background-color: white !important;
             color: black !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+            font-family: "Bornomala", "Ubuntu Sans", sans-serif !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           html, body {
             margin: 0 !important;
             padding: 0 !important;
+            height: auto !important;
           }
         }
       `}</style>
@@ -1136,7 +1133,7 @@ export default function FinanceDashboard() {
                     ? "রিপোর্ট প্রিন্ট প্রিভিউ"
                     : printData.type === "income"
                       ? "আদায় রসিদ প্রিন্ট প্রিভিউ (A4 Landscape - অফিস ও গ্রাহক কপি)"
-                      : "ব্যয় ভাউচার প্রিন্ট প্রিভিউ"}
+                      : "ব্যয় ভাউচার প্রিন্ট প্রিভিউ (A5 Portrait)"}
                 </span>
               </h3>
               <button
@@ -1152,14 +1149,25 @@ export default function FinanceDashboard() {
             <div className="p-4 sm:p-6 overflow-y-auto flex-1 bg-slate-100/60">
               {printData.type === "income" ? (
                 <div className="bg-white border border-slate-300 p-4 sm:p-6 shadow-sm rounded-xl w-full mx-auto">
-                  <IncomeVoucherHtmlLayout
-                    tx={printData}
-                    formatBanglaNumber={formatBanglaNumber}
-                    parsePayerName={parsePayerName}
-                  />
+                  <div
+                    ref={incomeVoucherRef}
+                    className="bg-white text-black w-full"
+                  >
+                    <IncomeVoucherHtmlLayout
+                      tx={printData}
+                      formatBanglaNumber={formatBanglaNumber}
+                      parsePayerName={parsePayerName}
+                    />
+                  </div>
                 </div>
               ) : (
-                <div className="bg-white border border-slate-250 p-6 sm:p-8 shadow-sm rounded-xl max-w-xl mx-auto">
+                <div
+                  className={`bg-white border border-slate-200 shadow-sm rounded-xl mx-auto ${
+                    printData.type === "report"
+                      ? "max-w-xl p-4 sm:p-6"
+                      : "w-fit max-w-full p-2 sm:p-3 overflow-x-auto"
+                  }`}
+                >
                   {printData.type === "report" ? (
                     <ReportPrintLayout
                       title={printData.title}
@@ -1194,7 +1202,10 @@ export default function FinanceDashboard() {
               </button>
 
               {printData.type === "income" ? (
-                <IncomeVoucherPdfActions tx={printData} />
+                <IncomeVoucherPdfActions
+                  tx={printData}
+                  contentRef={incomeVoucherRef}
+                />
               ) : printData.type === "report" ? (
                 <button
                   onClick={() => window.print()}

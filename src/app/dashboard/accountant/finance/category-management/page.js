@@ -102,20 +102,21 @@ export default function CategoryManagement() {
     try {
       setSubmitting(true);
 
-      // If editing, delete the old one first to perform an update
-      if (editingId) {
-        await fetch(`${API_BASE_URL}/api/finance/categories/${editingId}`, {
-          method: 'DELETE'
-        });
-      }
+      const url = editingId
+        ? `${API_BASE_URL}/api/finance/categories/${editingId}`
+        : `${API_BASE_URL}/api/finance/categories`;
+      const method = editingId ? 'PUT' : 'POST';
 
-      const res = await fetch(`${API_BASE_URL}/api/finance/categories`, {
-        method: 'POST',
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, presetFee: parseFloat(presetFee) || 0 })
+        body: JSON.stringify({
+          name: name.trim(),
+          presetFee: parseFloat(presetFee) || 0,
+        }),
       });
       const data = await res.json();
-      if (data.success) {
+      if (res.ok && data.success) {
         triggerNotification('success', editingId ? 'খাত সফলভাবে আপডেট হয়েছে!' : 'নতুন খাত সফলভাবে তৈরি হয়েছে!');
         setName('');
         setPresetFee('');

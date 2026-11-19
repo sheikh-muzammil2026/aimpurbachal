@@ -131,8 +131,16 @@ export const siteConfig = {
       "8:00 AM to 8:00 PM (Closed on Friday)",
     baseUrl: process.env.NEXT_PUBLIC_BASE_URI || "http://localhost:3000",
     serverApiUrl: process.env.NEXT_PUBLIC_SERVER_API || "http://localhost:5000",
+    apiUrl:
+      process.env.NEXT_PUBLIC_SERVER_API ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      "http://localhost:5000",
     websiteDomain:
       process.env.NEXT_PUBLIC_WEBSITE_DOMAIN || "www.aimpurbachal.com",
+    websiteDisplay:
+      process.env.NEXT_PUBLIC_WEBSITE_DISPLAY ||
+      process.env.NEXT_PUBLIC_WEBSITE_DOMAIN ||
+      "www.aimpurbachal.com",
   },
 
   social: {

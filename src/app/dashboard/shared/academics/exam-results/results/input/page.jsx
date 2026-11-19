@@ -139,9 +139,11 @@ function TeacherMarkInputContent() {
     user?.role?.toLowerCase() === "superadmin";
 
   const userRef = useRef(user);
+  const sessionTokenRef = useRef(session?.session?.token || "");
   useEffect(() => {
     userRef.current = user;
-  }, [user]);
+    sessionTokenRef.current = session?.session?.token || "";
+  }, [user, session]);
 
   const [selectedClass, setSelectedClass] = useState("প্রথম");
   const [selectedSubject, setSelectedSubject] = useState("কুরআন ও তাজভীদ-০১");
@@ -254,6 +256,9 @@ function TeacherMarkInputContent() {
         `${API_BASE_URL}/api/marks/get?${markQueryParams.toString()}`,
         {
           headers: {
+            ...(sessionTokenRef.current
+              ? { Authorization: `Bearer ${sessionTokenRef.current}` }
+              : {}),
             "x-user-email": userRef.current?.email || "",
             "x-user-role": userRef.current?.role || "",
           },
@@ -359,6 +364,9 @@ function TeacherMarkInputContent() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...(sessionTokenRef.current
+            ? { Authorization: `Bearer ${sessionTokenRef.current}` }
+            : {}),
           "x-user-email": userRef.current?.email || "",
           "x-user-role": userRef.current?.role || "",
         },

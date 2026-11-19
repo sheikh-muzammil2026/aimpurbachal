@@ -1,97 +1,88 @@
 "use client";
 
-import React, { useState } from "react";
-import { Printer, Download, RefreshCw, ExternalLink } from "lucide-react";
-import { pdf, PDFDownloadLink } from "@react-pdf/renderer";
-import IncomeVoucherPdfDocument from "./IncomeVoucherPdfDocument";
+import React, { useMemo } from "react";
+import { Printer, Download } from "lucide-react";
+import { useReactToPrint } from "react-to-print";
+import {
+  buildVoucherPageStyle,
+  getVoucherPrintFonts,
+  preloadVoucherFonts,
+} from "@/components/dashboard/finance/VoucherSharedParts";
 
-export default function IncomeVoucherPdfActions({ tx }) {
-  const isClient = React.useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false,
+export default function IncomeVoucherPdfActions({ tx, contentRef }) {
+  const documentTitle = `Income-Voucher-${tx?.receiptNo || tx?._id || "Receipt"}`;
+
+  const printFonts = useMemo(() => getVoucherPrintFonts(), []);
+  const pageStyle = useMemo(
+    () =>
+      buildVoucherPageStyle({
+        size: "A4 landscape",
+        margin: "8mm",
+        extraCss: `
+          .income-voucher-a4-sheet {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #ffffff !important;
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+          }
+          .income-voucher-split {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: stretch !important;
+            justify-content: space-between !important;
+            width: 100% !important;
+            gap: 0 !important;
+          }
+          .income-voucher-half {
+            width: 48.8% !important;
+            max-width: 48.8% !important;
+            display: flex !important;
+            flex-shrink: 0 !important;
+          }
+          .income-voucher-divider {
+            display: flex !important;
+            width: 2.4% !important;
+            flex-shrink: 0 !important;
+            position: relative !important;
+            align-items: center !important;
+            justify-content: center !important;
+          }
+        `,
+      }),
+    [],
   );
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
-  const handleOpenPdfPrint = async () => {
-    if (!tx) return;
-    setIsGeneratingPdf(true);
-    try {
-      const baseUrl =
-        typeof window !== "undefined" ? window.location.origin : "";
-      const doc = <IncomeVoucherPdfDocument tx={tx} baseUrl={baseUrl} />;
-      const blob = await pdf(doc).toBlob();
-      const blobUrl = URL.createObjectURL(blob);
-      const printWin = window.open(blobUrl, "_blank");
-      if (printWin) {
-        printWin.focus();
-      }
-    } catch (err) {
-      console.error("Error generating PDF view:", err);
-      // Fallback to standard window print
-      window.print();
-    } finally {
-      setIsGeneratingPdf(false);
-    }
-  };
+  const handlePrintIncomeVoucher = useReactToPrint({
+    contentRef,
+    documentTitle,
+    bodyClass: "font-bornomala",
+    fonts: printFonts,
+    pageStyle,
+    onBeforePrint: preloadVoucherFonts,
+  });
 
-  if (!isClient || !tx) {
-    return (
-      <div className="flex items-center gap-2">
-        <button
-          onClick={() => window.print()}
-          className="px-4 py-2 bg-emerald-800 hover:bg-emerald-950 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs"
-        >
-          <Printer className="w-4 h-4" /> প্রিন্ট করুন
-        </button>
-      </div>
-    );
-  }
-
-  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
+  if (!tx) return null;
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {/* 1. Direct PDF Download using @react-pdf/renderer */}
-      {/* <PDFDownloadLink
-        document={<IncomeVoucherPdfDocument tx={tx} baseUrl={baseUrl} />}
-        fileName={`Income-Voucher-${tx.receiptNo || "Receipt"}.pdf`}
-        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs"
-        title="A4 Landscape PDF ডাউনলোড করুন"
-      >
-        {({ loading }) =>
-          loading ? (
-            <>
-              <RefreshCw className="w-3.5 h-3.5 animate-spin text-emerald-700" />
-              <span>PDF তৈরি হচ্ছে...</span>
-            </>
-          ) : (
-            <>
-              <Download className="w-3.5 h-3.5 text-emerald-700" />
-              <span> PDF ডাউনলোড</span>
-            </>
-          )
-        }
-      </PDFDownloadLink> */}
-
-      {/* 2. Direct A4 Landscape PDF Viewer / Print tab */}
       <button
-        onClick={handleOpenPdfPrint}
-        disabled={isGeneratingPdf}
-        className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs disabled:opacity-50"
-        title="A4 সাইজ ল্যান্ডস্কেপ PDF প্রিন্ট ভিউ খুলুন"
+        type="button"
+        onClick={() => handlePrintIncomeVoucher()}
+        className="px-4 py-2 bg-emerald-800 hover:bg-emerald-950 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+        title="A4 Landscape সাইজে আদায় রসিদ প্রিন্ট করুন"
       >
-        {isGeneratingPdf ? (
-          <>
-            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-            <span>প্রিন্ট ভিউ তৈরি হচ্ছে...</span>
-          </>
-        ) : (
-          <>
-            <ExternalLink className="w-3.5 h-3.5" />
-            <span>PDF প্রিন্ট ভিউ</span>
-          </>
-        )}
+        <Printer className="w-4 h-4" /> প্রিন্ট রসিদ (A4)
+      </button>
+      <button
+        type="button"
+        onClick={() => handlePrintIncomeVoucher()}
+        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+        title="A4 Landscape PDF হিসেবে সংরক্ষণ করুন"
+      >
+        <Download className="w-4 h-4 text-emerald-700" /> ডাউনলোড PDF
       </button>
     </div>
   );
