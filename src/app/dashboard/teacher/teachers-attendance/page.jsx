@@ -23,7 +23,6 @@ import {
   Layers,
 } from "lucide-react";
 import {
-  MADRASA_LOCATION,
   RESIDENTIAL_ATTENDANCE_RULES,
   HIFZ_ATTENDANCE_RULES,
   isWithinMadrasaGeofence,
@@ -67,6 +66,7 @@ const TEACHER_I18N = {
     meterUnit: "মিটার",
     kmUnit: "কিমি",
     distanceLabel: "দূরত্ব:",
+    gpsAccuracyLabel: "GPS নির্ভুলতা:",
     refreshLocationBtn: "অবস্থান রিফ্রেশ করুন",
     threeShiftBadge: "৩ শিফট",
     resScheduleTitle: "আবাসিক শিক্ষক হাজিরা সূচি (দৈনিক ৩ শিফট)",
@@ -196,6 +196,7 @@ const TEACHER_I18N = {
     meterUnit: "m",
     kmUnit: "km",
     distanceLabel: "Distance:",
+    gpsAccuracyLabel: "GPS Accuracy:",
     refreshLocationBtn: "Refresh Location",
     threeShiftBadge: "3 Shifts",
     resScheduleTitle: "Residential Teacher Attendance Schedule (3 Shifts Daily)",
@@ -322,6 +323,7 @@ const TEACHER_I18N = {
     meterUnit: "متر",
     kmUnit: "كم",
     distanceLabel: "المسافة:",
+    gpsAccuracyLabel: "دقة GPS:",
     refreshLocationBtn: "تحديث الموقع",
     threeShiftBadge: "٣ فترات",
     resScheduleTitle: "جدول حضور المعلمين الداخليين (٣ فترات يومياً)",
@@ -447,15 +449,22 @@ export default function TeacherAttendancePage() {
   const [targetShiftId, setTargetShiftId] = useState(null);
   const [submittingShiftId, setSubmittingShiftId] = useState(null);
 
+  // Server-authoritative geofence configuration (hydrated from /api/attendance/today)
+  const [serverLocation, setServerLocation] = useState(null);
+
   // Real-time & Geolocation state via shared hook
   const {
     currentTime,
-    currentCoords,
     locationError,
     isLocating,
     geofenceStatus,
+    activeLocation,
     requestLocation,
-  } = useAttendanceGeolocation();
+    ensureFreshLocation,
+  } = useAttendanceGeolocation({
+    passAccuracyToGeofence: true,
+    targetLocation: serverLocation,
+  });
 
   const [, setLoadingToday] = useState(true);
   const [todayData, setTodayData] = useState(null);
@@ -484,6 +493,9 @@ export default function TeacherAttendancePage() {
         setTodayData(json.attendance);
         if (json.user) {
           setTeacherProfile(json.user);
+        }
+        if (json.madrasaLocation) {
+          setServerLocation(json.madrasaLocation);
         }
         const category =
           json.category || getTeacherCategory(json.user?.designation);
@@ -522,24 +534,53 @@ export default function TeacherAttendancePage() {
     fetchHistory();
   }, [fetchTodayAttendance, fetchHistory]);
 
-  // 5. Execute Check-In API call
-  const executeCheckIn = async (comment = "") => {
-    if (!currentCoords) {
-      toast.info("আপনার অবস্থান যাচাই করা হচ্ছে...");
-      requestLocation();
-      return;
+  // Shared geofence verification helper with indoor GPS accuracy tolerance & freshness check
+  const verifyGeofenceBeforeAction = async () => {
+    const latest = await ensureFreshLocation();
+    const coords = latest?.coords;
+
+    if (!coords) {
+      toast.info(
+        "আপনার GPS অবস্থান যাচাই করা সম্ভব হয়নি। অনুগ্রহ করে লোকেশন পারমিশন অন করে আবার চেষ্টা করুন।"
+      );
+      return null;
+    }
+
+    if (
+      coords.accuracy > 0 &&
+      activeLocation.MAX_ALLOWED_ACCURACY_METERS &&
+      coords.accuracy > activeLocation.MAX_ALLOWED_ACCURACY_METERS
+    ) {
+      toast.error(
+        `আপনার GPS সংকেত দুর্বল (±${coords.accuracy} মিটার)। অনুগ্রহ করে জানালার পাশে বা খোলা স্থানে গিয়ে 'অবস্থান রিফ্রেশ করুন' বাটনে ক্লিক করুন।`
+      );
+      return null;
     }
 
     const verification = isWithinMadrasaGeofence(
-      currentCoords.lat,
-      currentCoords.lng
+      coords.lat,
+      coords.lng,
+      activeLocation.RADIUS_METERS,
+      coords.accuracy,
+      activeLocation
     );
+
     if (!verification.isInside) {
+      const accuracyNote =
+        coords.accuracy > 0 ? ` (GPS ±${coords.accuracy} মিটার)` : "";
       toast.error(
-        "You must be inside the madrasa premises to submit attendance."
+        `হাজিরা দিতে আপনাকে মাদরাসা প্রাঙ্গণে (${verification.threshold} মিটারের মধ্যে) থাকতে হবে। আপনার বর্তমান দূরত্ব: ${verification.distance} মিটার${accuracyNote}।`
       );
-      return;
+      return null;
     }
+
+    return coords;
+  };
+
+  // 5. Execute Check-In API call
+  const executeCheckIn = async (comment = "") => {
+    const verifiedCoords = await verifyGeofenceBeforeAction();
+    if (!verifiedCoords) return;
 
     try {
       setSubmittingCheckIn(true);
@@ -547,8 +588,9 @@ export default function TeacherAttendancePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          lat: currentCoords.lat,
-          lng: currentCoords.lng,
+          lat: verifiedCoords.lat,
+          lng: verifiedCoords.lng,
+          accuracy: verifiedCoords.accuracy,
           checkInComment: comment,
           teacherEmail,
           teacherName,
@@ -578,22 +620,8 @@ export default function TeacherAttendancePage() {
 
   // Handle Check-In Trigger
   const handleCheckIn = async () => {
-    if (!currentCoords) {
-      toast.info("আপনার অবস্থান যাচাই করা হচ্ছে...");
-      requestLocation();
-      return;
-    }
-
-    const verification = isWithinMadrasaGeofence(
-      currentCoords.lat,
-      currentCoords.lng
-    );
-    if (!verification.isInside) {
-      toast.error(
-        "You must be inside the madrasa premises to submit attendance."
-      );
-      return;
-    }
+    const verifiedCoords = await verifyGeofenceBeforeAction();
+    if (!verifiedCoords) return;
 
     const status = evaluateCheckInStatus(new Date());
     if (status === "Late") {
@@ -607,22 +635,8 @@ export default function TeacherAttendancePage() {
 
   // 6. Execute Check-Out API call
   const executeCheckOut = async (comment = "") => {
-    if (!currentCoords) {
-      toast.info("আপনার অবস্থান যাচাই করা হচ্ছে...");
-      requestLocation();
-      return;
-    }
-
-    const verification = isWithinMadrasaGeofence(
-      currentCoords.lat,
-      currentCoords.lng
-    );
-    if (!verification.isInside) {
-      toast.error(
-        "You must be inside the madrasa premises to submit attendance."
-      );
-      return;
-    }
+    const verifiedCoords = await verifyGeofenceBeforeAction();
+    if (!verifiedCoords) return;
 
     try {
       setSubmittingCheckOut(true);
@@ -630,8 +644,9 @@ export default function TeacherAttendancePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          lat: currentCoords.lat,
-          lng: currentCoords.lng,
+          lat: verifiedCoords.lat,
+          lng: verifiedCoords.lng,
+          accuracy: verifiedCoords.accuracy,
           checkOutComment: comment,
           teacherEmail,
           teacherName,
@@ -673,22 +688,8 @@ export default function TeacherAttendancePage() {
       return;
     }
 
-    if (!currentCoords) {
-      toast.info("আপনার অবস্থান যাচাই করা হচ্ছে...");
-      requestLocation();
-      return;
-    }
-
-    const verification = isWithinMadrasaGeofence(
-      currentCoords.lat,
-      currentCoords.lng
-    );
-    if (!verification.isInside) {
-      toast.error(
-        "You must be inside the madrasa premises to submit attendance."
-      );
-      return;
-    }
+    const verifiedCoords = await verifyGeofenceBeforeAction();
+    if (!verifiedCoords) return;
 
     const status = evaluateCheckOutStatus(new Date());
     if (status === "Early") {
@@ -702,22 +703,8 @@ export default function TeacherAttendancePage() {
 
   // 5.b Execute Multi-Shift Check-In API call
   const executeShiftCheckIn = async (shiftKey, comment = "") => {
-    if (!currentCoords) {
-      toast.info("আপনার অবস্থান যাচাই করা হচ্ছে...");
-      requestLocation();
-      return;
-    }
-
-    const verification = isWithinMadrasaGeofence(
-      currentCoords.lat,
-      currentCoords.lng
-    );
-    if (!verification.isInside) {
-      toast.error(
-        "You must be inside the madrasa premises to submit attendance."
-      );
-      return;
-    }
+    const verifiedCoords = await verifyGeofenceBeforeAction();
+    if (!verifiedCoords) return;
 
     try {
       setSubmittingShiftId(shiftKey);
@@ -725,8 +712,9 @@ export default function TeacherAttendancePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          lat: currentCoords.lat,
-          lng: currentCoords.lng,
+          lat: verifiedCoords.lat,
+          lng: verifiedCoords.lng,
+          accuracy: verifiedCoords.accuracy,
           checkInComment: comment,
           shiftId: shiftKey,
           teacherEmail,
@@ -757,22 +745,8 @@ export default function TeacherAttendancePage() {
 
   // Handle Shift Check-In Trigger
   const handleShiftCheckIn = async (shiftKey) => {
-    if (!currentCoords) {
-      toast.info("আপনার অবস্থান যাচাই করা হচ্ছে...");
-      requestLocation();
-      return;
-    }
-
-    const verification = isWithinMadrasaGeofence(
-      currentCoords.lat,
-      currentCoords.lng
-    );
-    if (!verification.isInside) {
-      toast.error(
-        "You must be inside the madrasa premises to submit attendance."
-      );
-      return;
-    }
+    const verifiedCoords = await verifyGeofenceBeforeAction();
+    if (!verifiedCoords) return;
 
     const evalResult = evaluateTeacherShiftCheckIn(
       teacherCategory,
@@ -791,22 +765,8 @@ export default function TeacherAttendancePage() {
 
   // 6.b Execute Multi-Shift Check-Out API call
   const executeShiftCheckOut = async (shiftKey, comment = "") => {
-    if (!currentCoords) {
-      toast.info("আপনার অবস্থান যাচাই করা হচ্ছে...");
-      requestLocation();
-      return;
-    }
-
-    const verification = isWithinMadrasaGeofence(
-      currentCoords.lat,
-      currentCoords.lng
-    );
-    if (!verification.isInside) {
-      toast.error(
-        "You must be inside the madrasa premises to submit attendance."
-      );
-      return;
-    }
+    const verifiedCoords = await verifyGeofenceBeforeAction();
+    if (!verifiedCoords) return;
 
     try {
       setSubmittingShiftId(shiftKey);
@@ -814,8 +774,9 @@ export default function TeacherAttendancePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          lat: currentCoords.lat,
-          lng: currentCoords.lng,
+          lat: verifiedCoords.lat,
+          lng: verifiedCoords.lng,
+          accuracy: verifiedCoords.accuracy,
           checkOutComment: comment,
           shiftId: shiftKey,
           teacherEmail,
@@ -861,22 +822,8 @@ export default function TeacherAttendancePage() {
       return;
     }
 
-    if (!currentCoords) {
-      toast.info("আপনার অবস্থান যাচাই করা হচ্ছে...");
-      requestLocation();
-      return;
-    }
-
-    const verification = isWithinMadrasaGeofence(
-      currentCoords.lat,
-      currentCoords.lng
-    );
-    if (!verification.isInside) {
-      toast.error(
-        "You must be inside the madrasa premises to submit attendance."
-      );
-      return;
-    }
+    const verifiedCoords = await verifyGeofenceBeforeAction();
+    if (!verifiedCoords) return;
 
     const evalResult = evaluateTeacherShiftCheckOut(
       teacherCategory,
@@ -1016,8 +963,8 @@ export default function TeacherAttendancePage() {
                   )}
                 </div>
                 <p className="text-xs text-slate-500 dark:text-emerald-100/70">
-                  {text.targetLabel} {MADRASA_LOCATION.NAME} (
-                  {text.allowedRadiusLabel} {MADRASA_LOCATION.RADIUS_METERS}{" "}
+                  {text.targetLabel} {activeLocation.NAME} (
+                  {text.allowedRadiusLabel} {activeLocation.RADIUS_METERS}{" "}
                   {text.meterUnit})
                   {effectiveDistance !== null && (
                     <span className="ltr:ml-2 rtl:mr-2 font-bold text-slate-700 dark:text-amber-300">
@@ -1027,13 +974,19 @@ export default function TeacherAttendancePage() {
                         : `${effectiveDistance} ${text.meterUnit}`}
                     </span>
                   )}
+                  {geofenceStatus?.accuracy > 0 && (
+                    <span className="ltr:ml-2 rtl:mr-2 text-slate-500 dark:text-emerald-200/80">
+                      • {text.gpsAccuracyLabel} ±{geofenceStatus.accuracy}{" "}
+                      {text.meterUnit}
+                    </span>
+                  )}
                 </p>
               </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
               <button
-                onClick={requestLocation}
+                onClick={() => requestLocation()}
                 disabled={isLocating}
                 className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-amber-200 dark:text-amber-300 bg-gradient-to-r from-[#022014] to-emerald-900 dark:from-amber-400/15 dark:to-emerald-500/15 hover:from-emerald-900 hover:to-emerald-800 border border-amber-400/35 rounded-xl transition-all disabled:opacity-50 cursor-pointer shadow-xs"
               >
@@ -1609,7 +1562,7 @@ export default function TeacherAttendancePage() {
                   {text.ruleCard4Tag}
                 </span>
                 <p className="text-sm font-black text-amber-600 dark:text-amber-300">
-                  {text.ruleCard4ValPrefix} {MADRASA_LOCATION.RADIUS_METERS}{" "}
+                  {text.ruleCard4ValPrefix} {activeLocation.RADIUS_METERS}{" "}
                   {text.meterUnit}
                 </p>
                 <p className="text-xs text-slate-500 dark:text-emerald-100/65">

@@ -18,7 +18,6 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
 import {
-  MADRASA_LOCATION,
   isWithinMadrasaGeofence,
   evaluateStaffCheckInStatus,
   evaluateStaffCheckOutStatus,
@@ -349,6 +348,9 @@ export default function StaffAttendancePage() {
   const { data: session, isPending: sessionLoading } = authClient.useSession();
   const sessionUser = session?.user;
 
+  // Server-authoritative geofence configuration (hydrated from /api/staff/attendance/today)
+  const [serverLocation, setServerLocation] = useState(null);
+
   // Real-time & Geolocation state via shared hook
   const {
     currentTime,
@@ -356,9 +358,12 @@ export default function StaffAttendancePage() {
     locationError,
     isLocating,
     geofenceStatus,
+    activeLocation,
     requestLocation,
+    ensureFreshLocation,
   } = useAttendanceGeolocation({
     passAccuracyToGeofence: true,
+    targetLocation: serverLocation,
     unsupportedMessage: "আপনার ডিভাইসে Geolocation সমর্থিত নয়।",
     unsupportedToastType: "warning",
   });
@@ -394,6 +399,9 @@ export default function StaffAttendancePage() {
       if (json.success) {
         setTodayData(json.attendance);
         setShiftPhase(json.shiftPhase);
+        if (json.madrasaLocation) {
+          setServerLocation(json.madrasaLocation);
+        }
       }
     } catch (err) {
       console.error("Failed to load today's staff attendance:", err);
@@ -439,53 +447,59 @@ export default function StaffAttendancePage() {
   }, [sessionLoading, fetchTodayAttendance, fetchHistory]);
 
   // Verify GPS & Geofence before allowing Check-In or Check-Out
-  const verifyGeofenceBeforeAction = () => {
-    if (!currentCoords) {
+  const verifyGeofenceBeforeAction = async () => {
+    const latest = await ensureFreshLocation();
+    const coords = latest?.coords;
+
+    if (!coords) {
       toast.info(
-        "আপনার GPS অবস্থান যাচাই করা হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন..."
+        "আপনার GPS অবস্থান যাচাই করা সম্ভব হয়নি। অনুগ্রহ করে লোকেশন পারমিশন অন করে আবার চেষ্টা করুন।"
       );
-      requestLocation();
-      return false;
+      return null;
     }
 
     if (
-      currentCoords.accuracy &&
-      MADRASA_LOCATION.MAX_ALLOWED_ACCURACY_METERS &&
-      currentCoords.accuracy > MADRASA_LOCATION.MAX_ALLOWED_ACCURACY_METERS
+      coords.accuracy > 0 &&
+      activeLocation.MAX_ALLOWED_ACCURACY_METERS &&
+      coords.accuracy > activeLocation.MAX_ALLOWED_ACCURACY_METERS
     ) {
       toast.error(
-        `আপনার GPS সংকেত দুর্বল (±${currentCoords.accuracy} মিটার)। অনুগ্রহ করে খোলা স্থানে গিয়ে 'GPS রিফ্রেশ করুন' বাটনে ক্লিক করুন।`
+        `আপনার GPS সংকেত দুর্বল (±${coords.accuracy} মিটার)। অনুগ্রহ করে খোলা স্থানে গিয়ে 'GPS রিফ্রেশ করুন' বাটনে ক্লিক করুন।`
       );
-      return false;
+      return null;
     }
 
     const verification = isWithinMadrasaGeofence(
-      currentCoords.lat,
-      currentCoords.lng,
-      MADRASA_LOCATION.RADIUS_METERS,
-      currentCoords.accuracy
+      coords.lat,
+      coords.lng,
+      activeLocation.RADIUS_METERS,
+      coords.accuracy,
+      activeLocation
     );
 
     if (!verification.isInside) {
+      const accuracyNote =
+        coords.accuracy > 0 ? ` (GPS ±${coords.accuracy} মিটার)` : "";
       toast.error(
-        `হাজিরা দিতে আপনাকে মাদরাসা প্রাঙ্গণে (${verification.threshold} মিটারের মধ্যে) থাকতে হবে। আপনার বর্তমান দূরত্ব: ${verification.distance} মিটার।`
+        `হাজিরা দিতে আপনাকে মাদরাসা প্রাঙ্গণে (${verification.threshold} মিটারের মধ্যে) থাকতে হবে। আপনার বর্তমান দূরত্ব: ${verification.distance} মিটার${accuracyNote}।`
       );
-      return false;
+      return null;
     }
 
-    return true;
+    return coords;
   };
 
   // 5. Term 1 Check-In API Handler
-  const handleCheckInClick = () => {
-    if (!verifyGeofenceBeforeAction()) return;
+  const handleCheckInClick = async () => {
+    const verifiedCoords = await verifyGeofenceBeforeAction();
+    if (!verifiedCoords) return;
 
     const status = evaluateStaffCheckInStatus(currentTime);
     if (status === "Late") {
       setCommentModalType("late");
       setCommentModalOpen(true);
     } else {
-      executeCheckIn("");
+      await executeCheckIn("");
     }
   };
 
@@ -496,7 +510,8 @@ export default function StaffAttendancePage() {
       return;
     }
 
-    if (!verifyGeofenceBeforeAction()) return;
+    const verifiedCoords = await verifyGeofenceBeforeAction();
+    if (!verifiedCoords) return;
 
     try {
       setSubmittingCheckIn(true);
@@ -507,9 +522,9 @@ export default function StaffAttendancePage() {
           "x-user-email": userEmail,
         },
         body: JSON.stringify({
-          lat: currentCoords.lat,
-          lng: currentCoords.lng,
-          accuracy: currentCoords.accuracy,
+          lat: verifiedCoords.lat,
+          lng: verifiedCoords.lng,
+          accuracy: verifiedCoords.accuracy,
           checkInComment: comment,
           email: userEmail,
           staffEmail: userEmail,
@@ -543,8 +558,9 @@ export default function StaffAttendancePage() {
   };
 
   // 6. Term 2 Check-Out API Handler
-  const handleCheckOutClick = () => {
-    if (!verifyGeofenceBeforeAction()) return;
+  const handleCheckOutClick = async () => {
+    const verifiedCoords = await verifyGeofenceBeforeAction();
+    if (!verifiedCoords) return;
 
     const status = evaluateStaffCheckOutStatus(currentTime);
     if (status === "Early") {
@@ -554,7 +570,7 @@ export default function StaffAttendancePage() {
       setCommentModalType("overtime");
       setCommentModalOpen(true);
     } else {
-      executeCheckOut("");
+      await executeCheckOut("");
     }
   };
 
@@ -565,7 +581,8 @@ export default function StaffAttendancePage() {
       return;
     }
 
-    if (!verifyGeofenceBeforeAction()) return;
+    const verifiedCoords = await verifyGeofenceBeforeAction();
+    if (!verifiedCoords) return;
 
     try {
       setSubmittingCheckOut(true);
@@ -576,9 +593,9 @@ export default function StaffAttendancePage() {
           "x-user-email": userEmail,
         },
         body: JSON.stringify({
-          lat: currentCoords.lat,
-          lng: currentCoords.lng,
-          accuracy: currentCoords.accuracy,
+          lat: verifiedCoords.lat,
+          lng: verifiedCoords.lng,
+          accuracy: verifiedCoords.accuracy,
           checkOutComment: comment,
           email: userEmail,
           staffEmail: userEmail,
@@ -845,8 +862,8 @@ export default function StaffAttendancePage() {
                   </p>
                 ) : (
                   <p className="text-xs text-slate-500 dark:text-emerald-100/70 mt-0.5">
-                    {MADRASA_LOCATION.NAME} • {text.allowedRadius}:{" "}
-                    {MADRASA_LOCATION.RADIUS_METERS} {text.gpsMeterWord}
+                    {activeLocation.NAME} • {text.allowedRadius}:{" "}
+                    {activeLocation.RADIUS_METERS} {text.gpsMeterWord}
                     {geofenceStatus?.accuracy
                       ? ` • ${text.gpsAccuracy}: ±${geofenceStatus.accuracy} ${text.gpsMeterWord}`
                       : ""}

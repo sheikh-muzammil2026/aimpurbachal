@@ -10,6 +10,14 @@
  *   resolved on the server (`typeof window === "undefined"`).
  */
 
+function parseFiniteNumber(value, fallback) {
+  if (value === undefined || value === null || String(value).trim() === "") {
+    return fallback;
+  }
+  const parsed = parseFloat(String(value).trim());
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
 export const siteConfig = {
   institution: {
     nameBn:
@@ -206,9 +214,17 @@ export const siteConfig = {
   },
 
   geofence: {
-    lat: parseFloat(process.env.NEXT_PUBLIC_MADRASA_LAT || "23.860061"),
-    lng: parseFloat(process.env.NEXT_PUBLIC_MADRASA_LNG || "90.546755"),
-    radiusMeters: parseInt(process.env.NEXT_PUBLIC_MADRASA_RADIUS || "15", 10),
+    lat: parseFiniteNumber(process.env.NEXT_PUBLIC_MADRASA_LAT, 23.860061),
+    lng: parseFiniteNumber(process.env.NEXT_PUBLIC_MADRASA_LNG, 90.546755),
+    radiusMeters: parseFiniteNumber(process.env.NEXT_PUBLIC_MADRASA_RADIUS, 15),
+    accuracyToleranceMeters: parseFiniteNumber(
+      process.env.NEXT_PUBLIC_MADRASA_ACCURACY_TOLERANCE,
+      50
+    ),
+    maxAllowedAccuracyMeters: parseFiniteNumber(
+      process.env.NEXT_PUBLIC_MADRASA_MAX_ALLOWED_ACCURACY,
+      500
+    ),
   },
 
   // Server-only database configuration (never exposed to browser bundle)

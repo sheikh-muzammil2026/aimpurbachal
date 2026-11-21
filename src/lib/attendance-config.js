@@ -4,12 +4,57 @@ import { siteConfig } from "@/config/siteConfig";
 export const MADRASA_LOCATION = {
   LATITUDE: siteConfig.geofence.lat,
   LONGITUDE: siteConfig.geofence.lng,
-  RADIUS_METERS: siteConfig.geofence.radiusMeters || 200,
-  MAX_ALLOWED_ACCURACY_METERS: 500,
-  ACCURACY_TOLERANCE_METERS: 50,
+  RADIUS_METERS: siteConfig.geofence.radiusMeters,
+  MAX_ALLOWED_ACCURACY_METERS: siteConfig.geofence.maxAllowedAccuracyMeters,
+  ACCURACY_TOLERANCE_METERS: siteConfig.geofence.accuracyToleranceMeters,
   NAME: `${siteConfig.institution.nameBn} ${siteConfig.institution.campusNameBn}`,
   ADDRESS: siteConfig.contact.addressBn,
 };
+
+/**
+ * Safely merges a server-provided madrasaLocation override with the local fallback config.
+ * Ensures client validation matches live backend env settings even across deployments.
+ * @param {object|null} [overrideLocation]
+ */
+export function resolveMadrasaLocation(overrideLocation = null) {
+  if (!overrideLocation || typeof overrideLocation !== "object") {
+    return MADRASA_LOCATION;
+  }
+
+  const lat = Number(overrideLocation.LATITUDE ?? overrideLocation.lat);
+  const lng = Number(overrideLocation.LONGITUDE ?? overrideLocation.lng);
+  const radius = Number(
+    overrideLocation.RADIUS_METERS ?? overrideLocation.radiusMeters
+  );
+  const maxAcc = Number(
+    overrideLocation.MAX_ALLOWED_ACCURACY_METERS ??
+      overrideLocation.maxAllowedAccuracyMeters
+  );
+  const accTol = Number(
+    overrideLocation.ACCURACY_TOLERANCE_METERS ??
+      overrideLocation.accuracyToleranceMeters
+  );
+
+  return {
+    ...MADRASA_LOCATION,
+    LATITUDE: Number.isFinite(lat) ? lat : MADRASA_LOCATION.LATITUDE,
+    LONGITUDE: Number.isFinite(lng) ? lng : MADRASA_LOCATION.LONGITUDE,
+    RADIUS_METERS:
+      Number.isFinite(radius) && radius > 0
+        ? radius
+        : MADRASA_LOCATION.RADIUS_METERS,
+    MAX_ALLOWED_ACCURACY_METERS:
+      Number.isFinite(maxAcc) && maxAcc > 0
+        ? maxAcc
+        : MADRASA_LOCATION.MAX_ALLOWED_ACCURACY_METERS,
+    ACCURACY_TOLERANCE_METERS:
+      Number.isFinite(accTol) && accTol >= 0
+        ? accTol
+        : MADRASA_LOCATION.ACCURACY_TOLERANCE_METERS,
+    NAME: overrideLocation.NAME || MADRASA_LOCATION.NAME,
+    ADDRESS: overrideLocation.ADDRESS || MADRASA_LOCATION.ADDRESS,
+  };
+}
 
 // Attendance Schedule & Rules (Teachers)
 // Office Hours: Morning 8:00 AM to 1:10 PM (13:10)
@@ -55,10 +100,10 @@ export function calculateDistanceMeters(lat1, lon1, lat2, lon2) {
     typeof lon1 !== "number" ||
     typeof lat2 !== "number" ||
     typeof lon2 !== "number" ||
-    isNaN(lat1) ||
-    isNaN(lon1) ||
-    isNaN(lat2) ||
-    isNaN(lon2)
+    !Number.isFinite(lat1) ||
+    !Number.isFinite(lon1) ||
+    !Number.isFinite(lat2) ||
+    !Number.isFinite(lon2)
   ) {
     return Infinity;
   }
@@ -75,7 +120,8 @@ export function calculateDistanceMeters(lat1, lon1, lat2, lon2) {
     Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
     Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
 
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const clampedA = Math.min(1, Math.max(0, a));
+  const c = 2 * Math.atan2(Math.sqrt(clampedA), Math.sqrt(1 - clampedA));
 
   return R * c;
 }
@@ -86,14 +132,22 @@ export function calculateDistanceMeters(lat1, lon1, lat2, lon2) {
  * @param {number} userLng
  * @param {number} [customRadius]
  * @param {number} [accuracy]
+ * @param {object} [targetLocation]
  * @returns {{ isInside: boolean, isValidCoords: boolean, distance: number, threshold: number, effectiveThreshold: number, accuracy: number }}
  */
 export function isWithinMadrasaGeofence(
   userLat,
   userLng,
-  customRadius = MADRASA_LOCATION.RADIUS_METERS,
-  accuracy = 0
+  customRadius,
+  accuracy = 0,
+  targetLocation = MADRASA_LOCATION
 ) {
+  const location = resolveMadrasaLocation(targetLocation);
+  const radiusNum =
+    Number.isFinite(Number(customRadius)) && Number(customRadius) > 0
+      ? Number(customRadius)
+      : location.RADIUS_METERS;
+
   const latNum = Number(userLat);
   const lngNum = Number(userLng);
 
@@ -110,8 +164,8 @@ export function isWithinMadrasaGeofence(
       isInside: false,
       isValidCoords: false,
       distance: Infinity,
-      threshold: customRadius,
-      effectiveThreshold: customRadius,
+      threshold: radiusNum,
+      effectiveThreshold: radiusNum,
       accuracy: Number(accuracy) || 0,
     };
   }
@@ -123,22 +177,23 @@ export function isWithinMadrasaGeofence(
   const distance = calculateDistanceMeters(
     latNum,
     lngNum,
-    MADRASA_LOCATION.LATITUDE,
-    MADRASA_LOCATION.LONGITUDE
+    location.LATITUDE,
+    location.LONGITUDE
   );
 
   const tolerance = Math.min(
     accNum,
-    MADRASA_LOCATION.ACCURACY_TOLERANCE_METERS || 50
+    location.ACCURACY_TOLERANCE_METERS || 50
   );
-  const effectiveThreshold = customRadius + tolerance;
+  const roundedDistance = Math.round(distance);
+  const effectiveThreshold = Math.round(radiusNum + tolerance);
 
   return {
-    isInside: distance <= effectiveThreshold,
+    isInside: roundedDistance <= effectiveThreshold,
     isValidCoords: true,
-    distance: Math.round(distance),
-    threshold: customRadius,
-    effectiveThreshold: Math.round(effectiveThreshold),
+    distance: roundedDistance,
+    threshold: radiusNum,
+    effectiveThreshold,
     accuracy: accNum,
   };
 }
