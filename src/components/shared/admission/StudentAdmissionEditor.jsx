@@ -4,11 +4,11 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Link from "next/link";
-import AdmissionFormCover from "@/components/admission/AdmissionFormCover";
-import AdmissionFormPage1 from "@/components/admission/AdmissionFormPage1";
-import AdmissionFormPage2 from "@/components/admission/AdmissionFormPage2";
-import AdmissionFormPage3 from "@/components/admission/AdmissionFormPage3";
-import OfficeUseSection from "@/components/admission/OfficeUseSection";
+import AdmissionFormCover from "./AdmissionFormCover";
+import AdmissionFormPage1 from "./AdmissionFormPage1";
+import AdmissionFormPage2 from "./AdmissionFormPage2";
+import AdmissionFormPage3 from "./AdmissionFormPage3";
+import OfficeUseSection from "./OfficeUseSection";
 
 const normalizeClassName = (clsName) => {
   if (!clsName) return "";
